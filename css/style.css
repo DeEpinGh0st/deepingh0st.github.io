@@ -98,7 +98,7 @@
   content: '';
   width: 14px;
   height: 14px;
-  background: #ff4e6a;
+  background: #1a98ff;
   display: inline-block;
   vertical-align: middle;
   margin-top: -2px;
@@ -113,7 +113,7 @@
   content: '';
   height: 100%;
   width: 2px;
-  background: rgba(255,78,106,0.2);
+  background: rgba(26,152,255,0.2);
   position: absolute;
   left: 6px;
   top: 20px;
@@ -209,13 +209,13 @@ article pre code:after {
 article a {
   -webkit-transition: color 0.35s ease-out;
   transition: color 0.35s ease-out;
-  color: #ff4e6a;
+  color: #1a98ff;
   text-decoration: none;
   word-wrap: break-word;
 }
 article a:hover,
 article a:focus {
-  color: #ff4e6a;
+  color: #1a98ff;
 }
 article a:hover {
   text-decoration: underline;
@@ -310,7 +310,7 @@ article h6:before {
   display: inline-block;
   width: 1em;
   content: '#';
-  color: #ff4e6a;
+  color: #1a98ff;
 }
 article h1 {
   font-size: 2.5em;
@@ -334,7 +334,7 @@ article h2:after {
   transition: all 0.35s ease-out;
   content: '';
   position: absolute;
-  background: #ff4e6a;
+  background: #1a98ff;
   width: 1em;
   height: 5px;
   bottom: -3px;
@@ -436,8 +436,8 @@ article > ol > li::before {
   text-align: center;
   border-radius: 8px;
   line-height: 1.6rem;
-  background-color: rgba(255,78,106,0.1);
-  color: #ff4e6a;
+  background-color: rgba(26,152,255,0.1);
+  color: #1a98ff;
 }
 article li {
   line-height: 2rem;
@@ -531,7 +531,7 @@ article ul li::before {
   content: '';
   width: 14px;
   height: 14px;
-  background: #ff4e6a;
+  background: #1a98ff;
   display: inline-block;
   vertical-align: middle;
   margin-top: -2px;
@@ -546,7 +546,7 @@ article ul li::after {
   content: '';
   height: 100%;
   width: 2px;
-  background: rgba(255,78,106,0.2);
+  background: rgba(26,152,255,0.2);
   position: absolute;
   left: 6px;
   top: 20px;
@@ -558,13 +558,13 @@ article ul span {
   margin-right: 15px;
 }
 article .mdui-btn {
-  background-color: #ff4e6a;
+  background-color: #1a98ff;
   color: #fff;
   border-radius: 10px;
 }
 article .mdui-btn:focus,
 article .mdui-btn:hover {
-  background-color: #ff4e6a;
+  background-color: #1a98ff;
   color: #fff;
 }
 font.douyin {
@@ -814,7 +814,7 @@ article.nexmoe-py ul li img.lazyloaded {
   margin-top: 10px;
 }
 #nexmoe-search-space .search-container .search-body .search-result a .keyword {
-  color: #ff4e6a;
+  color: #1a98ff;
 }
 @media screen and (max-width: 1023px) {
   .search-container {
@@ -965,8 +965,8 @@ body {
 }
 #nexmoe-header .nexmoe-list .nexmoe-list-item.true {
   opacity: 0.9;
-  background: #ff4e6a;
-  box-shadow: 0 2px 12px #ff4e6a;
+  background: #1a98ff;
+  box-shadow: 0 2px 12px #1a98ff;
 }
 #nexmoe-header .nexmoe-list .nexmoe-list-item i {
   font-size: 22px;
@@ -988,7 +988,7 @@ body {
   font-weight: 400;
   padding: 24px 18px 12px;
   margin: 0;
-  color: #ff4e6a;
+  color: #1a98ff;
 }
 #nexmoe-header .nexmoe-widget-wrap .nexmoe-widget ul {
   list-style-type: none;
@@ -1011,14 +1011,14 @@ body {
 }
 #nexmoe-header .nexmoe-widget-wrap .nexmoe-widget .category-list-count,
 #nexmoe-header .nexmoe-widget-wrap .nexmoe-widget .archive-list-count {
-  background-color: rgba(255,78,106,0.1);
+  background-color: rgba(26,152,255,0.1);
   display: inline-block;
   width: 26px;
   height: 26px;
   line-height: 26px;
   text-align: center;
   border-radius: 100%;
-  color: #ff4e6a;
+  color: #1a98ff;
   position: absolute;
   right: 18px;
   top: 10px;
@@ -1049,7 +1049,7 @@ body {
   font-size: 12px;
 }
 #nexmoe-header .nexmoe-copyright a {
-  color: #ff4e6a;
+  color: #1a98ff;
 }
 @media screen and (max-width: 1024px) {
   #nexmoe-header {
@@ -1085,9 +1085,9 @@ body {
 }
 #nexmoe-content .nexmoe-primary .nexmoe-page-nav .current {
   color: #fff;
-  background: #ff4e6a;
+  background: #1a98ff;
   opacity: 0.9;
-  box-shadow: 0 2px 12px #ff4e6a;
+  box-shadow: 0 2px 12px #1a98ff;
 }
 #nexmoe-content .nexmoe-primary .nexmoe-page-nav > * {
   color: #999;
@@ -1206,7 +1206,7 @@ body {
   overflow: hidden;
 }
 #nexmoe-content .nexmoe-post .nexmoe-post-copyright a {
-  color: #ff4e6a;
+  color: #1a98ff;
 }
 #nexmoe-content .nexmoe-post .nexmoe-post-copyright:after {
   position: absolute;
@@ -1366,7 +1366,7 @@ body {
 }
 .nexmoe-toc a:hover {
   text-decoration: underline;
-  color: #ff4e6a;
+  color: #1a98ff;
 }
 .nexmoe-toc ol {
   padding-left: 1em;
@@ -1387,28 +1387,28 @@ photos img {
   width: 25%;
 }
 .nexmoe-rainbow a:nth-child(7n+1) {
+  background-color: rgba(26,152,255,0.15);
+  color: #1a98ff;
+}
+.nexmoe-rainbow a:nth-child(7n+2) {
   background-color: rgba(255,78,106,0.15);
   color: #ff4e6a;
 }
-.nexmoe-rainbow a:nth-child(7n+2) {
+.nexmoe-rainbow a:nth-child(7n+3) {
   background-color: rgba(255,118,30,0.15);
   color: #ff761e;
 }
-.nexmoe-rainbow a:nth-child(7n+3) {
+.nexmoe-rainbow a:nth-child(7n+4) {
   background-color: rgba(255,185,0,0.15);
   color: #ffb900;
 }
-.nexmoe-rainbow a:nth-child(7n+4) {
+.nexmoe-rainbow a:nth-child(7n+5) {
   background-color: rgba(51,213,122,0.15);
   color: #33d57a;
 }
-.nexmoe-rainbow a:nth-child(7n+5) {
+.nexmoe-rainbow a:nth-child(7n+6) {
   background-color: rgba(0,219,255,0.15);
   color: #00dbff;
-}
-.nexmoe-rainbow a:nth-child(7n+6) {
-  background-color: rgba(26,152,255,0.15);
-  color: #1a98ff;
 }
 .nexmoe-rainbow a:nth-child(7n+7) {
   background-color: rgba(144,144,255,0.15);
@@ -1416,27 +1416,27 @@ photos img {
 }
 .nexmoe-rainbow-fill a:nth-child(7n+1) {
   color: #fff;
-  background-color: rgba(255,78,106,0.9);
+  background-color: rgba(26,152,255,0.9);
 }
 .nexmoe-rainbow-fill a:nth-child(7n+2) {
   color: #fff;
-  background-color: rgba(255,118,30,0.7);
+  background-color: rgba(255,78,106,0.7);
 }
 .nexmoe-rainbow-fill a:nth-child(7n+3) {
   color: #fff;
-  background-color: rgba(255,185,0,0.7);
+  background-color: rgba(255,118,30,0.7);
 }
 .nexmoe-rainbow-fill a:nth-child(7n+4) {
   color: #fff;
-  background-color: rgba(51,213,122,0.7);
+  background-color: rgba(255,185,0,0.7);
 }
 .nexmoe-rainbow-fill a:nth-child(7n+5) {
   color: #fff;
-  background-color: rgba(0,219,255,0.7);
+  background-color: rgba(51,213,122,0.7);
 }
 .nexmoe-rainbow-fill a:nth-child(7n+6) {
   color: #fff;
-  background-color: rgba(26,152,255,0.7);
+  background-color: rgba(0,219,255,0.7);
 }
 .nexmoe-rainbow-fill a:nth-child(7n+7) {
   color: #fff;
