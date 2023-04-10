@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+
+<head>
+    
+    <title>Running frida without root - S0cke3t&#39;s Blog</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta name="keywords" content="渗透测试,CISP-PTE,代码审计,破解,移动安全,安全工具,漏洞利用">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+    
+    
+
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <meta name="description" content="非root环境下运行frida">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Running frida without root">
+<meta property="og:url" content="https://www.saferoad.cc/Android/Running-frida-without-root.html">
+<meta property="og:site_name" content="S0cke3t&#39;s Blog">
+<meta property="og:description" content="非root环境下运行frida">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/03/24/202303241437430.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/03/24/202303241438331.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/03/24/202303241438270.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/03/24/202303241438778.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/03/24/202303241439785.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/03/24/202303241439914.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/03/24/202303241440751.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/03/24/202303241440208.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/03/24/202303241440893.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/03/24/202303241440484.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/03/24/202303241441185.png">
+<meta property="article:published_time" content="2023-03-24T06:21:51.000Z">
+<meta property="article:modified_time" content="2023-04-04T13:20:01.030Z">
+<meta property="article:author" content="S0cke3t">
+<meta property="article:tag" content="Hook">
+<meta property="article:tag" content="Frida">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/03/24/202303241437430.png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/highlight.js@9.15.8/styles/atom-one-dark.css,npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css,gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css,npm/hexo-theme-nexmoe@latest/source/lib/mdui_043tiny/css/mdui.css,npm/hexo-theme-nexmoe@latest/source/lib/iconfont/iconfont.css?v=233" crossorigin>
+    <link rel="stylesheet" href="/css/style.css?v=1681132088596">
+     
+    
+    <link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1681132088596">
+    
+<meta name="generator" content="Hexo 6.1.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+<body class="mdui-drawer-body-left">
+    
+    <div id="nexmoe-background">
+        <div class="nexmoe-bg" style="background-image: url(https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/newbolg/202203272236776.jpg)"></div>
+        <div class="mdui-appbar mdui-shadow-0">
+            <div class="mdui-toolbar">
+                <a mdui-drawer="{target: '#drawer', swipe: true}" title="menu" class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon nexmoefont icon-menu"></i></a>
+                <div class="mdui-toolbar-spacer"></div>
+                <!--<a href="javascript:;" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">search</i></a>-->
+                <a href="/" title="S0cke3t" class="mdui-btn mdui-btn-icon"><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/202203272159225.jpg" alt="S0cke3t"></a>
+            </div>
+        </div>
+    </div>
+    <div id="nexmoe-header">
+        
+<meta name="keywords" content="渗透测试,CISP-PTE,代码审计,破解,移动安全,安全工具,漏洞利用">
+
+<div class="nexmoe-drawer mdui-drawer" id="drawer">
+    <div class="nexmoe-avatar mdui-ripple">
+        <a href="/" title="S0cke3t">
+            <img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/202203272159225.jpg" alt="S0cke3t" alt="S0cke3t">
+        </a>
+    </div>
+    <div class="nexmoe-count">
+        <div><span>文章</span>40</div>
+        <div><span>标签</span>28</div>
+        <div><span>分类</span>12</div>
+    </div>
+    <div class="nexmoe-list mdui-list" mdui-collapse="{accordion: true}">
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/" title="回到首页">
+            <i class="mdui-list-item-icon nexmoefont icon-home"></i>
+            <div class="mdui-list-item-content">
+                回到首页
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/archives.html" title="文章归档">
+            <i class="mdui-list-item-icon nexmoefont icon-container"></i>
+            <div class="mdui-list-item-content">
+                文章归档
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/aboutme.html" title="关于我">
+            <i class="mdui-list-item-icon nexmoefont icon-info-circle"></i>
+            <div class="mdui-list-item-content">
+                关于我
+            </div>
+        </a>
+        
+    </div>
+    <aside id="nexmoe-sidebar">
+    
+    <div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-search">
+         
+            <form id="search_form" action_e="https://cn.bing.com/search?q=site:saferoad.cc" onsubmit="return search();">
+                <label><input id="search_value" name="q" type="search" placeholder="搜索"></label>
+            </form>
+         
+    </div>
+</div>
+    
+    <div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-social">
+        <a class="mdui-ripple" href="https://github.com/DeEpinGh0st/" target="_blank" mdui-tooltip="{content: 'GitHub'}" style="color: rgb(25, 23, 23);background-color: rgba(25, 23, 23, .15);">
+            <i class="nexmoefont icon-github"></i>
+        </a>
+    </div>
+</div>
+    
+    
+  <div class="nexmoe-widget-wrap">
+    <h3 class="nexmoe-widget-title">文章分类</h3>
+    <div class="nexmoe-widget">
+
+      <ul class="category-list">
+
+        
+
+
+        
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Analysis/">Analysis</a>
+          <span class="category-list-count">11</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Android/">Android</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Audit/">Audit</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Bypass/">Bypass</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/CISP-PTE/">CISP-PTE</a>
+          <span class="category-list-count">2</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Case-share/">Case share</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Crack/">Crack</a>
+          <span class="category-list-count">3</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Deserialization/">Deserialization</a>
+          <span class="category-list-count">2</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Docker/">Docker</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Emergency/">Emergency</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Notes/">Notes</a>
+          <span class="category-list-count">6</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Sectool/">Sectool</a>
+          <span class="category-list-count">10</span>
+        </li>
+
+        
+      </ul>
+
+    </div>
+  </div>
+
+
+    
+    
+  <div class="nexmoe-widget-wrap">
+    <div id="randomtagcloud" class="nexmoe-widget tagcloud nexmoe-rainbow">
+      <a href="/tags/ASP-NET/" style="font-size: 12.5px;">ASP.NET</a> <a href="/tags/Bypass/" style="font-size: 15px;">Bypass</a> <a href="/tags/Csharp/" style="font-size: 17.5px;">Csharp</a> <a href="/tags/Django/" style="font-size: 10px;">Django</a> <a href="/tags/Domain-security/" style="font-size: 10px;">Domain security</a> <a href="/tags/Flink/" style="font-size: 10px;">Flink</a> <a href="/tags/Frida/" style="font-size: 10px;">Frida</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/Java/" style="font-size: 20px;">Java</a> <a href="/tags/KeyGen/" style="font-size: 10px;">KeyGen</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Nim/" style="font-size: 10px;">Nim</a> <a href="/tags/PHP/" style="font-size: 12.5px;">PHP</a> <a href="/tags/Pentest/" style="font-size: 10px;">Pentest</a> <a href="/tags/Portainer/" style="font-size: 10px;">Portainer</a> <a href="/tags/Python/" style="font-size: 15px;">Python</a> <a href="/tags/Reappearance/" style="font-size: 10px;">Reappearance</a> <a href="/tags/SecTool/" style="font-size: 10px;">SecTool</a> <a href="/tags/Seeyon/" style="font-size: 10px;">Seeyon</a> <a href="/tags/Spring/" style="font-size: 15px;">Spring</a> <a href="/tags/Sqlmap/" style="font-size: 10px;">Sqlmap</a> <a href="/tags/Struts2/" style="font-size: 10px;">Struts2</a> <a href="/tags/ThinkPHP/" style="font-size: 10px;">ThinkPHP</a> <a href="/tags/Windows/" style="font-size: 12.5px;">Windows</a> <a href="/tags/WordPress/" style="font-size: 10px;">WordPress</a> <a href="/tags/cuckoo/" style="font-size: 10px;">cuckoo</a> <a href="/tags/sandbox/" style="font-size: 10px;">sandbox</a> <a href="/tags/solution/" style="font-size: 10px;">solution</a>
+    </div>
+    
+  </div>
+
+    
+</aside>
+    <div class="nexmoe-copyright">
+        &copy; 2023 S0cke3t
+        Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+        & <a href="https://github.com/theme-nexmoe/hexo-theme-nexmoe" target="_blank">Nexmoe</a>
+        <br/>Too Young Too Sample
+    </div>
+</div><!-- .nexmoe-drawer -->
+    </div>
+    <div id="nexmoe-content">
+        <div class="nexmoe-primary">
+            <div class="nexmoe-post">
+
+  <article>
+      
+          <div class="nexmoe-post-cover" style="padding-bottom: NaN%;"> 
+              <img data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/03/24/202303241429223.jpeg" data-sizes="auto" alt="Running frida without root" class="lazyload">
+              <h1>Running frida without root</h1>
+          </div>
+      
+      
+      <div class="nexmoe-post-meta nexmoe-rainbow" style="margin:10px 0!important;">
+    <a><i class="nexmoefont icon-calendar-fill"></i>2023年03月24日</a>
+    <a><i class="nexmoefont icon-areachart"></i>675 字</a>
+    <a><i class="nexmoefont icon-time-circle-fill"></i>大概 3 分钟</a>
+</div>
+
+      
+
+      <h3 id="关于ROOT"><a href="#关于ROOT" class="headerlink" title="关于ROOT"></a>关于ROOT</h3><p>ARMV8的引入以及Google对安全的重视，使得Android获取ROOT权限很难。那个仅仅依靠一个apk就能实现手机ROOT的时代基本上一去不返了。apk提权基于的是Android系统的漏洞，目前Android已经很完善了，寻找漏洞非常困难。</p>
+<p>目前获取ROOT基本都是通过刷安装包来实现。当然了Android模拟器可以很轻松获取ROOT权限。但是很多APP都对模拟器有检测，并且模拟器的架构基本上基于的是x86，与arm有很大的区别。</p>
+<p>市面上大多数的手机都是非ROOT的，不能为了使用一次Frida就去刷机吧<br>————————————————<br>摘自: <a target="_blank" rel="noopener" href="https://blog.csdn.net/helloworlddm/article/details/109680109">helloworlddm</a></p>
+<h3 id="确定手机cpu架构"><a href="#确定手机cpu架构" class="headerlink" title="确定手机cpu架构"></a>确定手机cpu架构</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre class="line-numbers language-hljs bash"><code class="language-hljs bash">adb shell getprop ro.product.cpu.abi<br><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/03/24/202303241437430.png"></p>
+<h3 id="APK设置"><a href="#APK设置" class="headerlink" title="APK设置"></a>APK设置</h3><h4 id="解包"><a href="#解包" class="headerlink" title="解包"></a>解包</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre class="line-numbers language-hljs bash">java -jar apktool_2.7.0.jar d <span class="hljs-string"><code class="language-hljs bash">java -jar apktool_2.7.0.jar d <span class="hljs-string">"G:\Android\SecDemo\app\release\app-release.apk"</span> -o E:\AndroidSec\Secdemo-decomplie -f<br><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></td></tr></table></figure>
+
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/03/24/202303241438331.png" alt="image" class="lazyload"></p>
+<h4 id="编辑AndroidManifest"><a href="#编辑AndroidManifest" class="headerlink" title="编辑AndroidManifest"></a>编辑AndroidManifest</h4><p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/03/24/202303241438270.png" alt="image" class="lazyload"></p>
+<p>添加<code>android:debuggable=&quot;true&quot;</code></p>
+<p>如果apk没有联网权限添加</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre class="line-numbers language-hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">uses-permission</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string"><code class="language-hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">uses-permission</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">"android.permission.INTERNET"</span> /></span><br><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></td></tr></table></figure>
+
+<h4 id="添加frida-gadget依赖库文件"><a href="#添加frida-gadget依赖库文件" class="headerlink" title="添加frida-gadget依赖库文件"></a>添加frida-gadget依赖库文件</h4><p>下载<code>Frida-gadget</code>依赖库文件<a target="_blank" rel="noopener" href="https://github.com/frida/frida/releases">https://github.com/frida/frida/releases</a></p>
+<p>在解包<code>lib</code>目录对应架构目录下添加<code>frida-gadget</code>依赖库文件,并重命名为<code>libfrida-gadget.so</code></p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/03/24/202303241438778.png" alt="image" class="lazyload"></p>
+<p>如果apk未引用<code>native</code>层函数,则手动创建相应目录</p>
+<h4 id="编辑Smali"><a href="#编辑Smali" class="headerlink" title="编辑Smali"></a>编辑Smali</h4><p>修改<code>smali</code>代码，加载<code>libfrida-gadget.so</code>，通常是在<code>Application</code>的<code>onCreate</code>方法或者启动<code>Activity</code>的<code>onCreate</code>方法</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/03/24/202303241439785.png" alt="image" class="lazyload"></p>
+<p>代码含义</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre class="line-numbers language-hljs java">.locals <span class="hljs-number">1</span> <span class="hljs-comment">//声明局部寄存器数量</span><br>const/<span class="hljs-number">4</span> v0, <span class="hljs-number">0x0</span> <span class="hljs-comment">//声明一个寄存器v0,大小4字节,并赋值0x0</span><br>const-string v0, <span class="hljs-string">&quot;frida-gadget&quot;</span> <span class="hljs-comment">//将v0寄存器赋值字符串常量&quot;frida-gadget&quot;</span><br>invoke-<span class="hljs-keyword">static</span> &#123;v0&#125;, Ljava/lang/System;-&gt;loadLibrary(Ljava/lang/String;)V <span class="hljs-comment"><code class="language-hljs java">.locals <span class="hljs-number">1</span> <span class="hljs-comment">//声明局部寄存器数量</span><br>const/<span class="hljs-number">4</span> v0, <span class="hljs-number">0x0</span> <span class="hljs-comment">//声明一个寄存器v0,大小4字节,并赋值0x0</span><br>const-string v0, <span class="hljs-string">&quot;frida-gadget&quot;</span> <span class="hljs-comment">//将v0寄存器赋值字符串常量&quot;frida-gadget&quot;</span><br>invoke-<span class="hljs-keyword">static</span> &#123;v0&#125;, Ljava/lang/System;-&gt;loadLibrary(Ljava/lang/String;)V <span class="hljs-comment">//调用system对象的loadLibrary返回void</span><br><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></td></tr></table></figure>
+
+<h3 id="重新打包APK"><a href="#重新打包APK" class="headerlink" title="重新打包APK"></a>重新打包APK</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre class="line-numbers language-hljs bash"><code class="language-hljs bash">java -jar apktool_2.7.0.jar b E:\AndroidSec\Secdemo-decomplie -o secdemo-unsigned.apk<br><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></td></tr></table></figure>
+
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/03/24/202303241439914.png" alt="image" class="lazyload"></p>
+<h3 id="重签名APK"><a href="#重签名APK" class="headerlink" title="重签名APK"></a>重签名APK</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre class="line-numbers language-hljs bash">apksigner.bat sign -verbose --ks  secdemo.jks --v1-signing-enabled <span class="hljs-literal">true</span> --v2-signing-enabled <span class="hljs-literal"><code class="language-hljs bash">apksigner.bat sign -verbose --ks  secdemo.jks --v1-signing-enabled <span class="hljs-literal">true</span> --v2-signing-enabled <span class="hljs-literal">true</span> --ks-pass pass:123456 --ks-key-alias key0 --out s ecdemo-signed.apk secdemo-unsigned.apk<br><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></td></tr></table></figure>
+
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/03/24/202303241440751.png" alt="image" class="lazyload"></p>
+<h3 id="覆盖安装APK"><a href="#覆盖安装APK" class="headerlink" title="覆盖安装APK"></a>覆盖安装APK</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre class="line-numbers language-hljs bash"><code class="language-hljs bash">adb install -r secdemo-signed.apk<br><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></td></tr></table></figure>
+
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/03/24/202303241440208.png" alt="image" class="lazyload"></p>
+<h3 id="启动Frida-server"><a href="#启动Frida-server" class="headerlink" title="启动Frida-server"></a>启动Frida-server</h3><p>启动apk,此时apk会卡住,说明<code>frida-server</code>正在等待连接</p>
+<p>使用<code>logcat</code>查看<code>frida-server</code>是否启动成功</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/03/24/202303241440893.png" alt="image" class="lazyload"></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre class="line-numbers language-hljs bash"><code class="language-hljs bash">adb shell<br>logcat | grep 27042<br><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></td></tr></table></figure>
+
+<p>看到<code>Listening on 127.0.0.1 TCP port 27042</code>说明<code>firda-server</code>监听成功</p>
+<h3 id="Hook测试"><a href="#Hook测试" class="headerlink" title="Hook测试"></a>Hook测试</h3><p>接下来就是正常使用<code>frida</code>客户端进行<code>hook</code>了</p>
+<p>随便写一个<code>hook</code>脚本</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/03/24/202303241440484.png" alt="image" class="lazyload"></p>
+<p>加载脚本</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre class="line-numbers language-hljs bash"><code class="language-hljs bash">frida.exe -U Gadget -l hook.js<br><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></td></tr></table></figure>
+
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/03/24/202303241441185.png" alt="image" class="lazyload"></p>
+
+  </article>
+
+  
+      
+    <div class="nexmoe-post-copyright">
+        <strong>本文作者：</strong>S0cke3t<br>
+        <strong>本文链接：</strong><a href="https://www.saferoad.cc/Android/Running-frida-without-root.html" title="https:&#x2F;&#x2F;www.saferoad.cc&#x2F;Android&#x2F;Running-frida-without-root.html" target="_blank" rel="noopener">https:&#x2F;&#x2F;www.saferoad.cc&#x2F;Android&#x2F;Running-frida-without-root.html</a><br>
+        
+            <strong>版权声明：</strong>本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank">CC BY-NC-SA 3.0 CN</a> 协议进行许可
+        
+    </div>
+
+
+  
+  
+  <div class="nexmoe-post-meta nexmoe-rainbow">
+    
+        <a class="nexmoefont icon-appstore-fill -link" href="/categories/Android/">Android</a>
+    
+    
+        <a class="nexmoefont icon-tag-fill -none-link" href="/tags/Frida/" rel="tag">Frida</a> <a class="nexmoefont icon-tag-fill -none-link" href="/tags/Hook/" rel="tag">Hook</a>
+    
+</div>
+
+  
+      <div class="nexmoe-post-footer">
+          
+      </div>
+  
+</div>
+            <div class="nexmoe-post-right">
+              <div class="nexmoe-fixed">
+                  <div class="nexmoe-tool"> 
+                    
+                      
+                        
+                          
+                          
+                              <button class="mdui-fab catalog" style="overflow:unset;">
+                                  <i class="nexmoefont icon-i-catalog"></i>
+                                  <div class="nexmoe-toc">
+                                      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B3%E4%BA%8EROOT"><span class="toc-number">1.</span> <span class="toc-text">关于ROOT</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A1%AE%E5%AE%9A%E6%89%8B%E6%9C%BAcpu%E6%9E%B6%E6%9E%84"><span class="toc-number">2.</span> <span class="toc-text">确定手机cpu架构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#APK%E8%AE%BE%E7%BD%AE"><span class="toc-number">3.</span> <span class="toc-text">APK设置</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A7%A3%E5%8C%85"><span class="toc-number">3.1.</span> <span class="toc-text">解包</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BC%96%E8%BE%91AndroidManifest"><span class="toc-number">3.2.</span> <span class="toc-text">编辑AndroidManifest</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0frida-gadget%E4%BE%9D%E8%B5%96%E5%BA%93%E6%96%87%E4%BB%B6"><span class="toc-number">3.3.</span> <span class="toc-text">添加frida-gadget依赖库文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BC%96%E8%BE%91Smali"><span class="toc-number">3.4.</span> <span class="toc-text">编辑Smali</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E6%96%B0%E6%89%93%E5%8C%85APK"><span class="toc-number">4.</span> <span class="toc-text">重新打包APK</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E7%AD%BE%E5%90%8DAPK"><span class="toc-number">5.</span> <span class="toc-text">重签名APK</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A6%86%E7%9B%96%E5%AE%89%E8%A3%85APK"><span class="toc-number">6.</span> <span class="toc-text">覆盖安装APK</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8Frida-server"><span class="toc-number">7.</span> <span class="toc-text">启动Frida-server</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Hook%E6%B5%8B%E8%AF%95"><span class="toc-number">8.</span> <span class="toc-text">Hook测试</span></a></li></ol>
+                                  </div>
+                              </button>
+                          
+                          
+                      
+                    
+                      <a href="#nexmoe-content" class="toc-link" aria-label="回到顶部" title="top"><button class="mdui-fab mdui-ripple"><i class="nexmoefont icon-caret-top"></i></button></a>
+                  </div>
+              </div>
+            </div>
+        </div>
+    </div>
+     
+    <div id="nexmoe-search-space">
+        <div class="search-container">
+            <div class="search-header">
+                <div class="search-input-container">
+                    <input class="search-input" type="text" placeholder="搜索" oninput="sinput();">
+                </div>
+                <a class="search-close" onclick="sclose();">×</a>
+            </div>
+            <div class="search-body"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/combine/npm/lazysizes@5.1.0/lazysizes.min.js,npm/mdui@0.4.3/dist/js/mdui.min.js?v=1"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+ 
+
+<script async src="/js/app.js?v=1681132088604"></script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js"></script>
+<script>
+	$(".justified-gallery").justifiedGallery({
+		rowHeight: 160,
+		margins: 10,
+	});
+</script>
+
+
+    
+
+
+
+
+
+</body>
+
+</html>

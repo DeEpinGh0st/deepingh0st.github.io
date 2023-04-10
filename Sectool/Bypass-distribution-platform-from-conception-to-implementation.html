@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+
+<head>
+    
+    <title>Bypass distribution platform from conception to implementation - S0cke3t&#39;s Blog</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta name="keywords" content="渗透测试,CISP-PTE,代码审计,破解,移动安全,安全工具,漏洞利用">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+    
+    
+
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <meta name="description" content="记一个免杀分发平台从构思到实现">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Bypass distribution platform from conception to implementation">
+<meta property="og:url" content="https://www.saferoad.cc/Sectool/Bypass-distribution-platform-from-conception-to-implementation.html">
+<meta property="og:site_name" content="S0cke3t&#39;s Blog">
+<meta property="og:description" content="记一个免杀分发平台从构思到实现">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/12/07/202212071420933.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/12/07/202212071501457.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/12/07/202212071606728.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/12/07/202212071607367.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/12/07/202212071607894.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/12/07/202212071617846.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/12/07/202212071622230.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/12/07/202212071625660.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/12/07/202212071627558.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/12/07/202212071629249.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/12/07/202212071630517.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/12/07/202212071631476.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/12/07/202212071632043.png">
+<meta property="article:published_time" content="2022-12-06T08:30:25.000Z">
+<meta property="article:modified_time" content="2023-04-04T13:20:00.993Z">
+<meta property="article:author" content="S0cke3t">
+<meta property="article:tag" content="Bypass">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/12/07/202212071420933.png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/highlight.js@9.15.8/styles/atom-one-dark.css,npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css,gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css,npm/hexo-theme-nexmoe@latest/source/lib/mdui_043tiny/css/mdui.css,npm/hexo-theme-nexmoe@latest/source/lib/iconfont/iconfont.css?v=233" crossorigin>
+    <link rel="stylesheet" href="/css/style.css?v=1681132088621">
+     
+    
+    <link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1681132088621">
+    
+<meta name="generator" content="Hexo 6.1.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+<body class="mdui-drawer-body-left">
+    
+    <div id="nexmoe-background">
+        <div class="nexmoe-bg" style="background-image: url(https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/newbolg/202203272236776.jpg)"></div>
+        <div class="mdui-appbar mdui-shadow-0">
+            <div class="mdui-toolbar">
+                <a mdui-drawer="{target: '#drawer', swipe: true}" title="menu" class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon nexmoefont icon-menu"></i></a>
+                <div class="mdui-toolbar-spacer"></div>
+                <!--<a href="javascript:;" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">search</i></a>-->
+                <a href="/" title="S0cke3t" class="mdui-btn mdui-btn-icon"><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/202203272159225.jpg" alt="S0cke3t"></a>
+            </div>
+        </div>
+    </div>
+    <div id="nexmoe-header">
+        
+<meta name="keywords" content="渗透测试,CISP-PTE,代码审计,破解,移动安全,安全工具,漏洞利用">
+
+<div class="nexmoe-drawer mdui-drawer" id="drawer">
+    <div class="nexmoe-avatar mdui-ripple">
+        <a href="/" title="S0cke3t">
+            <img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/202203272159225.jpg" alt="S0cke3t" alt="S0cke3t">
+        </a>
+    </div>
+    <div class="nexmoe-count">
+        <div><span>文章</span>40</div>
+        <div><span>标签</span>28</div>
+        <div><span>分类</span>12</div>
+    </div>
+    <div class="nexmoe-list mdui-list" mdui-collapse="{accordion: true}">
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/" title="回到首页">
+            <i class="mdui-list-item-icon nexmoefont icon-home"></i>
+            <div class="mdui-list-item-content">
+                回到首页
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/archives.html" title="文章归档">
+            <i class="mdui-list-item-icon nexmoefont icon-container"></i>
+            <div class="mdui-list-item-content">
+                文章归档
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/aboutme.html" title="关于我">
+            <i class="mdui-list-item-icon nexmoefont icon-info-circle"></i>
+            <div class="mdui-list-item-content">
+                关于我
+            </div>
+        </a>
+        
+    </div>
+    <aside id="nexmoe-sidebar">
+    
+    <div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-search">
+         
+            <form id="search_form" action_e="https://cn.bing.com/search?q=site:saferoad.cc" onsubmit="return search();">
+                <label><input id="search_value" name="q" type="search" placeholder="搜索"></label>
+            </form>
+         
+    </div>
+</div>
+    
+    <div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-social">
+        <a class="mdui-ripple" href="https://github.com/DeEpinGh0st/" target="_blank" mdui-tooltip="{content: 'GitHub'}" style="color: rgb(25, 23, 23);background-color: rgba(25, 23, 23, .15);">
+            <i class="nexmoefont icon-github"></i>
+        </a>
+    </div>
+</div>
+    
+    
+  <div class="nexmoe-widget-wrap">
+    <h3 class="nexmoe-widget-title">文章分类</h3>
+    <div class="nexmoe-widget">
+
+      <ul class="category-list">
+
+        
+
+
+        
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Analysis/">Analysis</a>
+          <span class="category-list-count">11</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Android/">Android</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Audit/">Audit</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Bypass/">Bypass</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/CISP-PTE/">CISP-PTE</a>
+          <span class="category-list-count">2</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Case-share/">Case share</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Crack/">Crack</a>
+          <span class="category-list-count">3</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Deserialization/">Deserialization</a>
+          <span class="category-list-count">2</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Docker/">Docker</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Emergency/">Emergency</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Notes/">Notes</a>
+          <span class="category-list-count">6</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Sectool/">Sectool</a>
+          <span class="category-list-count">10</span>
+        </li>
+
+        
+      </ul>
+
+    </div>
+  </div>
+
+
+    
+    
+  <div class="nexmoe-widget-wrap">
+    <div id="randomtagcloud" class="nexmoe-widget tagcloud nexmoe-rainbow">
+      <a href="/tags/ASP-NET/" style="font-size: 12.5px;">ASP.NET</a> <a href="/tags/Bypass/" style="font-size: 15px;">Bypass</a> <a href="/tags/Csharp/" style="font-size: 17.5px;">Csharp</a> <a href="/tags/Django/" style="font-size: 10px;">Django</a> <a href="/tags/Domain-security/" style="font-size: 10px;">Domain security</a> <a href="/tags/Flink/" style="font-size: 10px;">Flink</a> <a href="/tags/Frida/" style="font-size: 10px;">Frida</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/Java/" style="font-size: 20px;">Java</a> <a href="/tags/KeyGen/" style="font-size: 10px;">KeyGen</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Nim/" style="font-size: 10px;">Nim</a> <a href="/tags/PHP/" style="font-size: 12.5px;">PHP</a> <a href="/tags/Pentest/" style="font-size: 10px;">Pentest</a> <a href="/tags/Portainer/" style="font-size: 10px;">Portainer</a> <a href="/tags/Python/" style="font-size: 15px;">Python</a> <a href="/tags/Reappearance/" style="font-size: 10px;">Reappearance</a> <a href="/tags/SecTool/" style="font-size: 10px;">SecTool</a> <a href="/tags/Seeyon/" style="font-size: 10px;">Seeyon</a> <a href="/tags/Spring/" style="font-size: 15px;">Spring</a> <a href="/tags/Sqlmap/" style="font-size: 10px;">Sqlmap</a> <a href="/tags/Struts2/" style="font-size: 10px;">Struts2</a> <a href="/tags/ThinkPHP/" style="font-size: 10px;">ThinkPHP</a> <a href="/tags/Windows/" style="font-size: 12.5px;">Windows</a> <a href="/tags/WordPress/" style="font-size: 10px;">WordPress</a> <a href="/tags/cuckoo/" style="font-size: 10px;">cuckoo</a> <a href="/tags/sandbox/" style="font-size: 10px;">sandbox</a> <a href="/tags/solution/" style="font-size: 10px;">solution</a>
+    </div>
+    
+  </div>
+
+    
+</aside>
+    <div class="nexmoe-copyright">
+        &copy; 2023 S0cke3t
+        Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+        & <a href="https://github.com/theme-nexmoe/hexo-theme-nexmoe" target="_blank">Nexmoe</a>
+        <br/>Too Young Too Sample
+    </div>
+</div><!-- .nexmoe-drawer -->
+    </div>
+    <div id="nexmoe-content">
+        <div class="nexmoe-primary">
+            <div class="nexmoe-post">
+
+  <article>
+      
+          <div class="nexmoe-post-cover" style="padding-bottom: NaN%;"> 
+              <img data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/12/07/202212061645172.jpg" data-sizes="auto" alt="Bypass distribution platform from conception to implementation" class="lazyload">
+              <h1>Bypass distribution platform from conception to implementation</h1>
+          </div>
+      
+      
+      <div class="nexmoe-post-meta nexmoe-rainbow" style="margin:10px 0!important;">
+    <a><i class="nexmoefont icon-calendar-fill"></i>2022年12月06日</a>
+    <a><i class="nexmoefont icon-areachart"></i>1.6k 字</a>
+    <a><i class="nexmoefont icon-time-circle-fill"></i>大概 6 分钟</a>
+</div>
+
+      
+
+      <h2 id="Start-of-all"><a href="#Start-of-all" class="headerlink" title="Start of all"></a>Start of all</h2><p>大约在19年末到21年初的时候, 在参加的诸多红蓝对抗和渗透测试中.渐渐发现每当遇到目标机器存在反病毒软件时. 都需要对投放的载荷进行免杀处理, 而在我尝试了市面上开源或者未开源的等一系列免杀工具后我发现, 虽然有些工具的免杀效果确实不错.但大部分在使用时都需要手动替换载荷或者指定相应的参数, 在红蓝对抗这种跟时间赛跑的情况下, 这种方式就显得有点疲软了. </p>
+<p>结合上述需求, 我渐渐萌生了一个想法.能不能开发一个简单且易用的免杀及分发的平台, 基于此平台用户在使用时不再需要记住各种参数和手动替换载荷等繁琐的步骤, 用户只需要做的就是在网页上简单的点点按钮就可以生成一个符合要求的载荷,  剩下的至于怎么生成这个载荷都交给系统去处理. 生成载荷后用户只需要下载这个载荷去目标上执行就可以了, 基于此方式将大大减少在载荷处理上的时间.</p>
+<p>本文主要跟大家分享一下开发此项目的<code>昨天,今天和明天</code>, 目的更多的在于提供一些方式方法或着说一些思路, 可能并不会讲太多关于技术细节的东西</p>
+<p>引用某著名小品的中一句话</p>
+<blockquote>
+<p>让我们回顾一下过去, 评说一下现在, 展望一下未来</p>
+</blockquote>
+<h2 id="昨天"><a href="#昨天" class="headerlink" title="昨天"></a>昨天</h2><h3 id="SSharp"><a href="#SSharp" class="headerlink" title="SSharp"></a>SSharp</h3><p>由于平台最初使用的Csharp作为加载器,故起名为<code>Super Sharp</code>简称为<code>SSharp</code>, 并使用反射注入的方式执行shellcode.</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/12/07/202212071420933.png" alt="image-20221207142011666" class="lazyload"></p>
+<p>在使用一段时间后, 渐渐发现一个严重问题. 由于编译生成的载荷需要依赖<code>.net framework</code>, 而在一些实际环境中并没有安装相应的组件, 导致生成的载荷无法运行.在发现此问题后, 基于<code>Csharp</code>的这种方式也就被弃用了.</p>
+<h3 id="Nsharp"><a href="#Nsharp" class="headerlink" title="Nsharp"></a>Nsharp</h3><p>在发现<code>.net</code>兼容性问题后, 我便开始寻找另外一种语言作为加载器使用. 当我在<code>github</code>上浏览相关加载器项目时, 无意间发现了一个使用冷门且小众的语言开发的安全项目-<a target="_blank" rel="noopener" href="https://github.com/byt3bl33d3r/OffensiveNim">OffensiveNim</a>, 此项目使用一种较为冷门的语言<code>Nim</code>作为主要的开发语言. 随后便去了解了一下这门语言</p>
+<p><code>Nim</code>是一种静态类型、命令式编程语言，支持过程式、 函数 式、面向对象和泛型编程风格. 支持跨平台, 使用<code>nim</code>编写的的程序可以很轻松的转换成<code>C, C++,  Javascript</code>等语言格式, 语法风格上与<code>Python</code>几乎一致, 在编译体积和执行速度上可以媲美原生C程序.</p>
+<p>在了解后第一感觉作为加载器来说还是不错的,唯一的缺点就是第三方库较少. 有些特定需求的功能都需要自己去实现</p>
+<p>在简单学习后, 我用<code>Nim</code>重构了一遍加载器,并更换了shellcode的加载方式</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/12/07/202212071501457.png" alt="image-20221207150105352" class="lazyload"></p>
+<p>此方式一直沿用到了今年, 在经过今年大大小小的多人运动实战后. 效果上表现还算不错, 但之后又暴露出了一个问题, 由于生成的载荷直接与平台进行通讯进行下发配置和模块, 这就导致了一旦投递的载荷多了或者被捕获了流量那么平台地址在威胁情报平台上会被标记,影响载荷和平台之间通讯.</p>
+<h3 id="Prometheus"><a href="#Prometheus" class="headerlink" title="Prometheus"></a>Prometheus</h3><p>在意识到这个问题后, 随即想着怎样去处理这个问题. 在斟酌了几个方案后. 我决定采用云函数技术来解决这个问题, 通过使用各云厂商提供的<code>sdk</code>, 在每次生成载荷时发布一个与载荷对应的云函数服务, 让云函数作为载荷和平台之间中转的一个桥梁, 将真实平台隐藏到后面. 当一个载荷不再使用或者失效时, 将对应云函数删除即可, 做到随用随取, 用完即毁.</p>
+<p>之后此项目也更名为<code>Prometheus</code></p>
+<h2 id="今天"><a href="#今天" class="headerlink" title="今天"></a>今天</h2><p>经过前几次的技术更新, 目前该平台主要的功能也趋于完善. 下面简单介绍一下目前该平台实现功能</p>
+<p>目前平台主要有以下4个模块</p>
+<table>
+<thead>
+<tr>
+<th>模块名称</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>分发器模块</td>
+<td>用于生成, 管理现有的载荷信息</td>
+</tr>
+<tr>
+<td>资源模块</td>
+<td>用于添加, 管理载荷程序集和配置分发器模板</td>
+</tr>
+<tr>
+<td>转发器模块</td>
+<td>用于生成, 管理云函数转发器和配置转发器模板</td>
+</tr>
+<tr>
+<td>用户模块</td>
+<td>用于添加, 管理用户</td>
+</tr>
+</tbody></table>
+<h4 id="分发器生成"><a href="#分发器生成" class="headerlink" title="分发器生成"></a>分发器生成</h4><p>该模块主要用于生成具有免杀特性的载荷文件, 此过程需要用户输入shellcode, 加密, 请求标识等指示参数</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/12/07/202212071606728.png" alt="image-20221207160634599" class="lazyload"></p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/12/07/202212071607367.png" alt="image-20221207160707687" class="lazyload"></p>
+<p>或设置其他一些附加选项</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/12/07/202212071607894.png" alt="image-20221207160747818" class="lazyload"></p>
+<h4 id="分发器管理"><a href="#分发器管理" class="headerlink" title="分发器管理"></a>分发器管理</h4><p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/12/07/202212071617846.png" alt="image-20221207161747791" class="lazyload"></p>
+<p>此页面主要展示一个分发器的主要参数或查看回连信息</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/12/07/202212071622230.png" alt="image-20221207162257019" class="lazyload"></p>
+<h4 id="程序集"><a href="#程序集" class="headerlink" title="程序集"></a>程序集</h4><p>此功能主要由于指示生成的载荷文件属性信息</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/12/07/202212071625660.png" alt="image-20221207162520564" class="lazyload"></p>
+<h4 id="分发器模板"><a href="#分发器模板" class="headerlink" title="分发器模板"></a>分发器模板</h4><p>此功能主要用于配置分发器模板参数及代码</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/12/07/202212071627558.png" alt="image-20221207162727456" class="lazyload"></p>
+<h4 id="转发器管理"><a href="#转发器管理" class="headerlink" title="转发器管理"></a>转发器管理</h4><p>此功能主要用于生成和展示一个转发器相关的主要参数</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/12/07/202212071629249.png" alt="image-20221207162918199" class="lazyload"></p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/12/07/202212071630517.png" alt="image-20221207163020396" class="lazyload"></p>
+<h4 id="转发器模板"><a href="#转发器模板" class="headerlink" title="转发器模板"></a>转发器模板</h4><p>此功能主要用于配置转发器模板参数及代码</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/12/07/202212071631476.png" alt="image-20221207163118376" class="lazyload"></p>
+<h4 id="用户管理"><a href="#用户管理" class="headerlink" title="用户管理"></a>用户管理</h4><p>此模块主要用于管理平台相关用户的状态, 权限等信息</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/12/07/202212071632043.png" alt="image-20221207163247952" class="lazyload"></p>
+<h2 id="明天"><a href="#明天" class="headerlink" title="明天"></a>明天</h2><p>尽管<code>Prometheus</code>的功能已趋于完善, 应对大多数AV已足够, 但并没有达到FUD</p>
+<p>后续主要的更新也会着重此方面</p>
+<p><strong>近期的更新计划</strong></p>
+<ul>
+<li>跨平台载荷支持(这将得益于<code>nim</code>的跨平台优势)</li>
+<li>更多的加载方式支持</li>
+<li>脚本文件及命令的支持</li>
+<li>更好的UI和使用体验</li>
+<li>以及更好的隐蔽性</li>
+</ul>
+<p>由于某些功能的原因, 目前<code>Prometheus</code>仍正处于内部测试阶段, 如果你想体验并愿意帮助改进. 请联系我们</p>
+
+  </article>
+
+  
+      
+    <div class="nexmoe-post-copyright">
+        <strong>本文作者：</strong>S0cke3t<br>
+        <strong>本文链接：</strong><a href="https://www.saferoad.cc/Sectool/Bypass-distribution-platform-from-conception-to-implementation.html" title="https:&#x2F;&#x2F;www.saferoad.cc&#x2F;Sectool&#x2F;Bypass-distribution-platform-from-conception-to-implementation.html" target="_blank" rel="noopener">https:&#x2F;&#x2F;www.saferoad.cc&#x2F;Sectool&#x2F;Bypass-distribution-platform-from-conception-to-implementation.html</a><br>
+        
+            <strong>版权声明：</strong>本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank">CC BY-NC-SA 3.0 CN</a> 协议进行许可
+        
+    </div>
+
+
+  
+  
+  <div class="nexmoe-post-meta nexmoe-rainbow">
+    
+        <a class="nexmoefont icon-appstore-fill -link" href="/categories/Sectool/">Sectool</a>
+    
+    
+        <a class="nexmoefont icon-tag-fill -none-link" href="/tags/Bypass/" rel="tag">Bypass</a>
+    
+</div>
+
+  
+      <div class="nexmoe-post-footer">
+          
+      </div>
+  
+</div>
+            <div class="nexmoe-post-right">
+              <div class="nexmoe-fixed">
+                  <div class="nexmoe-tool"> 
+                    
+                      
+                        
+                          
+                          
+                              <button class="mdui-fab catalog" style="overflow:unset;">
+                                  <i class="nexmoefont icon-i-catalog"></i>
+                                  <div class="nexmoe-toc">
+                                      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Start-of-all"><span class="toc-number">1.</span> <span class="toc-text">Start of all</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%98%A8%E5%A4%A9"><span class="toc-number">2.</span> <span class="toc-text">昨天</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#SSharp"><span class="toc-number">2.1.</span> <span class="toc-text">SSharp</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Nsharp"><span class="toc-number">2.2.</span> <span class="toc-text">Nsharp</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Prometheus"><span class="toc-number">2.3.</span> <span class="toc-text">Prometheus</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%8A%E5%A4%A9"><span class="toc-number">3.</span> <span class="toc-text">今天</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%86%E5%8F%91%E5%99%A8%E7%94%9F%E6%88%90"><span class="toc-number">3.0.1.</span> <span class="toc-text">分发器生成</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%86%E5%8F%91%E5%99%A8%E7%AE%A1%E7%90%86"><span class="toc-number">3.0.2.</span> <span class="toc-text">分发器管理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%A8%8B%E5%BA%8F%E9%9B%86"><span class="toc-number">3.0.3.</span> <span class="toc-text">程序集</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%86%E5%8F%91%E5%99%A8%E6%A8%A1%E6%9D%BF"><span class="toc-number">3.0.4.</span> <span class="toc-text">分发器模板</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BD%AC%E5%8F%91%E5%99%A8%E7%AE%A1%E7%90%86"><span class="toc-number">3.0.5.</span> <span class="toc-text">转发器管理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BD%AC%E5%8F%91%E5%99%A8%E6%A8%A1%E6%9D%BF"><span class="toc-number">3.0.6.</span> <span class="toc-text">转发器模板</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86"><span class="toc-number">3.0.7.</span> <span class="toc-text">用户管理</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%98%8E%E5%A4%A9"><span class="toc-number">4.</span> <span class="toc-text">明天</span></a></li></ol>
+                                  </div>
+                              </button>
+                          
+                          
+                      
+                    
+                      <a href="#nexmoe-content" class="toc-link" aria-label="回到顶部" title="top"><button class="mdui-fab mdui-ripple"><i class="nexmoefont icon-caret-top"></i></button></a>
+                  </div>
+              </div>
+            </div>
+        </div>
+    </div>
+     
+    <div id="nexmoe-search-space">
+        <div class="search-container">
+            <div class="search-header">
+                <div class="search-input-container">
+                    <input class="search-input" type="text" placeholder="搜索" oninput="sinput();">
+                </div>
+                <a class="search-close" onclick="sclose();">×</a>
+            </div>
+            <div class="search-body"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/combine/npm/lazysizes@5.1.0/lazysizes.min.js,npm/mdui@0.4.3/dist/js/mdui.min.js?v=1"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+ 
+
+<script async src="/js/app.js?v=1681132088629"></script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js"></script>
+<script>
+	$(".justified-gallery").justifiedGallery({
+		rowHeight: 160,
+		margins: 10,
+	});
+</script>
+
+
+    
+
+
+
+
+
+</body>
+
+</html>

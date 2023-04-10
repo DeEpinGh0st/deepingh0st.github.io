@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+
+<head>
+    
+    <title>Cuckoo sandbox deploy tutorial - S0cke3t&#39;s Blog</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta name="keywords" content="渗透测试,CISP-PTE,代码审计,破解,移动安全,安全工具,漏洞利用">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+    
+    
+
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <meta name="description" content="Cuckoo 恶意软件分析沙箱部署教程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Cuckoo sandbox deploy tutorial">
+<meta property="og:url" content="https://www.saferoad.cc/Notes/Cuckoo-sandbox-deploy-tutorial.html">
+<meta property="og:site_name" content="S0cke3t&#39;s Blog">
+<meta property="og:description" content="Cuckoo 恶意软件分析沙箱部署教程">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029104731327.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029194906418.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029114522390.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029133823119.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029134908840.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029140429467.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029140830700.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029141224176.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029141245956.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029142234630.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029142250045.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029142639460.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029143222538.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029143249023.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029143450718.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029143911786.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029144243044.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029144703449.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029145036493.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029145738456.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029150504555.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029150713653.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029151228360.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029151737867.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029152104617.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029152403703.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029172024467.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029172212664.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029172448469.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029173107366.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029173757160.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029182642966.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029182748392.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029183601831.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029184219957.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029184314418.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029184426904.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029184527951.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029184612182.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029185055740.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029185535126.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029192151001.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029192221733.png">
+<meta property="article:published_time" content="2022-10-29T02:07:18.000Z">
+<meta property="article:modified_time" content="2022-10-29T12:11:45.647Z">
+<meta property="article:author" content="S0cke3t">
+<meta property="article:tag" content="cuckoo">
+<meta property="article:tag" content="sandbox">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029104731327.png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/highlight.js@9.15.8/styles/atom-one-dark.css,npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css,gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css,npm/hexo-theme-nexmoe@latest/source/lib/mdui_043tiny/css/mdui.css,npm/hexo-theme-nexmoe@latest/source/lib/iconfont/iconfont.css?v=233" crossorigin>
+    <link rel="stylesheet" href="/css/style.css?v=1681132088630">
+     
+    
+    <link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1681132088630">
+    
+<meta name="generator" content="Hexo 6.1.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+<body class="mdui-drawer-body-left">
+    
+    <div id="nexmoe-background">
+        <div class="nexmoe-bg" style="background-image: url(https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/newbolg/202203272236776.jpg)"></div>
+        <div class="mdui-appbar mdui-shadow-0">
+            <div class="mdui-toolbar">
+                <a mdui-drawer="{target: '#drawer', swipe: true}" title="menu" class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon nexmoefont icon-menu"></i></a>
+                <div class="mdui-toolbar-spacer"></div>
+                <!--<a href="javascript:;" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">search</i></a>-->
+                <a href="/" title="S0cke3t" class="mdui-btn mdui-btn-icon"><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/202203272159225.jpg" alt="S0cke3t"></a>
+            </div>
+        </div>
+    </div>
+    <div id="nexmoe-header">
+        
+<meta name="keywords" content="渗透测试,CISP-PTE,代码审计,破解,移动安全,安全工具,漏洞利用">
+
+<div class="nexmoe-drawer mdui-drawer" id="drawer">
+    <div class="nexmoe-avatar mdui-ripple">
+        <a href="/" title="S0cke3t">
+            <img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/202203272159225.jpg" alt="S0cke3t" alt="S0cke3t">
+        </a>
+    </div>
+    <div class="nexmoe-count">
+        <div><span>文章</span>40</div>
+        <div><span>标签</span>28</div>
+        <div><span>分类</span>12</div>
+    </div>
+    <div class="nexmoe-list mdui-list" mdui-collapse="{accordion: true}">
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/" title="回到首页">
+            <i class="mdui-list-item-icon nexmoefont icon-home"></i>
+            <div class="mdui-list-item-content">
+                回到首页
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/archives.html" title="文章归档">
+            <i class="mdui-list-item-icon nexmoefont icon-container"></i>
+            <div class="mdui-list-item-content">
+                文章归档
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/aboutme.html" title="关于我">
+            <i class="mdui-list-item-icon nexmoefont icon-info-circle"></i>
+            <div class="mdui-list-item-content">
+                关于我
+            </div>
+        </a>
+        
+    </div>
+    <aside id="nexmoe-sidebar">
+    
+    <div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-search">
+         
+            <form id="search_form" action_e="https://cn.bing.com/search?q=site:saferoad.cc" onsubmit="return search();">
+                <label><input id="search_value" name="q" type="search" placeholder="搜索"></label>
+            </form>
+         
+    </div>
+</div>
+    
+    <div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-social">
+        <a class="mdui-ripple" href="https://github.com/DeEpinGh0st/" target="_blank" mdui-tooltip="{content: 'GitHub'}" style="color: rgb(25, 23, 23);background-color: rgba(25, 23, 23, .15);">
+            <i class="nexmoefont icon-github"></i>
+        </a>
+    </div>
+</div>
+    
+    
+  <div class="nexmoe-widget-wrap">
+    <h3 class="nexmoe-widget-title">文章分类</h3>
+    <div class="nexmoe-widget">
+
+      <ul class="category-list">
+
+        
+
+
+        
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Analysis/">Analysis</a>
+          <span class="category-list-count">11</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Android/">Android</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Audit/">Audit</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Bypass/">Bypass</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/CISP-PTE/">CISP-PTE</a>
+          <span class="category-list-count">2</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Case-share/">Case share</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Crack/">Crack</a>
+          <span class="category-list-count">3</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Deserialization/">Deserialization</a>
+          <span class="category-list-count">2</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Docker/">Docker</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Emergency/">Emergency</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Notes/">Notes</a>
+          <span class="category-list-count">6</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Sectool/">Sectool</a>
+          <span class="category-list-count">10</span>
+        </li>
+
+        
+      </ul>
+
+    </div>
+  </div>
+
+
+    
+    
+  <div class="nexmoe-widget-wrap">
+    <div id="randomtagcloud" class="nexmoe-widget tagcloud nexmoe-rainbow">
+      <a href="/tags/ASP-NET/" style="font-size: 12.5px;">ASP.NET</a> <a href="/tags/Bypass/" style="font-size: 15px;">Bypass</a> <a href="/tags/Csharp/" style="font-size: 17.5px;">Csharp</a> <a href="/tags/Django/" style="font-size: 10px;">Django</a> <a href="/tags/Domain-security/" style="font-size: 10px;">Domain security</a> <a href="/tags/Flink/" style="font-size: 10px;">Flink</a> <a href="/tags/Frida/" style="font-size: 10px;">Frida</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/Java/" style="font-size: 20px;">Java</a> <a href="/tags/KeyGen/" style="font-size: 10px;">KeyGen</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Nim/" style="font-size: 10px;">Nim</a> <a href="/tags/PHP/" style="font-size: 12.5px;">PHP</a> <a href="/tags/Pentest/" style="font-size: 10px;">Pentest</a> <a href="/tags/Portainer/" style="font-size: 10px;">Portainer</a> <a href="/tags/Python/" style="font-size: 15px;">Python</a> <a href="/tags/Reappearance/" style="font-size: 10px;">Reappearance</a> <a href="/tags/SecTool/" style="font-size: 10px;">SecTool</a> <a href="/tags/Seeyon/" style="font-size: 10px;">Seeyon</a> <a href="/tags/Spring/" style="font-size: 15px;">Spring</a> <a href="/tags/Sqlmap/" style="font-size: 10px;">Sqlmap</a> <a href="/tags/Struts2/" style="font-size: 10px;">Struts2</a> <a href="/tags/ThinkPHP/" style="font-size: 10px;">ThinkPHP</a> <a href="/tags/Windows/" style="font-size: 12.5px;">Windows</a> <a href="/tags/WordPress/" style="font-size: 10px;">WordPress</a> <a href="/tags/cuckoo/" style="font-size: 10px;">cuckoo</a> <a href="/tags/sandbox/" style="font-size: 10px;">sandbox</a> <a href="/tags/solution/" style="font-size: 10px;">solution</a>
+    </div>
+    
+  </div>
+
+    
+</aside>
+    <div class="nexmoe-copyright">
+        &copy; 2023 S0cke3t
+        Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+        & <a href="https://github.com/theme-nexmoe/hexo-theme-nexmoe" target="_blank">Nexmoe</a>
+        <br/>Too Young Too Sample
+    </div>
+</div><!-- .nexmoe-drawer -->
+    </div>
+    <div id="nexmoe-content">
+        <div class="nexmoe-primary">
+            <div class="nexmoe-post">
+
+  <article>
+      
+          <div class="nexmoe-post-cover" style="padding-bottom: NaN%;"> 
+              <img data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/BingWallpaper.jpg" data-sizes="auto" alt="Cuckoo sandbox deploy tutorial" class="lazyload">
+              <h1>Cuckoo sandbox deploy tutorial</h1>
+          </div>
+      
+      
+      <div class="nexmoe-post-meta nexmoe-rainbow" style="margin:10px 0!important;">
+    <a><i class="nexmoefont icon-calendar-fill"></i>2022年10月29日</a>
+    <a><i class="nexmoefont icon-areachart"></i>2.1k 字</a>
+    <a><i class="nexmoefont icon-time-circle-fill"></i>大概 9 分钟</a>
+</div>
+
+      
+
+      <h4 id="Cuckoo"><a href="#Cuckoo" class="headerlink" title="Cuckoo"></a>Cuckoo</h4><p><a target="_blank" rel="noopener" href="https://cuckoosandbox.org/">Cuckoo</a>(布谷鸟)沙箱是一个开源且免费的自动化的恶意样本分析系统。主体使用python开发, 该沙箱提供一个主要的沙箱引擎和一个使用django开发的web界面, 通过web界面或者沙箱系统提供的web api提交可疑文件，沙箱系统即可自动分析，并在分析完毕后提供一个详细的报告，概述该文件在沙箱中执行时的行为,支持分析Windows, macOS, Linux, 和 Android下的恶意文件.</p>
+<h4 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h4><p>Cuckoo由<strong>Cuckoo host、Analysis Guests、Virtual network</strong>构成。cuckoo host是调度中心，analysis guest是具体执行样本的沙箱环境，两者通过虚拟网卡连接。当提交样本到cuckoo host后，cuckoo host会调度一个空闲的analysis guest节点，同时将样本传递给所选择的沙箱节点进行自动化分析，分析结束之后将沙箱节点采集到的分析数据进行汇总，最后输出分析报告。</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029104731327.png" alt="image-20221029104731327" class="lazyload"></p>
+<p>Cuckoo沙箱底层基于虚拟化技术，可以使用不同的虚拟化平台进行构建，目前支持的虚拟化平台包括：<strong>VirtualBox、KVM、VMware Workstation、XenServer</strong>。</p>
+<h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><p>Vmware workstation 16 Pro</p>
+<p>Ubuntu 16.04 x64</p>
+<p>Virtual Box 5.2</p>
+<p>Windows 7 unlimited sp1 x64</p>
+<p>Cuckoo 2.0.7</p>
+<p>Python 2.7.18 x64</p>
+<p>阐述下各软件安装位置,简单画个草图</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029194906418.png" alt="image-20221029194906418" class="lazyload"></p>
+<h4 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h4><p>首先需要在Vmware上虚拟化一个Ubuntu作为cuckoo的宿主机,建议cpu和内存配置不要太低, 笔者配置如下</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029114522390.png" alt="image-20221029114522390" class="lazyload"></p>
+<p>此处需要注意的是<strong>虚拟机CPU要开启VT-X或者AMD-V虚拟化嵌套</strong></p>
+<h5 id="安装依赖"><a href="#安装依赖" class="headerlink" title="安装依赖"></a>安装依赖</h5><p>由于在具有中国特色的互联网环境下, 建议在安装下面各个依赖和组件时使用科学上网~</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre class="line-numbers language-hljs bash"><code class="language-hljs bash">sudo apt-get install curl git wget openconnect python-dev libffi-dev libssl-dev libfuzzy-dev libtool flex autoconf libjansson-dev  python-setuptools libjpeg-dev zlib1g-dev swig mongodb postgresql libpq-dev libcap2-bin  tcpdump apparmor-utils  iptables-persistent ssdeep libsdl1.2debian -y --fix-missing<br><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></td></tr></table></figure>
+
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029133823119.png" alt="image-20221029133823119" class="lazyload"></p>
+<h5 id="安装pip"><a href="#安装pip" class="headerlink" title="安装pip"></a>安装pip</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre class="line-numbers language-hljs bash"><code class="language-hljs bash">curl https://bootstrap.pypa.io/pip/2.7/get-pip.py -O<br>sudo python get-pip.py<br><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></td></tr></table></figure>
+
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029134908840.png" alt="image-20221029134908840" class="lazyload"></p>
+<h5 id="安装VirtualBox"><a href="#安装VirtualBox" class="headerlink" title="安装VirtualBox"></a>安装VirtualBox</h5><p>注意在安装VirtualBox时,尽量选择&gt;5.1的版本.虽然5.1也可以正常使用,但在cuckoo启动时会显示VirtualBox存在风险</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre class="line-numbers language-hljs bash"><code class="language-hljs bash">下载VirtualBox 5.2.44<br>curl https://download.virtualbox.org/virtualbox/5.2.44/virtualbox-5.2_5.2.44-139111~Ubuntu~xenial_amd64.deb -O<br>下载VirtualBox 5.2.44扩展<br>curl https://download.virtualbox.org/virtualbox/5.2.44/Oracle_VM_VirtualBox_Extension_Pack-5.2.44.vbox-extpack -O<br>安装<br>sudo dpkg -i virtualbox-5.2_5.2.44-139111~Ubuntu~xenial_amd64.deb<br><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></td></tr></table></figure>
+
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029140429467.png" alt="image-20221029140429467" class="lazyload"></p>
+<p>打开VirtualBox导入扩展</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029140830700.png" alt="image-20221029140830700" class="lazyload"></p>
+<h5 id="安装volatility"><a href="#安装volatility" class="headerlink" title="安装volatility"></a>安装volatility</h5><p>Volatility是一款开源的内存取证分析工具，支持Windows，Linux，MaC，Android等多类型操作系统系统的内存取证方式</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre class="line-numbers language-hljs bash">git <span class="hljs-built_in">clone</span> https://github.com/volatilityfoundation/volatility.git<br><span class="hljs-built_in"><code class="language-hljs bash">git <span class="hljs-built_in">clone</span> https://github.com/volatilityfoundation/volatility.git<br><span class="hljs-built_in">cd</span> volatility<br>sudo python setup.py build<br>sudo python setup.py install<br><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></td></tr></table></figure>
+
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029141224176.png" alt="image-20221029141224176" class="lazyload"></p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029141245956.png" alt="image-20221029141245956" class="lazyload"></p>
+<h5 id="安装python依赖包"><a href="#安装python依赖包" class="headerlink" title="安装python依赖包"></a>安装python依赖包</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre class="line-numbers language-hljs bash"><code class="language-hljs bash">sudo -H pip install distorm3==3.4.4 yara-python==3.6.3 pydeep openpyxl ujson jupyter pip setuptools<br><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></td></tr></table></figure>
+
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029142234630.png" alt="image-20221029142234630" class="lazyload"></p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029142250045.png" alt="image-20221029142250045" class="lazyload"></p>
+<h5 id="组件设置"><a href="#组件设置" class="headerlink" title="组件设置"></a>组件设置</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre class="line-numbers language-hljs bash">sudo <span class="hljs-built_in">setcap</span> cap_net_raw,cap_net_admin=eip /usr/sbin/tcpdump<br><span class="hljs-built_in"><code class="language-hljs bash">sudo <span class="hljs-built_in">setcap</span> cap_net_raw,cap_net_admin=eip /usr/sbin/tcpdump<br><span class="hljs-built_in">getcap</span> /usr/sbin/tcpdump<br>sudo aa-disable /usr/sbin/tcpdump<br><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></td></tr></table></figure>
+
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029142639460.png" alt="image-20221029142639460" class="lazyload"></p>
+<h5 id="安装cuckoo"><a href="#安装cuckoo" class="headerlink" title="安装cuckoo"></a>安装cuckoo</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre class="line-numbers language-hljs bash"><code class="language-hljs bash">sudo -H pip install -U cuckoo<br>cuckoo<br><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></td></tr></table></figure>
+
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029143222538.png" alt="image-20221029143222538" class="lazyload"></p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029143249023.png" alt="image-20221029143249023" class="lazyload"></p>
+<p>安装完成后运行一次cuckoo让其生成默认配置文件</p>
+<p>默认配置位于<code>/home/xxxx/.cuckoo/conf</code></p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029143450718.png" alt="image-20221029143450718" class="lazyload"></p>
+<p>至此, cuckoo主体已安装完成,要想cuckoo正常工作,还需要对虚拟网络,防火墙等进行一系列设置.</p>
+<h5 id="虚拟网络设置"><a href="#虚拟网络设置" class="headerlink" title="虚拟网络设置"></a>虚拟网络设置</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre class="line-numbers language-hljs bash"><code class="language-hljs bash">创建仅主机虚拟网络<br>vboxmanage hostonlyif create<br>设置虚拟网络网关地址<br>vboxmanage hostonlyif ipconfig vboxnet0 --ip 192.168.56.1<br><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></td></tr></table></figure>
+
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029143911786.png" alt="image-20221029143911786" class="lazyload"></p>
+<p>将虚拟网络安装为服务并设置为自启动</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre class="line-numbers language-hljs bash">sudo <span class="hljs-built_in">mkdir</span> /opt/systemd/<br>sudo nano /opt/systemd/vboxhostonly<br>写入以下内容,保存退出<br><span class="hljs-comment"><code class="language-hljs bash">sudo <span class="hljs-built_in">mkdir</span> /opt/systemd/<br>sudo nano /opt/systemd/vboxhostonly<br>写入以下内容,保存退出<br><span class="hljs-comment">#!/bin/bash</span><br>vboxmanage hostonlyif ipconfig vboxnet0 --ip 192.168.56.1<br><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></td></tr></table></figure>
+
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029144243044.png" alt="image-20221029144243044" class="lazyload"></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre class="line-numbers language-hljs bash"><span class="hljs-built_in">cd</span> /opt/systemd/<br>sudo <span class="hljs-built_in">chmod</span> a+x vboxhostonly<br>创建服务<br>sudo <span class="hljs-built_in"><code class="language-hljs bash"><span class="hljs-built_in">cd</span> /opt/systemd/<br>sudo <span class="hljs-built_in">chmod</span> a+x vboxhostonly<br>创建服务<br>sudo <span class="hljs-built_in">touch</span> /etc/systemd/system/vboxhostonlynic.service<br>sudo nano /etc/systemd/system/vboxhostonlynic.service<br>写入以下内容,保存退出<br>[Unit]<br>Description=Setup VirtualBox Hostonly Adapter<br>After=vboxdrv.service<br><br>[Service]<br>Type=oneshot<br>ExecStart=/opt/systemd/vboxhostonly<br><br>[Install]<br>WantedBy=multi-user.target<br><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></td></tr></table></figure>
+
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029144703449.png" alt="image-20221029144703449" class="lazyload"></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre class="line-numbers language-hljs bash">重载服务<br>systemctl daemon-reload<br>设置虚拟网络自启动<br>systemctl <span class="hljs-built_in"><code class="language-hljs bash">重载服务<br>systemctl daemon-reload<br>设置虚拟网络自启动<br>systemctl <span class="hljs-built_in">enable</span> vboxhostonlynic.service<br><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></td></tr></table></figure>
+
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029145036493.png" alt="image-20221029145036493" class="lazyload"></p>
+<h5 id="配置iptables-persistent"><a href="#配置iptables-persistent" class="headerlink" title="配置iptables-persistent"></a>配置iptables-persistent</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre class="line-numbers language-hljs bash">sudo iptables -A FORWARD -o eth0 -i vboxnet0 -s 192.168.56.0/24 -m conntrack --ctstate NEW -j ACCEPT<br>sudo iptables -A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT<br>ens33替换为实际网卡名称<br>sudo iptables -t nat -A POSTROUTING -o ens33 -j MASQUERADE<br>打开ipv4转发<br><span class="hljs-built_in">echo</span> 1 | sudo <span class="hljs-built_in"><code class="language-hljs bash">sudo iptables -A FORWARD -o eth0 -i vboxnet0 -s 192.168.56.0/24 -m conntrack --ctstate NEW -j ACCEPT<br>sudo iptables -A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT<br>ens33替换为实际网卡名称<br>sudo iptables -t nat -A POSTROUTING -o ens33 -j MASQUERADE<br>打开ipv4转发<br><span class="hljs-built_in">echo</span> 1 | sudo <span class="hljs-built_in">tee</span> -a /proc/sys/net/ipv4/ip_forward<br>sudo sysctl -w net.ipv4.ip_forward=1 <br><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></td></tr></table></figure>
+
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029145738456.png" alt="image-20221029145738456" class="lazyload"></p>
+<h5 id="修改cuckoo配置文件"><a href="#修改cuckoo配置文件" class="headerlink" title="修改cuckoo配置文件"></a>修改cuckoo配置文件</h5><p><strong>cuckoo.conf</strong></p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029150504555.png" alt="image-20221029150504555" class="lazyload"></p>
+<p><code>memory_dump=yes</code> 忘记截图了</p>
+<p><strong>auxiliary.conf</strong></p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029150713653.png" alt="image-20221029150713653" class="lazyload"></p>
+<p><strong>virtualbox.conf</strong></p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029151228360.png" alt="image-20221029151228360" class="lazyload"></p>
+<p><strong>processing.conf</strong></p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029151737867.png" alt="image-20221029151737867" class="lazyload"></p>
+<p><strong>memory.conf</strong></p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029152104617.png" alt="image-20221029152104617" class="lazyload"></p>
+<p><strong>reporting.conf</strong></p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029152403703.png" alt="image-20221029152403703" class="lazyload"></p>
+<h5 id="安装配置分析机"><a href="#安装配置分析机" class="headerlink" title="安装配置分析机"></a>安装配置分析机</h5><p>在VirtualBox中安装<strong>Windows7 unlimited sp1 x64</strong>, 安装过程此处不再赘述</p>
+<p><strong>注意</strong></p>
+<ul>
+<li>分析机标签名称,ip和快照要与配置文件中一致</li>
+<li>快照要使用<strong>运行中快照</strong></li>
+<li>设置静态ip后检查是否可以正常连接互联网,如不能联网检查iptables配置</li>
+<li>分析机网络选择HostOnly</li>
+</ul>
+<p><strong>组策略配置</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre class="line-numbers language-hljs bash">windows设置-&gt;安全设置-&gt;本地策略-&gt;安全选项-&gt;安全选项-&gt;用户账户控制: 管理员批准模式中管理员的提升权限的行为 下选择<span class="hljs-string"><code class="language-hljs bash">windows设置-&gt;安全设置-&gt;本地策略-&gt;安全选项-&gt;安全选项-&gt;用户账户控制: 管理员批准模式中管理员的提升权限的行为 下选择<span class="hljs-string">"不提示，直接升"</span><br><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></td></tr></table></figure>
+
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029172024467.png" alt="image-20221029172024467" class="lazyload"></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre class="line-numbers language-hljs bash">windows设置-&gt;安全设置-&gt;本地策略-&gt;安全选项-&gt;安全选项-&gt;用户账户控制:检测应用程序安装并提升提升，下选择<span class="hljs-string"><code class="language-hljs bash">windows设置-&gt;安全设置-&gt;本地策略-&gt;安全选项-&gt;安全选项-&gt;用户账户控制:检测应用程序安装并提升提升，下选择<span class="hljs-string">"禁用"</span><br><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></td></tr></table></figure>
+
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029172212664.png" alt="image-20221029172212664" class="lazyload"></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre class="line-numbers language-hljs bash">windows设置-&gt;安全设置-&gt;本地策略-&gt;安全选项-&gt;安全选项-&gt;用户账户控制：以管理员批准模式运行所有管理员，选择<span class="hljs-string"><code class="language-hljs bash">windows设置-&gt;安全设置-&gt;本地策略-&gt;安全选项-&gt;安全选项-&gt;用户账户控制：以管理员批准模式运行所有管理员，选择<span class="hljs-string">"禁用"</span><br><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></td></tr></table></figure>
+
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029172448469.png" alt="image-20221029172448469" class="lazyload"></p>
+<p><strong>安装python 2.7.18和pillow</strong></p>
+<p>安装python时注意勾选添加到环境变量<br>由于中国特色网络原因需要换pip源</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre class="line-numbers language-hljs ini"><span class="hljs-section">[global]</span><br><span class="hljs-attr">timeout</span> = <span class="hljs-number">6000</span><br><span class="hljs-attr">index-url</span> = https://pypi.tuna.tsinghua.edu.cn/simple<br><span class="hljs-attr"><code class="language-hljs ini"><span class="hljs-section">[global]</span><br><span class="hljs-attr">timeout</span> = <span class="hljs-number">6000</span><br><span class="hljs-attr">index-url</span> = https://pypi.tuna.tsinghua.edu.cn/simple<br><span class="hljs-attr">trusted-host</span> = pypi.tuna.tsinghua.edu.cn<br><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></td></tr></table></figure>
+
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029173107366.png" alt="image-20221029173107366" class="lazyload"></p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029173757160.png" alt="image-20221029173757160" class="lazyload"></p>
+<p><strong>设置agent</strong></p>
+<p>拷贝<code>/home/s0cke3t/.cuckoo/agent/agent.py</code>到分析机<code>C:\Users\xxxxx\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\</code>目录下并更改后缀为<code>pyw</code></p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029182642966.png" alt="image-20221029182642966" class="lazyload"></p>
+<p>双击运行，查看是否有8000端口监听</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029182748392.png" alt="image-20221029182748392" class="lazyload"></p>
+<p>一切设置完毕后，就可以对分析机当前状态进行快照保存,保存名称要与配置文件的一致, 保存快照后暂停并休眠分析机</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029183601831.png" alt="image-20221029183601831" class="lazyload"></p>
+<p>至此全部配置完毕</p>
+<h4 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h4><p>启动cuckoo</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre class="line-numbers language-hljs bash"><code class="language-hljs bash">拉取最新的规则库<br>cuckoo community<br>启动cuckoo<br>cuckoo<br>启动本地web管理页面<br>cuckoo web<br>远程访问web管理页面<br>cuckoo web runserver 0.0.0.0:8000<br><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></td></tr></table></figure>
+
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029184219957.png" alt="image-20221029184219957" class="lazyload"></p>
+<p>启动cuckoo</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029184314418.png" alt="image-20221029184314418" class="lazyload"></p>
+<p>启动web页面</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029184426904.png" alt="image-20221029184426904" class="lazyload"></p>
+<p>默认管理地址<code>http://localhost:8000</code></p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029184527951.png" alt="image-20221029184527951" class="lazyload"></p>
+<p>输入配置的密码即可访问</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029184612182.png" alt="image-20221029184612182" class="lazyload"></p>
+<h4 id="样本测试"><a href="#样本测试" class="headerlink" title="样本测试"></a>样本测试</h4><p>笔者以<code>Synaptics</code>蠕虫病毒进行测试</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029185055740.png" alt="image-20221029185055740" class="lazyload"></p>
+<p>上传样本后选择要分析的行为, 分析时长, 以及要使用的分析机, 之后提交即可.</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029185535126.png" alt="image-20221029185535126" class="lazyload"></p>
+<p>等待状态变为reported说明已经分析完成，点击任务可查看分析报告</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029192151001.png" alt="image-20221029192151001" class="lazyload"></p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/image-20221029192221733.png" alt="image-20221029192221733" class="lazyload"></p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>总体来说cuckoo还是一款比较完善且专业的开源沙箱分析系统, 对于研究分析恶意软件和应急响应人员来说都是一个很不错的选择</p>
+<p><strong>优缺点</strong></p>
+<p>优点: </p>
+<ul>
+<li>开源且免费,对于有特殊需求的人群可以很好的进行定制化</li>
+<li>支持虚拟化类型多,可以跨平台使用</li>
+<li>分析较为全面，几乎可以满足需求</li>
+<li>不需要太高的硬件要求</li>
+<li>支持导出报告</li>
+</ul>
+<p>缺点: </p>
+<ul>
+<li><p>安装和配置过于繁琐, 稍有差错会导致运行失败</p>
+</li>
+<li><p>英文界面, 需要使用者具有一定的英语基础</p>
+</li>
+<li><p>内存分析时间太长, 基本都在半小时左右</p>
+</li>
+<li><p>更新迭代慢(最新版本为2019年发布)</p>
+</li>
+<li><p>默认的规则, 样本库对恶意软件的支持较少</p>
+<p>对于新的恶意软件需要使用者自己编写yara规则</p>
+</li>
+<li><p>不支持Python3</p>
+</li>
+</ul>
+<h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><p><a target="_blank" rel="noopener" href="https://cuckoosandbox.org/">官方网站</a></p>
+<p><a target="_blank" rel="noopener" href="https://cuckoo.sh/docs/">官方文档</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/cuckoosandbox/cuckoo">cuckoo仓库</a></p>
+<p><a target="_blank" rel="noopener" href="https://cuckoosandbox.org/blog/207-interim-release">cuckoo 2.0.7更新日志</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/networking/p/16630444.html">开源沙箱Cuckoo Sandbox 的部署 </a></p>
+
+  </article>
+
+  
+      
+    <div class="nexmoe-post-copyright">
+        <strong>本文作者：</strong>S0cke3t<br>
+        <strong>本文链接：</strong><a href="https://www.saferoad.cc/Notes/Cuckoo-sandbox-deploy-tutorial.html" title="https:&#x2F;&#x2F;www.saferoad.cc&#x2F;Notes&#x2F;Cuckoo-sandbox-deploy-tutorial.html" target="_blank" rel="noopener">https:&#x2F;&#x2F;www.saferoad.cc&#x2F;Notes&#x2F;Cuckoo-sandbox-deploy-tutorial.html</a><br>
+        
+            <strong>版权声明：</strong>本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank">CC BY-NC-SA 3.0 CN</a> 协议进行许可
+        
+    </div>
+
+
+  
+  
+  <div class="nexmoe-post-meta nexmoe-rainbow">
+    
+        <a class="nexmoefont icon-appstore-fill -link" href="/categories/Notes/">Notes</a>
+    
+    
+        <a class="nexmoefont icon-tag-fill -none-link" href="/tags/cuckoo/" rel="tag">cuckoo</a> <a class="nexmoefont icon-tag-fill -none-link" href="/tags/sandbox/" rel="tag">sandbox</a>
+    
+</div>
+
+  
+      <div class="nexmoe-post-footer">
+          
+      </div>
+  
+</div>
+            <div class="nexmoe-post-right">
+              <div class="nexmoe-fixed">
+                  <div class="nexmoe-tool"> 
+                    
+                      
+                        
+                          
+                          
+                              <button class="mdui-fab catalog" style="overflow:unset;">
+                                  <i class="nexmoefont icon-i-catalog"></i>
+                                  <div class="nexmoe-toc">
+                                      <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#Cuckoo"><span class="toc-number">1.</span> <span class="toc-text">Cuckoo</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9E%B6%E6%9E%84"><span class="toc-number">2.</span> <span class="toc-text">架构</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83"><span class="toc-number">3.</span> <span class="toc-text">环境</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%83%A8%E7%BD%B2"><span class="toc-number">4.</span> <span class="toc-text">部署</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96"><span class="toc-number">4.1.</span> <span class="toc-text">安装依赖</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AE%89%E8%A3%85pip"><span class="toc-number">4.2.</span> <span class="toc-text">安装pip</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AE%89%E8%A3%85VirtualBox"><span class="toc-number">4.3.</span> <span class="toc-text">安装VirtualBox</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AE%89%E8%A3%85volatility"><span class="toc-number">4.4.</span> <span class="toc-text">安装volatility</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AE%89%E8%A3%85python%E4%BE%9D%E8%B5%96%E5%8C%85"><span class="toc-number">4.5.</span> <span class="toc-text">安装python依赖包</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%BB%84%E4%BB%B6%E8%AE%BE%E7%BD%AE"><span class="toc-number">4.6.</span> <span class="toc-text">组件设置</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AE%89%E8%A3%85cuckoo"><span class="toc-number">4.7.</span> <span class="toc-text">安装cuckoo</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%99%9A%E6%8B%9F%E7%BD%91%E7%BB%9C%E8%AE%BE%E7%BD%AE"><span class="toc-number">4.8.</span> <span class="toc-text">虚拟网络设置</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E9%85%8D%E7%BD%AEiptables-persistent"><span class="toc-number">4.9.</span> <span class="toc-text">配置iptables-persistent</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9cuckoo%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-number">4.10.</span> <span class="toc-text">修改cuckoo配置文件</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE%E5%88%86%E6%9E%90%E6%9C%BA"><span class="toc-number">4.11.</span> <span class="toc-text">安装配置分析机</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8"><span class="toc-number">5.</span> <span class="toc-text">启动</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A0%B7%E6%9C%AC%E6%B5%8B%E8%AF%95"><span class="toc-number">6.</span> <span class="toc-text">样本测试</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">7.</span> <span class="toc-text">总结</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">8.</span> <span class="toc-text">参考</span></a></li></ol>
+                                  </div>
+                              </button>
+                          
+                          
+                      
+                    
+                      <a href="#nexmoe-content" class="toc-link" aria-label="回到顶部" title="top"><button class="mdui-fab mdui-ripple"><i class="nexmoefont icon-caret-top"></i></button></a>
+                  </div>
+              </div>
+            </div>
+        </div>
+    </div>
+     
+    <div id="nexmoe-search-space">
+        <div class="search-container">
+            <div class="search-header">
+                <div class="search-input-container">
+                    <input class="search-input" type="text" placeholder="搜索" oninput="sinput();">
+                </div>
+                <a class="search-close" onclick="sclose();">×</a>
+            </div>
+            <div class="search-body"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/combine/npm/lazysizes@5.1.0/lazysizes.min.js,npm/mdui@0.4.3/dist/js/mdui.min.js?v=1"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+ 
+
+<script async src="/js/app.js?v=1681132088636"></script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js"></script>
+<script>
+	$(".justified-gallery").justifiedGallery({
+		rowHeight: 160,
+		margins: 10,
+	});
+</script>
+
+
+    
+
+
+
+
+
+</body>
+
+</html>

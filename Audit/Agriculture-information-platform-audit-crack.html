@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+
+<head>
+    
+    <title>Agriculture information platform audit &amp; crack - S0cke3t&#39;s Blog</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta name="keywords" content="渗透测试,CISP-PTE,代码审计,破解,移动安全,安全工具,漏洞利用">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+    
+    
+
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <meta name="description" content="对某三资信息管理平台的一次审计和破解">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Agriculture information platform audit &amp; crack">
+<meta property="og:url" content="https://www.saferoad.cc/Audit/Agriculture-information-platform-audit-crack.html">
+<meta property="og:site_name" content="S0cke3t&#39;s Blog">
+<meta property="og:description" content="对某三资信息管理平台的一次审计和破解">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281517426.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281517647.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281517726.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281517456.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281520431.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281517045.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281517856.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281517414.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281517289.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281517025.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281518150.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281518196.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281518742.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281518154.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281518514.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281518895.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281521144.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281518258.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281518960.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281518272.png">
+<meta property="article:published_time" content="2020-07-03T07:16:24.000Z">
+<meta property="article:modified_time" content="2022-03-28T13:33:22.132Z">
+<meta property="article:author" content="S0cke3t">
+<meta property="article:tag" content="ASP.NET">
+<meta property="article:tag" content="Csharp">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281517426.png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/highlight.js@9.15.8/styles/atom-one-dark.css,npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css,gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css,npm/hexo-theme-nexmoe@latest/source/lib/mdui_043tiny/css/mdui.css,npm/hexo-theme-nexmoe@latest/source/lib/iconfont/iconfont.css?v=233" crossorigin>
+    <link rel="stylesheet" href="/css/style.css?v=1681132088702">
+     
+    
+    <link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1681132088702">
+    
+<meta name="generator" content="Hexo 6.1.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+<body class="mdui-drawer-body-left">
+    
+    <div id="nexmoe-background">
+        <div class="nexmoe-bg" style="background-image: url(https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/newbolg/202203272236776.jpg)"></div>
+        <div class="mdui-appbar mdui-shadow-0">
+            <div class="mdui-toolbar">
+                <a mdui-drawer="{target: '#drawer', swipe: true}" title="menu" class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon nexmoefont icon-menu"></i></a>
+                <div class="mdui-toolbar-spacer"></div>
+                <!--<a href="javascript:;" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">search</i></a>-->
+                <a href="/" title="S0cke3t" class="mdui-btn mdui-btn-icon"><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/202203272159225.jpg" alt="S0cke3t"></a>
+            </div>
+        </div>
+    </div>
+    <div id="nexmoe-header">
+        
+<meta name="keywords" content="渗透测试,CISP-PTE,代码审计,破解,移动安全,安全工具,漏洞利用">
+
+<div class="nexmoe-drawer mdui-drawer" id="drawer">
+    <div class="nexmoe-avatar mdui-ripple">
+        <a href="/" title="S0cke3t">
+            <img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/202203272159225.jpg" alt="S0cke3t" alt="S0cke3t">
+        </a>
+    </div>
+    <div class="nexmoe-count">
+        <div><span>文章</span>40</div>
+        <div><span>标签</span>28</div>
+        <div><span>分类</span>12</div>
+    </div>
+    <div class="nexmoe-list mdui-list" mdui-collapse="{accordion: true}">
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/" title="回到首页">
+            <i class="mdui-list-item-icon nexmoefont icon-home"></i>
+            <div class="mdui-list-item-content">
+                回到首页
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/archives.html" title="文章归档">
+            <i class="mdui-list-item-icon nexmoefont icon-container"></i>
+            <div class="mdui-list-item-content">
+                文章归档
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/aboutme.html" title="关于我">
+            <i class="mdui-list-item-icon nexmoefont icon-info-circle"></i>
+            <div class="mdui-list-item-content">
+                关于我
+            </div>
+        </a>
+        
+    </div>
+    <aside id="nexmoe-sidebar">
+    
+    <div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-search">
+         
+            <form id="search_form" action_e="https://cn.bing.com/search?q=site:saferoad.cc" onsubmit="return search();">
+                <label><input id="search_value" name="q" type="search" placeholder="搜索"></label>
+            </form>
+         
+    </div>
+</div>
+    
+    <div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-social">
+        <a class="mdui-ripple" href="https://github.com/DeEpinGh0st/" target="_blank" mdui-tooltip="{content: 'GitHub'}" style="color: rgb(25, 23, 23);background-color: rgba(25, 23, 23, .15);">
+            <i class="nexmoefont icon-github"></i>
+        </a>
+    </div>
+</div>
+    
+    
+  <div class="nexmoe-widget-wrap">
+    <h3 class="nexmoe-widget-title">文章分类</h3>
+    <div class="nexmoe-widget">
+
+      <ul class="category-list">
+
+        
+
+
+        
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Analysis/">Analysis</a>
+          <span class="category-list-count">11</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Android/">Android</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Audit/">Audit</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Bypass/">Bypass</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/CISP-PTE/">CISP-PTE</a>
+          <span class="category-list-count">2</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Case-share/">Case share</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Crack/">Crack</a>
+          <span class="category-list-count">3</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Deserialization/">Deserialization</a>
+          <span class="category-list-count">2</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Docker/">Docker</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Emergency/">Emergency</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Notes/">Notes</a>
+          <span class="category-list-count">6</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Sectool/">Sectool</a>
+          <span class="category-list-count">10</span>
+        </li>
+
+        
+      </ul>
+
+    </div>
+  </div>
+
+
+    
+    
+  <div class="nexmoe-widget-wrap">
+    <div id="randomtagcloud" class="nexmoe-widget tagcloud nexmoe-rainbow">
+      <a href="/tags/ASP-NET/" style="font-size: 12.5px;">ASP.NET</a> <a href="/tags/Bypass/" style="font-size: 15px;">Bypass</a> <a href="/tags/Csharp/" style="font-size: 17.5px;">Csharp</a> <a href="/tags/Django/" style="font-size: 10px;">Django</a> <a href="/tags/Domain-security/" style="font-size: 10px;">Domain security</a> <a href="/tags/Flink/" style="font-size: 10px;">Flink</a> <a href="/tags/Frida/" style="font-size: 10px;">Frida</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/Java/" style="font-size: 20px;">Java</a> <a href="/tags/KeyGen/" style="font-size: 10px;">KeyGen</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Nim/" style="font-size: 10px;">Nim</a> <a href="/tags/PHP/" style="font-size: 12.5px;">PHP</a> <a href="/tags/Pentest/" style="font-size: 10px;">Pentest</a> <a href="/tags/Portainer/" style="font-size: 10px;">Portainer</a> <a href="/tags/Python/" style="font-size: 15px;">Python</a> <a href="/tags/Reappearance/" style="font-size: 10px;">Reappearance</a> <a href="/tags/SecTool/" style="font-size: 10px;">SecTool</a> <a href="/tags/Seeyon/" style="font-size: 10px;">Seeyon</a> <a href="/tags/Spring/" style="font-size: 15px;">Spring</a> <a href="/tags/Sqlmap/" style="font-size: 10px;">Sqlmap</a> <a href="/tags/Struts2/" style="font-size: 10px;">Struts2</a> <a href="/tags/ThinkPHP/" style="font-size: 10px;">ThinkPHP</a> <a href="/tags/Windows/" style="font-size: 12.5px;">Windows</a> <a href="/tags/WordPress/" style="font-size: 10px;">WordPress</a> <a href="/tags/cuckoo/" style="font-size: 10px;">cuckoo</a> <a href="/tags/sandbox/" style="font-size: 10px;">sandbox</a> <a href="/tags/solution/" style="font-size: 10px;">solution</a>
+    </div>
+    
+  </div>
+
+    
+</aside>
+    <div class="nexmoe-copyright">
+        &copy; 2023 S0cke3t
+        Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+        & <a href="https://github.com/theme-nexmoe/hexo-theme-nexmoe" target="_blank">Nexmoe</a>
+        <br/>Too Young Too Sample
+    </div>
+</div><!-- .nexmoe-drawer -->
+    </div>
+    <div id="nexmoe-content">
+        <div class="nexmoe-primary">
+            <div class="nexmoe-post">
+
+  <article>
+      
+          <div class="nexmoe-post-cover" style="padding-bottom: NaN%;"> 
+              <img data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/07/03/202203282131824.jpg" data-sizes="auto" alt="Agriculture information platform audit &amp; crack" class="lazyload">
+              <h1>Agriculture information platform audit &amp; crack</h1>
+          </div>
+      
+      
+      <div class="nexmoe-post-meta nexmoe-rainbow" style="margin:10px 0!important;">
+    <a><i class="nexmoefont icon-calendar-fill"></i>2020年07月03日</a>
+    <a><i class="nexmoefont icon-areachart"></i>4.5k 字</a>
+    <a><i class="nexmoefont icon-time-circle-fill"></i>大概 22 分钟</a>
+</div>
+
+      
+
+      <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>经过了一周的忙碌，总算是可以闲下来写写东西了。这次我跟大家分享的是上周在项目中遇到的一个案例，这里把当时挖掘漏洞的过程和思路做一个分享。文章分为两部分分别为漏洞的挖掘过程以及对该平台license的一个破解。知识相对基础，对于想了解.net审计的朋友可以细细品味一下(●ˇ∀ˇ●)</p>
+<h4 id="代码审计"><a href="#代码审计" class="headerlink" title="代码审计"></a>代码审计</h4><p>ok，我们先来看审计的部分。因为该平台是经过封装处理的，所以说在我们要进行分析前需要对封装的dll文件进行反编译。</p>
+<h5 id="SQL注入"><a href="#SQL注入" class="headerlink" title="SQL注入"></a><strong>SQL注入</strong></h5><p>先来看一个sql注入，此问题出现在该系统中一个招投标管理的子系统中。对应的文件为&#x2F;ztblogin.aspx,该文件只保存了前端代码，其后端的处理逻辑代码存放于&#x2F;bin&#x2F;Sanzi.web.dll文件中。使用dnspy对其进行反编译后，我们需要找到对应的登录处理逻辑，但是该文件的代码量过于庞大，仅靠我们手工去找就显得不太现实。<br> 这里我们可以根据前端代码的按钮Onclick属性快速的找到对应的按钮点击事件函数<br><a target="_blank" rel="noopener" href="http://old.saferoad.cc/wp-content/uploads/2020/07/20200702173100.png"><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281517426.png"></a><br>知道这个后我们就可以在dnspy中搜索该函数<br><a target="_blank" rel="noopener" href="http://old.saferoad.cc/wp-content/uploads/2020/07/20200702135148.png"><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281517647.png"></a><br>这样我们就可以快速的定位到我们想要分析的代码，下面我们来看具体的登录逻辑</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre class="line-numbers language-hljs c#"><span class="hljs-keyword">if</span>  (Regex.IsMatch(<span class="hljs-keyword">this</span>.txtPassword.Text,  <span class="hljs-string">&quot;select|insert|update|where|=|&#x27;&quot;</span>,  RegexOptions.IgnoreCase))  <br>&#123;  <br>PageClass.ShowAlertMsg(<span class="hljs-keyword">this</span>.Page,  <span class="hljs-string">&quot;密码中含有非法数据，请核实！&quot;</span>);  <br><span class="hljs-keyword">this</span>.txtPassword.Focus();  <br>&#125;  <br>DataRow  row  =  MainClass.GetDataRow(<span class="hljs-string">&quot;select id,unitid,password,realname,lastlogin,accountid from cw_users where username=&#x27;&quot;</span>  +  <span class="hljs-keyword">this</span>.txtUserName.Text  +  <span class="hljs-string">&quot;&#x27; and unitid=&#x27;X00001&#x27;&quot;</span>);  <br><span class="hljs-keyword">if</span>  (row  ==  <span class="hljs-literal">null</span>)  <br>&#123;  <br>PageClass.ShowAlertMsg(<span class="hljs-keyword">this</span>.Page,  <span class="hljs-string">&quot;系统中无此用户，请核实！&quot;</span>);  <br><span class="hljs-keyword">this</span>.txtUserName.Focus();  <br><span class="hljs-keyword">return</span>;  <br>&#125;  <br><span class="hljs-keyword">if</span>  (<span class="hljs-keyword">this</span>.CheckPassword(row[<span class="hljs-string">&quot;password&quot;</span>].ToString()))  <br>&#123;  <br><span class="hljs-keyword">this</span>.Session[<span class="hljs-string">&quot;UFlag&quot;</span>]  =  <span class="hljs-string">&quot;0&quot;</span>;  <br><span class="hljs-keyword">this</span>.Session[<span class="hljs-string">&quot;SessionFlag&quot;</span>]  =  <span class="hljs-string">&quot;SessionFlag&quot;</span>;  <br><span class="hljs-keyword">this</span>.Session[<span class="hljs-string">&quot;UserID&quot;</span>]  =  row[<span class="hljs-string">&quot;id&quot;</span>].ToString();  <br><span class="hljs-keyword">this</span>.Session[<span class="hljs-string">&quot;UserName&quot;</span>]  =  <span class="hljs-keyword">this</span>.txtUserName.Text;  <br><span class="hljs-keyword">this</span>.Session[<span class="hljs-string">&quot;RealName&quot;</span>]  =  row[<span class="hljs-string">&quot;RealName&quot;</span>].ToString();  <br><span class="hljs-keyword">this</span>.Session[<span class="hljs-string">&quot;LastLogin&quot;</span>]  =  row[<span class="hljs-string">&quot;LastLogin&quot;</span>].ToString();  <br><span class="hljs-keyword">this</span>.Session[<span class="hljs-string">&quot;UnitID&quot;</span>]  =  row[<span class="hljs-string">&quot;accountid&quot;</span>].ToString();  <br><span class="hljs-keyword">this</span>.Session[<span class="hljs-string">&quot;UnitName&quot;</span>]  =  ValidateClass.ReadXMLNodeText(<span class="hljs-string">&quot;FinancialDB/CUnits[ID=&#x27;&quot;</span>  +  row[<span class="hljs-string">&quot;accountid&quot;</span>].ToString()  +  <span class="hljs-string">&quot;&#x27;]&quot;</span>,  <span class="hljs-string">&quot;UnitName&quot;</span>);  <br>MainClass.ExecuteSQL(<span class="hljs-built_in">string</span>.Concat(<span class="hljs-keyword">new</span>  <span class="hljs-built_in">string</span>[]  <br>&#123;  <br><span class="hljs-string">&quot;update cw_users set LoginCounts=LoginCounts+1,LastLogin=&#x27;&quot;</span>,  <br>SysVar.DateTimeStr,  <br><span class="hljs-string">&quot;&#x27; where id=&#x27;&quot;</span>,  <br>row[<span class="hljs-string">&quot;id&quot;</span>].ToString(),  <br><span class="hljs-string">&quot;&#x27;&quot;</span>  <br>&#125;));  <br><span class="hljs-keyword">base</span>.Response.Redirect(<span class="hljs-string">&quot;bform.aspx&quot;</span>);  <br><span class="hljs-keyword">return</span>;  <br>&#125;  <br>PageClass.ShowAlertMsg(<span class="hljs-keyword">this</span>.Page,  <span class="hljs-string">&quot;登录密码不正确，请核实！&quot;</span>);  <br><span class="hljs-keyword"><code class="language-hljs c#"><span class="hljs-keyword">if</span>  (Regex.IsMatch(<span class="hljs-keyword">this</span>.txtPassword.Text,  <span class="hljs-string">&quot;select|insert|update|where|=|&#x27;&quot;</span>,  RegexOptions.IgnoreCase))  <br>&#123;  <br>PageClass.ShowAlertMsg(<span class="hljs-keyword">this</span>.Page,  <span class="hljs-string">&quot;密码中含有非法数据，请核实！&quot;</span>);  <br><span class="hljs-keyword">this</span>.txtPassword.Focus();  <br>&#125;  <br>DataRow  row  =  MainClass.GetDataRow(<span class="hljs-string">&quot;select id,unitid,password,realname,lastlogin,accountid from cw_users where username=&#x27;&quot;</span>  +  <span class="hljs-keyword">this</span>.txtUserName.Text  +  <span class="hljs-string">&quot;&#x27; and unitid=&#x27;X00001&#x27;&quot;</span>);  <br><span class="hljs-keyword">if</span>  (row  ==  <span class="hljs-literal">null</span>)  <br>&#123;  <br>PageClass.ShowAlertMsg(<span class="hljs-keyword">this</span>.Page,  <span class="hljs-string">&quot;系统中无此用户，请核实！&quot;</span>);  <br><span class="hljs-keyword">this</span>.txtUserName.Focus();  <br><span class="hljs-keyword">return</span>;  <br>&#125;  <br><span class="hljs-keyword">if</span>  (<span class="hljs-keyword">this</span>.CheckPassword(row[<span class="hljs-string">&quot;password&quot;</span>].ToString()))  <br>&#123;  <br><span class="hljs-keyword">this</span>.Session[<span class="hljs-string">&quot;UFlag&quot;</span>]  =  <span class="hljs-string">&quot;0&quot;</span>;  <br><span class="hljs-keyword">this</span>.Session[<span class="hljs-string">&quot;SessionFlag&quot;</span>]  =  <span class="hljs-string">&quot;SessionFlag&quot;</span>;  <br><span class="hljs-keyword">this</span>.Session[<span class="hljs-string">&quot;UserID&quot;</span>]  =  row[<span class="hljs-string">&quot;id&quot;</span>].ToString();  <br><span class="hljs-keyword">this</span>.Session[<span class="hljs-string">&quot;UserName&quot;</span>]  =  <span class="hljs-keyword">this</span>.txtUserName.Text;  <br><span class="hljs-keyword">this</span>.Session[<span class="hljs-string">&quot;RealName&quot;</span>]  =  row[<span class="hljs-string">&quot;RealName&quot;</span>].ToString();  <br><span class="hljs-keyword">this</span>.Session[<span class="hljs-string">&quot;LastLogin&quot;</span>]  =  row[<span class="hljs-string">&quot;LastLogin&quot;</span>].ToString();  <br><span class="hljs-keyword">this</span>.Session[<span class="hljs-string">&quot;UnitID&quot;</span>]  =  row[<span class="hljs-string">&quot;accountid&quot;</span>].ToString();  <br><span class="hljs-keyword">this</span>.Session[<span class="hljs-string">&quot;UnitName&quot;</span>]  =  ValidateClass.ReadXMLNodeText(<span class="hljs-string">&quot;FinancialDB/CUnits[ID=&#x27;&quot;</span>  +  row[<span class="hljs-string">&quot;accountid&quot;</span>].ToString()  +  <span class="hljs-string">&quot;&#x27;]&quot;</span>,  <span class="hljs-string">&quot;UnitName&quot;</span>);  <br>MainClass.ExecuteSQL(<span class="hljs-built_in">string</span>.Concat(<span class="hljs-keyword">new</span>  <span class="hljs-built_in">string</span>[]  <br>&#123;  <br><span class="hljs-string">&quot;update cw_users set LoginCounts=LoginCounts+1,LastLogin=&#x27;&quot;</span>,  <br>SysVar.DateTimeStr,  <br><span class="hljs-string">&quot;&#x27; where id=&#x27;&quot;</span>,  <br>row[<span class="hljs-string">&quot;id&quot;</span>].ToString(),  <br><span class="hljs-string">&quot;&#x27;&quot;</span>  <br>&#125;));  <br><span class="hljs-keyword">base</span>.Response.Redirect(<span class="hljs-string">&quot;bform.aspx&quot;</span>);  <br><span class="hljs-keyword">return</span>;  <br>&#125;  <br>PageClass.ShowAlertMsg(<span class="hljs-keyword">this</span>.Page,  <span class="hljs-string">&quot;登录密码不正确，请核实！&quot;</span>);  <br><span class="hljs-keyword">this</span>.txtPassword.Focus();<br><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></td></tr></table></figure>
+
+<p>程序首先拿到我们输入的密码并进行正则匹配，判断是否包含select,insert,update,wehere,&#x3D;,’。随后声明一个DataRow并接收我们输入的用户名进行查询并存放到DR中，之后进行checkpassword,通过后设置session并更新登录用户信息。整个流程中只对我们输入的密码字段进行了简单的过滤，在查询用户信息时直接拼接了我们输入的参数值，So……你们懂的~<br>但这里值得注意的是，程序在安装初始化完成后并没有在cw_users这个表中写入unitid为X00001的用户数据，也就是说如果不是人为进行了设置，我们是登不进该系统的，但这并不影响我们利用该注入。</p>
+<h5 id="任意文件上传"><a href="#任意文件上传" class="headerlink" title="任意文件上传"></a><strong>任意文件上传</strong></h5><p>下面来看一个任意文件上传，文件上传在获取权限方面可以说是一个简单而又有效的途径了。该问题出现在平台的附单上传功能。在我用注入成功登录进平台后并没有发现明显的上传功能点，于是我就开始在之前从服务器上下载的源文件中翻找看看能不能找到有关上传的文件，功夫不负有心人在经过一番搜索后，我在uploadify文件夹中发现了一个upload.ashx的一般处理程序文件，当我打开该文件时发现正是一个上传功能文件<br><a href=""><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281517726.png"></a><br>在阅读了相关代码后，并未发现文件上传限制的功能代码但从继承关系来看，访问此文件貌似是需要有个有效的session下才可以。现在我们可以想到的有两种利用方式，一：直接构造一个multi post数据包并带上session请求该文件，从代码逻辑上看我们只需要act和ym参数即可，二：寻找调用该功能的文件，这样的好处就是不用我们手工去构造数据包(能让程序做的，我们坚决不动手。(●ˇ∀ˇ●))。<br>在经过一番搜索后，找到了两个调用该功能的文件<br><a href=""><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281517456.png"></a><br>这里我们分析第一个，主要代码如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre class="line-numbers language-hljs javascript">$(<span class="hljs-string">&quot;#file_upload&quot;</span>).<span class="hljs-title function_">uploadify</span>(&#123;<br>            <span class="hljs-attr">swf</span>: <span class="hljs-string">&#x27;/uploadify/uploadify.swf?g=&#x27;</span> + (<span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>()).<span class="hljs-title function_">getTime</span>(),<br>            <span class="hljs-attr">uploader</span>: <span class="hljs-string">&#x27;/uploadify/upload.ashx?act=2&amp;prefix=&lt;%=prefix%&gt;&amp;ym=&#x27;</span> + $(<span class="hljs-string">&#x27;#YearMonth&#x27;</span>).<span class="hljs-title function_">val</span>(),<br>            <span class="hljs-attr">width</span>: <span class="hljs-number">70</span>,<br>            <span class="hljs-attr">height</span>: <span class="hljs-number">20</span>,<br>            <span class="hljs-attr">queueID</span>: <span class="hljs-string">&#x27;uploadqueue&#x27;</span>,<br>            <span class="hljs-attr">buttonText</span>: <span class="hljs-string">&#x27;插件上传&#x27;</span>,<br>            <span class="hljs-attr">progressData</span>: <span class="hljs-string">&#x27;percentage&#x27;</span>,<br>            <span class="hljs-attr">fileTypeDesc</span>: <span class="hljs-string">&#x27;图片文件&#x27;</span>,<br>            <span class="hljs-attr">fileTypeExts</span>: <span class="hljs-string">&#x27;*.jpg;*.png;*.gif;*.bmp;*.jpeg;*.swf&#x27;</span>,<br>            <span class="hljs-attr">fileSizeLimit</span>: <span class="hljs-string">&#x27;5120KB&#x27;</span>,<br>            <span class="hljs-attr">removeCompleted</span>: <span class="hljs-literal">false</span>,<br>            <span class="hljs-attr">removeTimeout</span>: <span class="hljs-number">0</span>,<br>            <span class="hljs-attr">onDialogClose</span>: <span class="hljs-keyword">function</span> (<span class="hljs-params">queueData</span>) &#123;<br>                <span class="hljs-keyword">if</span> (queueData.<span class="hljs-property">filesQueued</span> &gt; <span class="hljs-number">0</span>) &#123;<br>                    $(<span class="hljs-string">&quot;#divdata&quot;</span>).<span class="hljs-title function_">css</span>(<span class="hljs-string">&quot;display&quot;</span>, <span class="hljs-string">&quot;none&quot;</span>);<br>                    $(<span class="hljs-string">&quot;#uploadqueue&quot;</span>).<span class="hljs-title function_">css</span>(<span class="hljs-string">&quot;display&quot;</span>, <span class="hljs-string">&quot;&quot;</span>);<br>                &#125;<br>            &#125;,<br>            <span class="hljs-attr">onQueueComplete</span>: <span class="hljs-keyword">function</span> (<span class="hljs-params">queueData</span>) &#123;<br>                $(<span class="hljs-string">&quot;#divdata&quot;</span>).<span class="hljs-title function_">css</span>(<span class="hljs-string">&quot;display&quot;</span>, <span class="hljs-string">&quot;none&quot;</span>);<br>                $(<span class="hljs-string">&quot;#uploadqueue&quot;</span>).<span class="hljs-title function_">css</span>(<span class="hljs-string">&quot;display&quot;</span>, <span class="hljs-string">&quot;&quot;</span>);<br>                <span class="hljs-title function_">__doPostBack</span>(<span class="hljs-string">&#x27;DoPostBack&#x27;</span>, <span class="hljs-string"><code class="language-hljs javascript">$(<span class="hljs-string">&quot;#file_upload&quot;</span>).<span class="hljs-title function_">uploadify</span>(&#123;<br>            <span class="hljs-attr">swf</span>: <span class="hljs-string">&#x27;/uploadify/uploadify.swf?g=&#x27;</span> + (<span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>()).<span class="hljs-title function_">getTime</span>(),<br>            <span class="hljs-attr">uploader</span>: <span class="hljs-string">&#x27;/uploadify/upload.ashx?act=2&amp;prefix=&lt;%=prefix%&gt;&amp;ym=&#x27;</span> + $(<span class="hljs-string">&#x27;#YearMonth&#x27;</span>).<span class="hljs-title function_">val</span>(),<br>            <span class="hljs-attr">width</span>: <span class="hljs-number">70</span>,<br>            <span class="hljs-attr">height</span>: <span class="hljs-number">20</span>,<br>            <span class="hljs-attr">queueID</span>: <span class="hljs-string">&#x27;uploadqueue&#x27;</span>,<br>            <span class="hljs-attr">buttonText</span>: <span class="hljs-string">&#x27;插件上传&#x27;</span>,<br>            <span class="hljs-attr">progressData</span>: <span class="hljs-string">&#x27;percentage&#x27;</span>,<br>            <span class="hljs-attr">fileTypeDesc</span>: <span class="hljs-string">&#x27;图片文件&#x27;</span>,<br>            <span class="hljs-attr">fileTypeExts</span>: <span class="hljs-string">&#x27;*.jpg;*.png;*.gif;*.bmp;*.jpeg;*.swf&#x27;</span>,<br>            <span class="hljs-attr">fileSizeLimit</span>: <span class="hljs-string">&#x27;5120KB&#x27;</span>,<br>            <span class="hljs-attr">removeCompleted</span>: <span class="hljs-literal">false</span>,<br>            <span class="hljs-attr">removeTimeout</span>: <span class="hljs-number">0</span>,<br>            <span class="hljs-attr">onDialogClose</span>: <span class="hljs-keyword">function</span> (<span class="hljs-params">queueData</span>) &#123;<br>                <span class="hljs-keyword">if</span> (queueData.<span class="hljs-property">filesQueued</span> &gt; <span class="hljs-number">0</span>) &#123;<br>                    $(<span class="hljs-string">&quot;#divdata&quot;</span>).<span class="hljs-title function_">css</span>(<span class="hljs-string">&quot;display&quot;</span>, <span class="hljs-string">&quot;none&quot;</span>);<br>                    $(<span class="hljs-string">&quot;#uploadqueue&quot;</span>).<span class="hljs-title function_">css</span>(<span class="hljs-string">&quot;display&quot;</span>, <span class="hljs-string">&quot;&quot;</span>);<br>                &#125;<br>            &#125;,<br>            <span class="hljs-attr">onQueueComplete</span>: <span class="hljs-keyword">function</span> (<span class="hljs-params">queueData</span>) &#123;<br>                $(<span class="hljs-string">&quot;#divdata&quot;</span>).<span class="hljs-title function_">css</span>(<span class="hljs-string">&quot;display&quot;</span>, <span class="hljs-string">&quot;none&quot;</span>);<br>                $(<span class="hljs-string">&quot;#uploadqueue&quot;</span>).<span class="hljs-title function_">css</span>(<span class="hljs-string">&quot;display&quot;</span>, <span class="hljs-string">&quot;&quot;</span>);<br>                <span class="hljs-title function_">__doPostBack</span>(<span class="hljs-string">&#x27;DoPostBack&#x27;</span>, <span class="hljs-string">&#x27;&#x27;</span>);<br>            }<br>        });<br><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></td></tr></table></figure>
+
+<p>我们可以看到程序调用upload.ashx并这是了act等参数，并限制了文件上传的类型。绕过此限制我们只需要对数据包进行二次重放就可以了。<br>现在我们在浏览器中打开该页面<br><a href=""><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281520431.png"></a><br>可以看到访问该页面需要一个有效的session,也验证了我们之前的猜想。利用前面的注入获取到一个有效的凭证后再来访问<br>[<img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281517045.png">])<br>由于前端代码的限制，我们需要先上传一个图片后缀的文件。抓取数据包进一步分析<br><a href=""><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281517856.png"></a><br>依响应包来看我们的文件貌似是上传成功了，但问题是并没有回显，我们找不到文件的确切位置。但经过我测试的几个相同的平台后，发现有的上传后会显示在页面附单列表中，这种我们可以直接看到文件的位置。<br>针对没有回显的，我们就需要去分析具体的代码逻辑，回到我们刚才的upload.ash文件，我们来看代码逻辑<br>此文件根据act参数的不同分别对应了四种不同的文件保存逻辑，其中act为1的分支为空，所以具体也就三种<br>我们先来看第一个分支</p>
+<ul>
+<li>act &#x3D; 0 <figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre class="line-numbers language-hljs c#"><span class="hljs-keyword">if</span> (request.QueryString[<span class="hljs-string">&quot;act&quot;</span>] == <span class="hljs-string">&quot;0&quot;</span>)<br>       &#123;<br>           <span class="hljs-comment">//招投标</span><br>           <span class="hljs-built_in">string</span> filename = Path.GetFileName(request.Files[<span class="hljs-number">0</span>].FileName);<br>           <span class="hljs-built_in">string</span> filepath = <span class="hljs-string">&quot;/UploadFile/ztb/&quot;</span> + Guid.NewGuid().ToString(<span class="hljs-string">&quot;N&quot;</span>) + Path.GetExtension(request.Files[<span class="hljs-number">0</span>].FileName);<br>           request.Files[<span class="hljs-number">0</span>].SaveAs(context.Server.MapPath(filepath));<br>           MainClass.ExecuteSQL(<span class="hljs-built_in">string</span>.Concat(<span class="hljs-string">&quot;insert into projattachs(ProjectID,StepFlag,FileName,FilePath,UploadTime)values(&#x27;&quot;</span>,<br>               request.QueryString[<span class="hljs-string">&quot;pid&quot;</span>], <span class="hljs-string">&quot;&#x27;,&#x27;&quot;</span>,<br>               request.QueryString[<span class="hljs-string">&quot;step&quot;</span>], <span class="hljs-string">&quot;&#x27;,&#x27;&quot;</span>,<br>               filename, <span class="hljs-string">&quot;&#x27;,&#x27;&quot;</span>,<br>               filepath, <span class="hljs-string">&quot;&#x27;,&#x27;&quot;</span>, SysVar.DateTimeStr, <span class="hljs-string">&quot;&#x27;)&quot;</span>));<br>           context.Response.Write(<span class="hljs-string"><code class="language-hljs c#"><span class="hljs-keyword">if</span> (request.QueryString[<span class="hljs-string">&quot;act&quot;</span>] == <span class="hljs-string">&quot;0&quot;</span>)<br>       &#123;<br>           <span class="hljs-comment">//招投标</span><br>           <span class="hljs-built_in">string</span> filename = Path.GetFileName(request.Files[<span class="hljs-number">0</span>].FileName);<br>           <span class="hljs-built_in">string</span> filepath = <span class="hljs-string">&quot;/UploadFile/ztb/&quot;</span> + Guid.NewGuid().ToString(<span class="hljs-string">&quot;N&quot;</span>) + Path.GetExtension(request.Files[<span class="hljs-number">0</span>].FileName);<br>           request.Files[<span class="hljs-number">0</span>].SaveAs(context.Server.MapPath(filepath));<br>           MainClass.ExecuteSQL(<span class="hljs-built_in">string</span>.Concat(<span class="hljs-string">&quot;insert into projattachs(ProjectID,StepFlag,FileName,FilePath,UploadTime)values(&#x27;&quot;</span>,<br>               request.QueryString[<span class="hljs-string">&quot;pid&quot;</span>], <span class="hljs-string">&quot;&#x27;,&#x27;&quot;</span>,<br>               request.QueryString[<span class="hljs-string">&quot;step&quot;</span>], <span class="hljs-string">&quot;&#x27;,&#x27;&quot;</span>,<br>               filename, <span class="hljs-string">&quot;&#x27;,&#x27;&quot;</span>,<br>               filepath, <span class="hljs-string">&quot;&#x27;,&#x27;&quot;</span>, SysVar.DateTimeStr, <span class="hljs-string">&quot;&#x27;)&quot;</span>));<br>           context.Response.Write(<span class="hljs-string">"1"</span>);<br>       }<br><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></td></tr></table></figure></li>
+</ul>
+<p>程序拿到文件名后，使用guid生成一个32位的字符串，并于“&#x2F;UploadFile&#x2F;ztb&#x2F;”，最后带上后缀生成最终的文件路径，并将信息写入projattachs表中。虽然我们可以通过注入的方式获取到文件的路径，但该平台在安装后并没有生成ztb文件夹，在上传时也没有判断该文件夹是否存在，所以就会出现下面的情况<br><a href=""><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281517414.png"></a><br>此方法pass!</p>
+<ul>
+<li>act &#x3D; 2 <figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre class="line-numbers language-hljs c#"><span class="hljs-keyword">if</span> (context.Request.QueryString[<span class="hljs-string">&quot;act&quot;</span>] == <span class="hljs-string">&quot;2&quot;</span>)<br>       &#123;<br>           <span class="hljs-comment">//凭证附单</span><br>           <span class="hljs-built_in">string</span> appendixid = CommClass.GetRecordID(<span class="hljs-string">&quot;Appendix&quot;</span>);<br>           <span class="hljs-built_in">string</span> ext = Path.GetExtension(request.Files[<span class="hljs-number">0</span>].FileName);<br>           <span class="hljs-built_in">string</span> fname = DateTime.Now.ToString(<span class="hljs-string">&quot;yyyyMMddHHmmssfff&quot;</span>) + appendixid;<br>           <span class="hljs-built_in">string</span> fileName = <span class="hljs-built_in">string</span>.Concat(<span class="hljs-string">&quot;../UploadFile/Appendices/&quot;</span>, fname, ext);<br>           <span class="hljs-built_in">string</span> fileThum = <span class="hljs-built_in">string</span>.Concat(<span class="hljs-string">&quot;../UploadFile/Appendices/&quot;</span>, fname, <span class="hljs-string">&quot;_thum&quot;</span>, ext);<br>           request.Files[<span class="hljs-number">0</span>].SaveAs(context.Server.MapPath(fileName));<br>           UtilsComm.MakeThumbnail(context.Server.MapPath(fileName), context.Server.MapPath(fileThum), <span class="hljs-number">90</span>, <span class="hljs-number">90</span>);<br>           <span class="hljs-built_in">string</span> prefix = context.Request.QueryString[<span class="hljs-string">&quot;prefix&quot;</span>];<br>           <span class="hljs-keyword">if</span> (prefix == <span class="hljs-literal">null</span> || prefix.Length == <span class="hljs-number">0</span>)<br>           &#123;<br>               prefix = <span class="hljs-string">&quot;Appendix&quot;</span>;<br>           &#125;<br>           CommClass.ExecuteSQL(<span class="hljs-built_in">string</span>.Concat(<span class="hljs-string">&quot;insert into cw_syspara(ParaName,ParaValue,DefValue,ParaType,DefPara1)values(&#x27;&quot;</span>,<br>               prefix, appendixid, <span class="hljs-string">&quot;&#x27;,&#x27;&quot;</span>, fileName, <span class="hljs-string">&quot;&#x27;,&#x27;&quot;</span>, fileThum, <span class="hljs-string">&quot;&#x27;,&#x27;1&#x27;,&#x27;&quot;</span>, context.Request.QueryString[<span class="hljs-string">&quot;ym&quot;</span>], <span class="hljs-string"><code class="language-hljs c#"><span class="hljs-keyword">if</span> (context.Request.QueryString[<span class="hljs-string">&quot;act&quot;</span>] == <span class="hljs-string">&quot;2&quot;</span>)<br>       &#123;<br>           <span class="hljs-comment">//凭证附单</span><br>           <span class="hljs-built_in">string</span> appendixid = CommClass.GetRecordID(<span class="hljs-string">&quot;Appendix&quot;</span>);<br>           <span class="hljs-built_in">string</span> ext = Path.GetExtension(request.Files[<span class="hljs-number">0</span>].FileName);<br>           <span class="hljs-built_in">string</span> fname = DateTime.Now.ToString(<span class="hljs-string">&quot;yyyyMMddHHmmssfff&quot;</span>) + appendixid;<br>           <span class="hljs-built_in">string</span> fileName = <span class="hljs-built_in">string</span>.Concat(<span class="hljs-string">&quot;../UploadFile/Appendices/&quot;</span>, fname, ext);<br>           <span class="hljs-built_in">string</span> fileThum = <span class="hljs-built_in">string</span>.Concat(<span class="hljs-string">&quot;../UploadFile/Appendices/&quot;</span>, fname, <span class="hljs-string">&quot;_thum&quot;</span>, ext);<br>           request.Files[<span class="hljs-number">0</span>].SaveAs(context.Server.MapPath(fileName));<br>           UtilsComm.MakeThumbnail(context.Server.MapPath(fileName), context.Server.MapPath(fileThum), <span class="hljs-number">90</span>, <span class="hljs-number">90</span>);<br>           <span class="hljs-built_in">string</span> prefix = context.Request.QueryString[<span class="hljs-string">&quot;prefix&quot;</span>];<br>           <span class="hljs-keyword">if</span> (prefix == <span class="hljs-literal">null</span> || prefix.Length == <span class="hljs-number">0</span>)<br>           &#123;<br>               prefix = <span class="hljs-string">&quot;Appendix&quot;</span>;<br>           &#125;<br>           CommClass.ExecuteSQL(<span class="hljs-built_in">string</span>.Concat(<span class="hljs-string">&quot;insert into cw_syspara(ParaName,ParaValue,DefValue,ParaType,DefPara1)values(&#x27;&quot;</span>,<br>               prefix, appendixid, <span class="hljs-string">&quot;&#x27;,&#x27;&quot;</span>, fileName, <span class="hljs-string">&quot;&#x27;,&#x27;&quot;</span>, fileThum, <span class="hljs-string">&quot;&#x27;,&#x27;1&#x27;,&#x27;&quot;</span>, context.Request.QueryString[<span class="hljs-string">&quot;ym&quot;</span>], <span class="hljs-string">"&#x27;)"</span>));<br>       }<br><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></td></tr></table></figure></li>
+</ul>
+<p> 这个分支是我们默认调用的代码逻辑,首先会生成一个appendixid,随后用当前时间以yyyyMMddHHmmssfff格式于appendixid进行拼接形成文件名，最后于“..&#x2F;UploadFile&#x2F;Appendices&#x2F;”拼接生成文件保存路径，并将文件信息保存在cw_syspara数据表中</p>
+<ul>
+<li>act &#x3D; 3<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre class="line-numbers language-hljs c#"><span class="hljs-keyword">if</span> (context.Request.QueryString[<span class="hljs-string">&quot;act&quot;</span>] == <span class="hljs-string">&quot;3&quot;</span>)<br>        &#123;<br>            <span class="hljs-comment">//凭证附单，高拍仪</span><br>            <span class="hljs-built_in">string</span> appendixid = CommClass.GetRecordID(<span class="hljs-string">&quot;Appendix&quot;</span>);<br>            <span class="hljs-built_in">string</span> ext = Path.GetExtension(request.Files[<span class="hljs-number">0</span>].FileName);<br>            <span class="hljs-built_in">string</span> fname = Path.GetFileNameWithoutExtension(request.Files[<span class="hljs-number">0</span>].FileName);<br>            <span class="hljs-built_in">string</span> fileName = <span class="hljs-built_in">string</span>.Concat(<span class="hljs-string">&quot;../UploadFile/Appendices/&quot;</span>, fname, ext);<br>            <span class="hljs-built_in">string</span> fileThum = <span class="hljs-built_in">string</span>.Concat(<span class="hljs-string">&quot;../UploadFile/Appendices/&quot;</span>, fname, <span class="hljs-string">&quot;_thum&quot;</span>, ext);<br>            request.Files[<span class="hljs-number">0</span>].SaveAs(context.Server.MapPath(fileName));<br>            UtilsComm.MakeThumbnail(context.Server.MapPath(fileName), context.Server.MapPath(fileThum), <span class="hljs-number">90</span>, <span class="hljs-number">90</span>);<br>            <span class="hljs-built_in">string</span> prefix = context.Request.QueryString[<span class="hljs-string">&quot;prefix&quot;</span>];<br>            <span class="hljs-keyword">if</span> (prefix == <span class="hljs-literal">null</span> || prefix.Length == <span class="hljs-number">0</span>)<br>            &#123;<br>                prefix = <span class="hljs-string">&quot;Appendix&quot;</span>;<br>            &#125;<br>            CommClass.ExecuteSQL(<span class="hljs-built_in">string</span>.Concat(<span class="hljs-string">&quot;insert into cw_syspara(ParaName,ParaValue,DefValue,ParaType,DefPara1)values(&#x27;&quot;</span>,<br>                prefix, appendixid, <span class="hljs-string">&quot;&#x27;,&#x27;&quot;</span>, fileName, <span class="hljs-string">&quot;&#x27;,&#x27;&quot;</span>, fileThum, <span class="hljs-string">&quot;&#x27;,&#x27;1&#x27;,&#x27;&quot;</span>, context.Request.QueryString[<span class="hljs-string">&quot;ym&quot;</span>], <span class="hljs-string"><code class="language-hljs c#"><span class="hljs-keyword">if</span> (context.Request.QueryString[<span class="hljs-string">&quot;act&quot;</span>] == <span class="hljs-string">&quot;3&quot;</span>)<br>        &#123;<br>            <span class="hljs-comment">//凭证附单，高拍仪</span><br>            <span class="hljs-built_in">string</span> appendixid = CommClass.GetRecordID(<span class="hljs-string">&quot;Appendix&quot;</span>);<br>            <span class="hljs-built_in">string</span> ext = Path.GetExtension(request.Files[<span class="hljs-number">0</span>].FileName);<br>            <span class="hljs-built_in">string</span> fname = Path.GetFileNameWithoutExtension(request.Files[<span class="hljs-number">0</span>].FileName);<br>            <span class="hljs-built_in">string</span> fileName = <span class="hljs-built_in">string</span>.Concat(<span class="hljs-string">&quot;../UploadFile/Appendices/&quot;</span>, fname, ext);<br>            <span class="hljs-built_in">string</span> fileThum = <span class="hljs-built_in">string</span>.Concat(<span class="hljs-string">&quot;../UploadFile/Appendices/&quot;</span>, fname, <span class="hljs-string">&quot;_thum&quot;</span>, ext);<br>            request.Files[<span class="hljs-number">0</span>].SaveAs(context.Server.MapPath(fileName));<br>            UtilsComm.MakeThumbnail(context.Server.MapPath(fileName), context.Server.MapPath(fileThum), <span class="hljs-number">90</span>, <span class="hljs-number">90</span>);<br>            <span class="hljs-built_in">string</span> prefix = context.Request.QueryString[<span class="hljs-string">&quot;prefix&quot;</span>];<br>            <span class="hljs-keyword">if</span> (prefix == <span class="hljs-literal">null</span> || prefix.Length == <span class="hljs-number">0</span>)<br>            &#123;<br>                prefix = <span class="hljs-string">&quot;Appendix&quot;</span>;<br>            &#125;<br>            CommClass.ExecuteSQL(<span class="hljs-built_in">string</span>.Concat(<span class="hljs-string">&quot;insert into cw_syspara(ParaName,ParaValue,DefValue,ParaType,DefPara1)values(&#x27;&quot;</span>,<br>                prefix, appendixid, <span class="hljs-string">&quot;&#x27;,&#x27;&quot;</span>, fileName, <span class="hljs-string">&quot;&#x27;,&#x27;&quot;</span>, fileThum, <span class="hljs-string">&quot;&#x27;,&#x27;1&#x27;,&#x27;&quot;</span>, context.Request.QueryString[<span class="hljs-string">&quot;ym&quot;</span>], <span class="hljs-string">"&#x27;)"</span>));<br>        }<br><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></td></tr></table></figure>
+这个分支相较于上一个仅少了一行生成新文件名的代码，正因为少了这一句我们可以才可以很方便的知道上传文件的路径，不用再利用注入去获取文件信息。</li>
+</ul>
+<p>现在我们的整个利用思路基本已经明确了，首先我们利用注入获取一个有效的凭证，之后利用Appendices.aspx上传我们的文件，并将act参数改为3最后的文件路径为&#x2F;UploadFile&#x2F;Appendices&#x2F;filename.xxx<br><a target="_blank" rel="noopener" href="http://old.saferoad.cc/wp-content/uploads/2020/07/20200702154331.png"><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281517289.png"></a><br><a target="_blank" rel="noopener" href="http://old.saferoad.cc/wp-content/uploads/2020/07/20200702154439.png"><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281517025.png"></a><br>这两个都是属于比较典型的注入和文件上传的例子</p>
+<h4 id="破解"><a href="#破解" class="headerlink" title="破解"></a>破解</h4><p>审计讲完了，下面我们来看看如何破解。因为该平台是需要向该开发公司购买license的，所以我们想要本地分析的话，就需要一个有效的license。买？不可能！能白嫖，坚决不买(●ˇ∀ˇ●)，下面我们就看看如何破解它<br>平台安装完成后，我们需要运行reg.exe来进行平台的注册。这里我使用一个从目标机器上扒下来的license进行注册，程序会将该license文件复制到&#x2F;app_data&#x2F;目录下，并在注册表&#x2F;HKLM&#x2F;Software&#x2F;下新建一个NYFinancial子项并写入安装目录和域名等信息<br><a target="_blank" rel="noopener" href="http://old.saferoad.cc/wp-content/uploads/2020/07/20200702161740.png"><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281518150.png"></a><br><a target="_blank" rel="noopener" href="http://old.saferoad.cc/wp-content/uploads/2020/07/20200702160442.png"><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281518196.png"></a><br>我凑，成功了? 不存的，都是假象，当你注册完访问的时候就会出现这样的提示<br><a target="_blank" rel="noopener" href="http://old.saferoad.cc/wp-content/uploads/2020/07/20200702160651.png"><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281518742.png"></a><br>我与你无冤无仇，你为何要把我按在地上摩擦！！！<br>言归正传，同样根据给出的提示，我们在dnspy中进行搜索，找到验证license的代码<br><a target="_blank" rel="noopener" href="http://old.saferoad.cc/wp-content/uploads/2020/07/20200702162521.png"><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281518154.png"></a><br>首先声明了一个Dataset用于存放license文件内容，并从总取出RegInfoHash的值。随后将RegInfoHash和RegInfoSign的清空并计算现有license内容的SHA1。计算完成后重新将RegInfoHash写回<br>我们先来看授权文件不是本机的问题</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre class="line-numbers language-hljs c#"><span class="hljs-built_in">string</span>  text3  =  dataSet.Tables[<span class="hljs-string">&quot;RegInfo&quot;</span>].Rows[<span class="hljs-number">0</span>][<span class="hljs-string">&quot;ClientHDid&quot;</span>].ToString();  <br><span class="hljs-keyword">if</span>  (text3.IndexOf(ValidateClass.GetMachineCode())  ==  <span class="hljs-number">-1</span>  &amp;&amp;  text3.IndexOf(<span class="hljs-string">&quot;FAD44BF1F402A308&quot;</span>)  ==  <span class="hljs-number">-1</span>)  <br>&#123;  <br>PageClass.UrlRedirect(<span class="hljs-string">&quot;您的授权文件不是本机的授权文件！&quot;</span>,  <span class="hljs-number">0</span>);  <br><span class="hljs-keyword">return</span>  <span class="hljs-literal"><code class="language-hljs c#"><span class="hljs-built_in">string</span>  text3  =  dataSet.Tables[<span class="hljs-string">&quot;RegInfo&quot;</span>].Rows[<span class="hljs-number">0</span>][<span class="hljs-string">&quot;ClientHDid&quot;</span>].ToString();  <br><span class="hljs-keyword">if</span>  (text3.IndexOf(ValidateClass.GetMachineCode())  ==  <span class="hljs-number">-1</span>  &amp;&amp;  text3.IndexOf(<span class="hljs-string">&quot;FAD44BF1F402A308&quot;</span>)  ==  <span class="hljs-number">-1</span>)  <br>&#123;  <br>PageClass.UrlRedirect(<span class="hljs-string">&quot;您的授权文件不是本机的授权文件！&quot;</span>,  <span class="hljs-number">0</span>);  <br><span class="hljs-keyword">return</span>  <span class="hljs-literal">null</span>;  <br>}<br><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></td></tr></table></figure>
+<p>要想通过本机验证必须同时满足两个条件，在license文件的ClientHDid节点中可以找到本机的机器码并且存在FAD44BF1F402A308的机器码。针对这个问题我们只需要将注册程序给出的机器码和FAD44BF1F402A308写入到license文件的ClientHDid节点中即可。<br><a target="_blank" rel="noopener" href="http://old.saferoad.cc/wp-content/uploads/2020/07/20200702163302.png"><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281518514.png"></a><br>改完后替换原来的文件，再次访问<br><a target="_blank" rel="noopener" href="http://old.saferoad.cc/wp-content/uploads/2020/07/20200702163754.png"><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281518895.png"></a><br>此时会出现授权文件已被篡改的问题，我们接着来看验证代码</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre class="line-numbers language-hljs c#"><span class="hljs-built_in">string</span>  str_SignedData  =  dataSet.Tables[<span class="hljs-string">&quot;RegInfo&quot;</span>].Rows[<span class="hljs-number">0</span>][<span class="hljs-string">&quot;RegInfoSign&quot;</span>].ToString();<br><span class="hljs-built_in">string</span>  text  =  dataSet.Tables[<span class="hljs-string">&quot;RegInfo&quot;</span>].Rows[<span class="hljs-number">0</span>][<span class="hljs-string">&quot;RegInfoHash&quot;</span>].ToString();  <br>dataSet.Tables[<span class="hljs-string">&quot;RegInfo&quot;</span>].Rows[<span class="hljs-number">0</span>][<span class="hljs-string">&quot;RegInfoSign&quot;</span>]  =  <span class="hljs-string">&quot;&quot;</span>;  <br>dataSet.Tables[<span class="hljs-string">&quot;RegInfo&quot;</span>].Rows[<span class="hljs-number">0</span>][<span class="hljs-string">&quot;RegInfoHash&quot;</span>]  =  <span class="hljs-string">&quot;&quot;</span>;  <br><span class="hljs-built_in">string</span>  b  =  FormsAuthentication.HashPasswordForStoringInConfigFile(dataSet.GetXml(),  <span class="hljs-string">&quot;sha1&quot;</span>);  <br>dataSet.Tables[<span class="hljs-string">&quot;RegInfo&quot;</span>].Rows[<span class="hljs-number">0</span>][<span class="hljs-string">&quot;RegInfoHash&quot;</span>]  =  text;  <br><span class="hljs-keyword">if</span>  (!(text  ==  b)  ||  !ValidateClass.VerifySignedHash(dataSet.GetXml(),  str_SignedData))  <br>&#123;  <br>PageClass.UrlRedirect(<span class="hljs-string">&quot;软件授权文件已被篡改，请致电我公司更换授权文件！&quot;</span>,  <span class="hljs-number">0</span>);  <br><span class="hljs-keyword">return</span>  <span class="hljs-literal"><code class="language-hljs c#"><span class="hljs-built_in">string</span>  str_SignedData  =  dataSet.Tables[<span class="hljs-string">&quot;RegInfo&quot;</span>].Rows[<span class="hljs-number">0</span>][<span class="hljs-string">&quot;RegInfoSign&quot;</span>].ToString();<br><span class="hljs-built_in">string</span>  text  =  dataSet.Tables[<span class="hljs-string">&quot;RegInfo&quot;</span>].Rows[<span class="hljs-number">0</span>][<span class="hljs-string">&quot;RegInfoHash&quot;</span>].ToString();  <br>dataSet.Tables[<span class="hljs-string">&quot;RegInfo&quot;</span>].Rows[<span class="hljs-number">0</span>][<span class="hljs-string">&quot;RegInfoSign&quot;</span>]  =  <span class="hljs-string">&quot;&quot;</span>;  <br>dataSet.Tables[<span class="hljs-string">&quot;RegInfo&quot;</span>].Rows[<span class="hljs-number">0</span>][<span class="hljs-string">&quot;RegInfoHash&quot;</span>]  =  <span class="hljs-string">&quot;&quot;</span>;  <br><span class="hljs-built_in">string</span>  b  =  FormsAuthentication.HashPasswordForStoringInConfigFile(dataSet.GetXml(),  <span class="hljs-string">&quot;sha1&quot;</span>);  <br>dataSet.Tables[<span class="hljs-string">&quot;RegInfo&quot;</span>].Rows[<span class="hljs-number">0</span>][<span class="hljs-string">&quot;RegInfoHash&quot;</span>]  =  text;  <br><span class="hljs-keyword">if</span>  (!(text  ==  b)  ||  !ValidateClass.VerifySignedHash(dataSet.GetXml(),  str_SignedData))  <br>&#123;  <br>PageClass.UrlRedirect(<span class="hljs-string">&quot;软件授权文件已被篡改，请致电我公司更换授权文件！&quot;</span>,  <span class="hljs-number">0</span>);  <br><span class="hljs-keyword">return</span>  <span class="hljs-literal">null</span>;  <br>}<br><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></td></tr></table></figure>
+<p>要想满足验证条件，需要让license取到的RegInfoHash和代码计算的license文件内容的SHA1值相等，或者RegInfoSign值未发生改变<br>这里需要注意的是，该程序在计算license的SHA1时并不是对全文件内容进行计算，而是将RegInfoHash和RegInfoSign去除后计算的SHA1,如果不将这两个值去掉，计算的结果将永远不会相等。<br>为了验证我们的猜想是否正确，我们基于此代码写一个控制台程序来验证<br><a target="_blank" rel="noopener" href="http://old.saferoad.cc/wp-content/uploads/2020/07/20200702164838.png"><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281521144.png"></a></p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre class="line-numbers language-hljs c#"><span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Main</span>(<span class="hljs-params"><span class="hljs-built_in">string</span>[] args</span>)</span><br>        &#123;<br>            DataSet RegInfoDS = <span class="hljs-keyword">new</span> DataSet(<span class="hljs-string">&quot;FinancialDB&quot;</span>);<br>            RegInfoDS.ReadXml(<span class="hljs-string">@&quot;C:\Users\15105\Desktop\GrantCert.xml&quot;</span>);<br>            <span class="hljs-built_in">string</span> SignRegInfo = RegInfoDS.Tables[<span class="hljs-string">&quot;RegInfo&quot;</span>].Rows[<span class="hljs-number">0</span>][<span class="hljs-string">&quot;RegInfoSign&quot;</span>].ToString();<br>            <span class="hljs-built_in">string</span> RegInfoHash = RegInfoDS.Tables[<span class="hljs-string">&quot;RegInfo&quot;</span>].Rows[<span class="hljs-number">0</span>][<span class="hljs-string">&quot;RegInfoHash&quot;</span>].ToString();<br>            RegInfoDS.Tables[<span class="hljs-string">&quot;RegInfo&quot;</span>].Rows[<span class="hljs-number">0</span>][<span class="hljs-string">&quot;RegInfoSign&quot;</span>] = <span class="hljs-string">&quot;&quot;</span>;<br>            RegInfoDS.Tables[<span class="hljs-string">&quot;RegInfo&quot;</span>].Rows[<span class="hljs-number">0</span>][<span class="hljs-string">&quot;RegInfoHash&quot;</span>] = <span class="hljs-string">&quot;&quot;</span>;<br>            Console.WriteLine(RegInfoDS.GetXml());<br>            <span class="hljs-built_in">string</span> _RegInfoHash = FormsAuthentication.HashPasswordForStoringInConfigFile(RegInfoDS.GetXml(), <span class="hljs-string">&quot;sha1&quot;</span>);<br>            RegInfoDS.Tables[<span class="hljs-string">&quot;RegInfo&quot;</span>].Rows[<span class="hljs-number">0</span>][<span class="hljs-string"><code class="language-hljs c#"><span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Main</span>(<span class="hljs-params"><span class="hljs-built_in">string</span>[] args</span>)</span><br>        &#123;<br>            DataSet RegInfoDS = <span class="hljs-keyword">new</span> DataSet(<span class="hljs-string">&quot;FinancialDB&quot;</span>);<br>            RegInfoDS.ReadXml(<span class="hljs-string">@&quot;C:\Users\15105\Desktop\GrantCert.xml&quot;</span>);<br>            <span class="hljs-built_in">string</span> SignRegInfo = RegInfoDS.Tables[<span class="hljs-string">&quot;RegInfo&quot;</span>].Rows[<span class="hljs-number">0</span>][<span class="hljs-string">&quot;RegInfoSign&quot;</span>].ToString();<br>            <span class="hljs-built_in">string</span> RegInfoHash = RegInfoDS.Tables[<span class="hljs-string">&quot;RegInfo&quot;</span>].Rows[<span class="hljs-number">0</span>][<span class="hljs-string">&quot;RegInfoHash&quot;</span>].ToString();<br>            RegInfoDS.Tables[<span class="hljs-string">&quot;RegInfo&quot;</span>].Rows[<span class="hljs-number">0</span>][<span class="hljs-string">&quot;RegInfoSign&quot;</span>] = <span class="hljs-string">&quot;&quot;</span>;<br>            RegInfoDS.Tables[<span class="hljs-string">&quot;RegInfo&quot;</span>].Rows[<span class="hljs-number">0</span>][<span class="hljs-string">&quot;RegInfoHash&quot;</span>] = <span class="hljs-string">&quot;&quot;</span>;<br>            Console.WriteLine(RegInfoDS.GetXml());<br>            <span class="hljs-built_in">string</span> _RegInfoHash = FormsAuthentication.HashPasswordForStoringInConfigFile(RegInfoDS.GetXml(), <span class="hljs-string">&quot;sha1&quot;</span>);<br>            RegInfoDS.Tables[<span class="hljs-string">&quot;RegInfo&quot;</span>].Rows[<span class="hljs-number">0</span>][<span class="hljs-string">"RegInfoHash"</span>] = RegInfoHash;<br>            Console.WriteLine(RegInfoHash);<br>            Console.WriteLine(_RegInfoHash);<br>            <br>            Console.ReadKey();<br>        }<br><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></td></tr></table></figure>
+<p>我们将Dataset中的内容和程序取到的RegInfoHash以及程序计算的_RegInfoHash的值进行输出<br><a target="_blank" rel="noopener" href="http://old.saferoad.cc/wp-content/uploads/2020/07/20200702165106.png"><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281518258.png"></a><br>可以看到DataSet中RegInfoHash和RegInfoSignd的值确实被清空了<br>而程序计算的RegInfoHash值为<br>DC2D12FF05096641050DEC7950C77AB45DA92DD6<br>我们license中RegInfoHash值为<br>A32E1B7670600768761D3705F256B2032E9127A1<br>显然验证是不通过的，我们将程序计算的SHA1值替换掉原来的RegInfoHash，再来看一次<br><a target="_blank" rel="noopener" href="http://old.saferoad.cc/wp-content/uploads/2020/07/20200702165522.png"><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281518960.png"></a><br>为了破解的通用型，我们将这里的判断直接干掉，这样我们只需要更改原来的ClientHDid即可，我们再次将license进行替换并把新编译好的dll放到bin下并替换，并重启网站<br><a target="_blank" rel="noopener" href="http://old.saferoad.cc/wp-content/uploads/2020/07/20200702171352.png"><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281518272.png"></a><br>这样我们就可以开心的玩耍了，好了今天故事就讲到这里了~</p>
+
+  </article>
+
+  
+      
+    <div class="nexmoe-post-copyright">
+        <strong>本文作者：</strong>S0cke3t<br>
+        <strong>本文链接：</strong><a href="https://www.saferoad.cc/Audit/Agriculture-information-platform-audit-crack.html" title="https:&#x2F;&#x2F;www.saferoad.cc&#x2F;Audit&#x2F;Agriculture-information-platform-audit-crack.html" target="_blank" rel="noopener">https:&#x2F;&#x2F;www.saferoad.cc&#x2F;Audit&#x2F;Agriculture-information-platform-audit-crack.html</a><br>
+        
+            <strong>版权声明：</strong>本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank">CC BY-NC-SA 3.0 CN</a> 协议进行许可
+        
+    </div>
+
+
+  
+  
+  <div class="nexmoe-post-meta nexmoe-rainbow">
+    
+        <a class="nexmoefont icon-appstore-fill -link" href="/categories/Audit/">Audit</a>
+    
+    
+        <a class="nexmoefont icon-tag-fill -none-link" href="/tags/ASP-NET/" rel="tag">ASP.NET</a> <a class="nexmoefont icon-tag-fill -none-link" href="/tags/Csharp/" rel="tag">Csharp</a>
+    
+</div>
+
+  
+      <div class="nexmoe-post-footer">
+          
+      </div>
+  
+</div>
+            <div class="nexmoe-post-right">
+              <div class="nexmoe-fixed">
+                  <div class="nexmoe-tool"> 
+                    
+                      
+                        
+                          
+                          
+                              <button class="mdui-fab catalog" style="overflow:unset;">
+                                  <i class="nexmoefont icon-i-catalog"></i>
+                                  <div class="nexmoe-toc">
+                                      <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1"><span class="toc-number">2.</span> <span class="toc-text">代码审计</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#SQL%E6%B3%A8%E5%85%A5"><span class="toc-number">2.1.</span> <span class="toc-text">SQL注入</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0"><span class="toc-number">2.2.</span> <span class="toc-text">任意文件上传</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%A0%B4%E8%A7%A3"><span class="toc-number">3.</span> <span class="toc-text">破解</span></a></li></ol>
+                                  </div>
+                              </button>
+                          
+                          
+                      
+                    
+                      <a href="#nexmoe-content" class="toc-link" aria-label="回到顶部" title="top"><button class="mdui-fab mdui-ripple"><i class="nexmoefont icon-caret-top"></i></button></a>
+                  </div>
+              </div>
+            </div>
+        </div>
+    </div>
+     
+    <div id="nexmoe-search-space">
+        <div class="search-container">
+            <div class="search-header">
+                <div class="search-input-container">
+                    <input class="search-input" type="text" placeholder="搜索" oninput="sinput();">
+                </div>
+                <a class="search-close" onclick="sclose();">×</a>
+            </div>
+            <div class="search-body"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/combine/npm/lazysizes@5.1.0/lazysizes.min.js,npm/mdui@0.4.3/dist/js/mdui.min.js?v=1"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+ 
+
+<script async src="/js/app.js?v=1681132088708"></script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js"></script>
+<script>
+	$(".justified-gallery").justifiedGallery({
+		rowHeight: 160,
+		margins: 10,
+	});
+</script>
+
+
+    
+
+
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+
+<head>
+    
+    <title>Xcloud license analysis &amp; crack - S0cke3t&#39;s Blog</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta name="keywords" content="渗透测试,CISP-PTE,代码审计,破解,移动安全,安全工具,漏洞利用">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+    
+    
+
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <meta name="description" content="某运维监控系统授权分析&amp;Crack">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Xcloud license analysis &amp; crack">
+<meta property="og:url" content="https://www.saferoad.cc/Crack/Xcloud-license-analysis-crack.html">
+<meta property="og:site_name" content="S0cke3t&#39;s Blog">
+<meta property="og:description" content="某运维监控系统授权分析&amp;Crack">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/03/19/202303191703635.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/03/19/202303191705453.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/03/19/202303191707821.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/03/19/202303191708257.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/03/19/202303191711576.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/03/19/202303191712244.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/03/19/202303191715286.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/03/19/202303191717753.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/03/19/202303191828292.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/03/19/202303191826532.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/03/19/202303191829283.png">
+<meta property="article:published_time" content="2023-03-19T05:34:46.000Z">
+<meta property="article:modified_time" content="2023-04-04T13:20:01.032Z">
+<meta property="article:author" content="S0cke3t">
+<meta property="article:tag" content="Java">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/03/19/202303191703635.png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/highlight.js@9.15.8/styles/atom-one-dark.css,npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css,gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css,npm/hexo-theme-nexmoe@latest/source/lib/mdui_043tiny/css/mdui.css,npm/hexo-theme-nexmoe@latest/source/lib/iconfont/iconfont.css?v=233" crossorigin>
+    <link rel="stylesheet" href="/css/style.css?v=1681132088605">
+     
+    
+    <link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1681132088605">
+    
+<meta name="generator" content="Hexo 6.1.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+<body class="mdui-drawer-body-left">
+    
+    <div id="nexmoe-background">
+        <div class="nexmoe-bg" style="background-image: url(https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/newbolg/202203272236776.jpg)"></div>
+        <div class="mdui-appbar mdui-shadow-0">
+            <div class="mdui-toolbar">
+                <a mdui-drawer="{target: '#drawer', swipe: true}" title="menu" class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon nexmoefont icon-menu"></i></a>
+                <div class="mdui-toolbar-spacer"></div>
+                <!--<a href="javascript:;" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">search</i></a>-->
+                <a href="/" title="S0cke3t" class="mdui-btn mdui-btn-icon"><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/202203272159225.jpg" alt="S0cke3t"></a>
+            </div>
+        </div>
+    </div>
+    <div id="nexmoe-header">
+        
+<meta name="keywords" content="wgcloud破解,渗透测试,CISP-PTE,代码审计,破解,移动安全,安全工具,漏洞利用">
+
+<div class="nexmoe-drawer mdui-drawer" id="drawer">
+    <div class="nexmoe-avatar mdui-ripple">
+        <a href="/" title="S0cke3t">
+            <img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/202203272159225.jpg" alt="S0cke3t" alt="S0cke3t">
+        </a>
+    </div>
+    <div class="nexmoe-count">
+        <div><span>文章</span>40</div>
+        <div><span>标签</span>28</div>
+        <div><span>分类</span>12</div>
+    </div>
+    <div class="nexmoe-list mdui-list" mdui-collapse="{accordion: true}">
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/" title="回到首页">
+            <i class="mdui-list-item-icon nexmoefont icon-home"></i>
+            <div class="mdui-list-item-content">
+                回到首页
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/archives.html" title="文章归档">
+            <i class="mdui-list-item-icon nexmoefont icon-container"></i>
+            <div class="mdui-list-item-content">
+                文章归档
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/aboutme.html" title="关于我">
+            <i class="mdui-list-item-icon nexmoefont icon-info-circle"></i>
+            <div class="mdui-list-item-content">
+                关于我
+            </div>
+        </a>
+        
+    </div>
+    <aside id="nexmoe-sidebar">
+    
+    <div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-search">
+         
+            <form id="search_form" action_e="https://cn.bing.com/search?q=site:saferoad.cc" onsubmit="return search();">
+                <label><input id="search_value" name="q" type="search" placeholder="搜索"></label>
+            </form>
+         
+    </div>
+</div>
+    
+    <div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-social">
+        <a class="mdui-ripple" href="https://github.com/DeEpinGh0st/" target="_blank" mdui-tooltip="{content: 'GitHub'}" style="color: rgb(25, 23, 23);background-color: rgba(25, 23, 23, .15);">
+            <i class="nexmoefont icon-github"></i>
+        </a>
+    </div>
+</div>
+    
+    
+  <div class="nexmoe-widget-wrap">
+    <h3 class="nexmoe-widget-title">文章分类</h3>
+    <div class="nexmoe-widget">
+
+      <ul class="category-list">
+
+        
+
+
+        
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Analysis/">Analysis</a>
+          <span class="category-list-count">11</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Android/">Android</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Audit/">Audit</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Bypass/">Bypass</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/CISP-PTE/">CISP-PTE</a>
+          <span class="category-list-count">2</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Case-share/">Case share</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Crack/">Crack</a>
+          <span class="category-list-count">3</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Deserialization/">Deserialization</a>
+          <span class="category-list-count">2</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Docker/">Docker</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Emergency/">Emergency</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Notes/">Notes</a>
+          <span class="category-list-count">6</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Sectool/">Sectool</a>
+          <span class="category-list-count">10</span>
+        </li>
+
+        
+      </ul>
+
+    </div>
+  </div>
+
+
+    
+    
+  <div class="nexmoe-widget-wrap">
+    <div id="randomtagcloud" class="nexmoe-widget tagcloud nexmoe-rainbow">
+      <a href="/tags/ASP-NET/" style="font-size: 12.5px;">ASP.NET</a> <a href="/tags/Bypass/" style="font-size: 15px;">Bypass</a> <a href="/tags/Csharp/" style="font-size: 17.5px;">Csharp</a> <a href="/tags/Django/" style="font-size: 10px;">Django</a> <a href="/tags/Domain-security/" style="font-size: 10px;">Domain security</a> <a href="/tags/Flink/" style="font-size: 10px;">Flink</a> <a href="/tags/Frida/" style="font-size: 10px;">Frida</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/Java/" style="font-size: 20px;">Java</a> <a href="/tags/KeyGen/" style="font-size: 10px;">KeyGen</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Nim/" style="font-size: 10px;">Nim</a> <a href="/tags/PHP/" style="font-size: 12.5px;">PHP</a> <a href="/tags/Pentest/" style="font-size: 10px;">Pentest</a> <a href="/tags/Portainer/" style="font-size: 10px;">Portainer</a> <a href="/tags/Python/" style="font-size: 15px;">Python</a> <a href="/tags/Reappearance/" style="font-size: 10px;">Reappearance</a> <a href="/tags/SecTool/" style="font-size: 10px;">SecTool</a> <a href="/tags/Seeyon/" style="font-size: 10px;">Seeyon</a> <a href="/tags/Spring/" style="font-size: 15px;">Spring</a> <a href="/tags/Sqlmap/" style="font-size: 10px;">Sqlmap</a> <a href="/tags/Struts2/" style="font-size: 10px;">Struts2</a> <a href="/tags/ThinkPHP/" style="font-size: 10px;">ThinkPHP</a> <a href="/tags/Windows/" style="font-size: 12.5px;">Windows</a> <a href="/tags/WordPress/" style="font-size: 10px;">WordPress</a> <a href="/tags/cuckoo/" style="font-size: 10px;">cuckoo</a> <a href="/tags/sandbox/" style="font-size: 10px;">sandbox</a> <a href="/tags/solution/" style="font-size: 10px;">solution</a>
+    </div>
+    
+  </div>
+
+    
+</aside>
+    <div class="nexmoe-copyright">
+        &copy; 2023 S0cke3t
+        Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+        & <a href="https://github.com/theme-nexmoe/hexo-theme-nexmoe" target="_blank">Nexmoe</a>
+        <br/>Too Young Too Sample
+    </div>
+</div><!-- .nexmoe-drawer -->
+    </div>
+    <div id="nexmoe-content">
+        <div class="nexmoe-primary">
+            <div class="nexmoe-post">
+
+  <article>
+      
+          <div class="nexmoe-post-cover" style="padding-bottom: NaN%;"> 
+              <img data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/03/19/202303191343676.jpg" data-sizes="auto" alt="Xcloud license analysis &amp; crack" class="lazyload">
+              <h1>Xcloud license analysis &amp; crack</h1>
+          </div>
+      
+      
+      <div class="nexmoe-post-meta nexmoe-rainbow" style="margin:10px 0!important;">
+    <a><i class="nexmoefont icon-calendar-fill"></i>2023年03月19日</a>
+    <a><i class="nexmoefont icon-areachart"></i>2.2k 字</a>
+    <a><i class="nexmoefont icon-time-circle-fill"></i>大概 11 分钟</a>
+</div>
+
+      
+
+      <p><strong>本文只做技术分析交流使用，请勿用于非法用途</strong></p>
+<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>Wgcloud是一个Linux运维监控工具，支持系统硬件信息，内存，cpu，温度，磁盘空间及IO，硬盘smart，系统负载，网络流量等监控，服务接口，大屏展示，拓扑图，进程监控，端口监控，docker监控，文件防篡改，日志监控，数据可视化，web ssh，堡垒机，指令下发批量执行，Linux面板(探针)，SNMP，故障告警,分为个人版和专业版,个人版免费但有监控数量限制,专业版按监控数量收费</p>
+<h4 id="授权分析"><a href="#授权分析" class="headerlink" title="授权分析"></a>授权分析</h4><p>此系统采用springboot作为开发框架,只有一个jar包</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/03/19/202303191703635.png" alt="image-20230319170355599" class="lazyload"></p>
+<p>将<code>wgcloud-server-release.jar</code>拖入jd-gui进行反编译</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/03/19/202303191705453.png" alt="image-20230319170541413" class="lazyload"></p>
+<p>在task里可以看到相关license验证的计划任务</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/03/19/202303191707821.png" alt="image-20230319170718757" class="lazyload"></p>
+<p>在validateLicense中主要验证逻辑由<code>LicenseUtil.validateLicense</code>处理</p>
+<p>跟进<code>LicenseUtil.validateLicense</code></p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/03/19/202303191708257.png" alt="image-20230319170854194" class="lazyload"></p>
+<p>在<code>com.wgcloud.util.licenseLicenseUtil:validateLicense</code>中，可以看到具体license验证逻辑</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/03/19/202303191711576.png" alt="image-20230319171127558" class="lazyload"></p>
+<p><code>validateLicense</code>首先读取目录下是否含有license.txt文件,如果没有检测到则重置为个人版</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/03/19/202303191712244.png" alt="image-20230319171206214" class="lazyload"></p>
+<p>如果存在license文件则调用<code> RSAEncrypt.decrypt</code>并传入相应公钥对license文件进行解密</p>
+<p>并将解密后的数据按<code>-</code>进行分割,其中<code>[0]</code>为授权到期时间,<code>[1]</code>为授权数量,<code>[2]</code>为授权名称</p>
+<p>取值完成过后将具体值赋值给StaticKeys对象,StaticKeys是一个license对象,负责保存相关license信息</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/03/19/202303191715286.png" alt="image-20230319171557229" class="lazyload"></p>
+<p>随后判断授权时间是否是2099开头,是的话显示为永久授权,最后打印相关license信息</p>
+<p>跟进<code>RSAEncrypt.decrypt</code>看一下解密中还有没有其他操作</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/03/19/202303191717753.png" alt="image-20230319171702695" class="lazyload"></p>
+<p>可以看到在<code>RSAEncrypt.decrypt</code>就是常规的RSA解密,并无其他操作</p>
+<p>到这里我们大致了解了license解密验证相关流程,可以选择破解的方案有很多</p>
+<ul>
+<li>直接修改validateLicense整体代码逻辑,直接赋值StaticKeys对象值</li>
+<li>修改<code>RSAEncrypt.decrypt</code>返回值</li>
+<li>替换解密公钥</li>
+<li>…..</li>
+</ul>
+<p>笔者这里选择替换解密公钥</p>
+<h4 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h4><p>具体实现我们可以反编译一份代码，直接在源代码基础上修改相关代码,但此方式工作量比较大且比较繁琐,无法适配新版本</p>
+<p>这里笔者采用<code>javassist</code>技术进行无侵入式修改字节码技术,也就是<code>javaagent</code>技术</p>
+<p>具体如何编写一个<code>javaagent</code>,感兴趣的可以自己去google搜索,这里给出一个大致demo</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre class="line-numbers language-hljs java"><span class="hljs-keyword">if</span>(className.startsWith(<span class="hljs-string">&quot;com/wgcloud/util/license/LicenseUtil&quot;</span>)) &#123;<br>                System.out.println(<span class="hljs-string">&quot;Finded license class -------- &quot;</span> + className + <span class="hljs-string">&quot;\r\n&quot;</span>);<br>            &#125;<br>            <span class="hljs-keyword">if</span> (<span class="hljs-string">&quot;com/wgcloud/util/license/LicenseUtil&quot;</span>.equals(className)) &#123;<br>                System.out.println(<span class="hljs-string">&quot;*****Loaded license class****&quot;</span>);<br>                <span class="hljs-keyword">try</span> &#123;<br>                    <span class="hljs-type">ClassPool</span> <span class="hljs-variable">classPool</span> <span class="hljs-operator">=</span> ClassPool.getDefault();<br>                    <span class="hljs-type">ClassClassPath</span> <span class="hljs-variable">classPath</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ClassClassPath</span>(<span class="hljs-built_in">this</span>.getClass());<br>                    <span class="hljs-comment">//String path = System.getProperty(&quot;user.dir&quot;);</span><br>                    <span class="hljs-type">String</span> <span class="hljs-variable">jarpath</span> <span class="hljs-operator">=</span> getPath() + <span class="hljs-string">&quot;/wgcloud-server-release.jar&quot;</span>;<br>                    System.out.println(<span class="hljs-string">&quot;Current path: &quot;</span> + jarpath);<br>                    classPool.appendClassPath(jarpath);<br>                    classPool.insertClassPath(classPath);<br>                    <span class="hljs-type">CtClass</span> <span class="hljs-variable">clazz</span> <span class="hljs-operator">=</span> classPool.get(<span class="hljs-string">&quot;com.wgcloud.util.license.LicenseUtil&quot;</span>);<br>                    <span class="hljs-type">CtMethod</span> <span class="hljs-variable">convertToAbbr</span> <span class="hljs-operator">=</span> clazz.getDeclaredMethod(<span class="hljs-string">&quot;validateLicense&quot;</span>);<br>                    <span class="hljs-type">String</span> <span class="hljs-variable">methodBody</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;&#123;try &#123;\n&quot;</span> +<br>                            <span class="hljs-string">&quot;       String path = System.getProperty(\&quot;user.dir\&quot;);\n&quot;</span> +<br>                            <span class="hljs-string">&quot;       String licenseStr = readLicFile(path + \&quot;/license.txt\&quot;);\n&quot;</span> +<br>                            <span class="hljs-string">&quot;       if (org.apache.commons.lang3.StringUtils.isEmpty(licenseStr)) &#123;\n&quot;</span> +<br>                            <span class="hljs-string">&quot;         logger.info(\&quot;没有检测到授权文件/server/license.txt，当前版本重置为个人版\&quot;);\n&quot;</span> +<br>                            <span class="hljs-string">&quot;         return \&quot;0\&quot;;\n&quot;</span> +<br>                            <span class="hljs-string">&quot;       &#125; \n&quot;</span> +<br>                            <span class="hljs-string">&quot;       byte[] res = com.wgcloud.util.license.RSAEncrypt.decrypt(com.wgcloud.util.license.RSAEncrypt.loadPublicKeyByStr(\&quot;MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCHIQUYtBNK6seYa3+q8qtbtuobp1WZ/5dphM1EzpvIC3FWcak6vfM5ZHsT+29b6uuqW6CgeLusU1Dc9bcokytfKWv/mFWf8BRJE+tMvUnmqSUE0KjNdtWljU001LjNLw7sydv1FoDIOoA1EqHBgKguVkUCZYr9SdUcMhCMBSHzswIDAQAB\&quot;), cn.hutool.core.codec.Base64.decode(licenseStr));\n&quot;</span> +<br>                            <span class="hljs-string">&quot;       String restr = new String(res);\n&quot;</span> +<br>                            <span class="hljs-string">&quot;       if (org.apache.commons.lang3.StringUtils.isEmpty(restr)) &#123;\n&quot;</span> +<br>                            <span class="hljs-string">&quot;         logger.info(\&quot;license解密公钥为空\&quot;);\n&quot;</span> +<br>                            <span class="hljs-string">&quot;         return \&quot;0\&quot;;\n&quot;</span> +<br>                            <span class="hljs-string">&quot;       &#125; \n&quot;</span> +<br>                            <span class="hljs-string">&quot;       String[] restrs = restr.split(\&quot;-\&quot;);\n&quot;</span> +<br>                            <span class="hljs-string">&quot;       String date = restrs[0];\n&quot;</span> +<br>                            <span class="hljs-string">&quot;       String num = restrs[1];\n&quot;</span> +<br>                            <span class="hljs-string">&quot;       String name = restrs[2];\n&quot;</span> +<br>                            <span class="hljs-string">&quot;       com.wgcloud.util.staticvar.StaticKeys.LICENSE_DATE = date;\n&quot;</span> +<br>                            <span class="hljs-string">&quot;       com.wgcloud.util.staticvar.StaticKeys.LICENSE_NUM = Integer.valueOf(num).intValue();\n&quot;</span> +<br>                            <span class="hljs-string">&quot;       com.wgcloud.util.staticvar.StaticKeys.LICENSE_NAME = name;\n&quot;</span> +<br>                            <span class="hljs-string">&quot;       logger.info(\&quot;license解析成功：到期时间\&quot; + (com.wgcloud.util.staticvar.StaticKeys.LICENSE_DATE.startsWith(\&quot;2099\&quot;) ? \&quot;永久授权\&quot; : com.wgcloud.util.staticvar.StaticKeys.LICENSE_DATE) + \&quot;，授权节点数量\&quot; + com.wgcloud.util.staticvar.StaticKeys.LICENSE_NUM + \&quot;，客户名称\&quot; + com.wgcloud.util.staticvar.StaticKeys.LICENSE_NAME);\n&quot;</span> +<br>                            <span class="hljs-string">&quot;       long LICENSE_DATE = Long.valueOf(date).longValue();\n&quot;</span> +<br>                            <span class="hljs-string">&quot;       if ($1 &gt; com.wgcloud.util.staticvar.StaticKeys.LICENSE_NUM || $3 &gt; com.wgcloud.util.staticvar.StaticKeys.LICENSE_NUM) &#123;\n&quot;</span> +<br>                            <span class="hljs-string">&quot;         logInfoService.save(\&quot;授权解析错误\&quot;, \&quot;监控节点超过授权节点数量：\&quot; + num + \&quot;，当前监控节点数量：\&quot; + $1, \&quot;2\&quot;);\n&quot;</span> +<br>                            <span class="hljs-string">&quot;         logger.info(\&quot;监控节点超过授权节点数量，当前监控节点数量\&quot; + $1 + \&quot;，数通PING数量\&quot; + $3);\n&quot;</span> +<br>                            <span class="hljs-string">&quot;         return \&quot;3\&quot;;\n&quot;</span> +<br>                            <span class="hljs-string">&quot;       &#125; \n&quot;</span> +<br>                            <span class="hljs-string">&quot;       Long nowDate = Long.valueOf(com.wgcloud.util.DateUtil.getCurrentDate().replace(\&quot;-\&quot;, \&quot;\&quot;));\n&quot;</span> +<br>                            <span class="hljs-string">&quot;       if (nowDate.longValue() &gt; LICENSE_DATE) &#123;\n&quot;</span> +<br>                            <span class="hljs-string">&quot;         logInfoService.save(\&quot;授权解析错误\&quot;, \&quot;授权已经到期：\&quot; + date, \&quot;2\&quot;);\n&quot;</span> +<br>                            <span class="hljs-string">&quot;         logger.info(\&quot;授权已经到期\&quot;);\n&quot;</span> +<br>                            <span class="hljs-string">&quot;         return \&quot;2\&quot;;\n&quot;</span> +<br>                            <span class="hljs-string">&quot;       &#125; \n&quot;</span> +<br>                            <span class="hljs-string">&quot;       com.wgcloud.util.staticvar.StaticKeys.LICENSE_PAGE = com.wgcloud.util.staticvar.StaticKeys.LICENSE_NUM / $2 + 1;\n&quot;</span> +<br>                            <span class="hljs-string">&quot;     &#125; catch (Exception e) &#123;\n&quot;</span> +<br>                            <span class="hljs-string">&quot;       logger.error(\&quot;解析授权文件错误：\&quot;, e);\n&quot;</span> +<br>                            <span class="hljs-string">&quot;       return \&quot;0\&quot;;\n&quot;</span> +<br>                            <span class="hljs-string">&quot;     &#125; \n&quot;</span> +<br>                            <span class="hljs-string">&quot;     return \&quot;1\&quot;;&#125;&quot;</span>;<br>                    convertToAbbr.setBody(methodBody);<br>                    <span class="hljs-comment">// 返回字节码，并且detachCtClass对象</span><br>                    <span class="hljs-type">byte</span>[] byteCode = clazz.toBytecode();<br>                    <span class="hljs-comment">//detach的意思是将内存中曾经被javassist加载过的对象移除，如果下次有需要在内存中找不到会重新走javassist加载</span><br>                    clazz.detach();<br>                    System.out.println(<span class="hljs-string">&quot;Patch successfully&quot;</span>);<br>                    <span class="hljs-keyword">return</span> byteCode;<br>                &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>                    e.printStackTrace();<br>                &#125;<br>            &#125;<br>            <span class="hljs-keyword">return</span> <span class="hljs-literal"><code class="language-hljs java"><span class="hljs-keyword">if</span>(className.startsWith(<span class="hljs-string">&quot;com/wgcloud/util/license/LicenseUtil&quot;</span>)) &#123;<br>                System.out.println(<span class="hljs-string">&quot;Finded license class -------- &quot;</span> + className + <span class="hljs-string">&quot;\r\n&quot;</span>);<br>            &#125;<br>            <span class="hljs-keyword">if</span> (<span class="hljs-string">&quot;com/wgcloud/util/license/LicenseUtil&quot;</span>.equals(className)) &#123;<br>                System.out.println(<span class="hljs-string">&quot;*****Loaded license class****&quot;</span>);<br>                <span class="hljs-keyword">try</span> &#123;<br>                    <span class="hljs-type">ClassPool</span> <span class="hljs-variable">classPool</span> <span class="hljs-operator">=</span> ClassPool.getDefault();<br>                    <span class="hljs-type">ClassClassPath</span> <span class="hljs-variable">classPath</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ClassClassPath</span>(<span class="hljs-built_in">this</span>.getClass());<br>                    <span class="hljs-comment">//String path = System.getProperty(&quot;user.dir&quot;);</span><br>                    <span class="hljs-type">String</span> <span class="hljs-variable">jarpath</span> <span class="hljs-operator">=</span> getPath() + <span class="hljs-string">&quot;/wgcloud-server-release.jar&quot;</span>;<br>                    System.out.println(<span class="hljs-string">&quot;Current path: &quot;</span> + jarpath);<br>                    classPool.appendClassPath(jarpath);<br>                    classPool.insertClassPath(classPath);<br>                    <span class="hljs-type">CtClass</span> <span class="hljs-variable">clazz</span> <span class="hljs-operator">=</span> classPool.get(<span class="hljs-string">&quot;com.wgcloud.util.license.LicenseUtil&quot;</span>);<br>                    <span class="hljs-type">CtMethod</span> <span class="hljs-variable">convertToAbbr</span> <span class="hljs-operator">=</span> clazz.getDeclaredMethod(<span class="hljs-string">&quot;validateLicense&quot;</span>);<br>                    <span class="hljs-type">String</span> <span class="hljs-variable">methodBody</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;&#123;try &#123;\n&quot;</span> +<br>                            <span class="hljs-string">&quot;       String path = System.getProperty(\&quot;user.dir\&quot;);\n&quot;</span> +<br>                            <span class="hljs-string">&quot;       String licenseStr = readLicFile(path + \&quot;/license.txt\&quot;);\n&quot;</span> +<br>                            <span class="hljs-string">&quot;       if (org.apache.commons.lang3.StringUtils.isEmpty(licenseStr)) &#123;\n&quot;</span> +<br>                            <span class="hljs-string">&quot;         logger.info(\&quot;没有检测到授权文件/server/license.txt，当前版本重置为个人版\&quot;);\n&quot;</span> +<br>                            <span class="hljs-string">&quot;         return \&quot;0\&quot;;\n&quot;</span> +<br>                            <span class="hljs-string">&quot;       &#125; \n&quot;</span> +<br>                            <span class="hljs-string">&quot;       byte[] res = com.wgcloud.util.license.RSAEncrypt.decrypt(com.wgcloud.util.license.RSAEncrypt.loadPublicKeyByStr(\&quot;MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCHIQUYtBNK6seYa3+q8qtbtuobp1WZ/5dphM1EzpvIC3FWcak6vfM5ZHsT+29b6uuqW6CgeLusU1Dc9bcokytfKWv/mFWf8BRJE+tMvUnmqSUE0KjNdtWljU001LjNLw7sydv1FoDIOoA1EqHBgKguVkUCZYr9SdUcMhCMBSHzswIDAQAB\&quot;), cn.hutool.core.codec.Base64.decode(licenseStr));\n&quot;</span> +<br>                            <span class="hljs-string">&quot;       String restr = new String(res);\n&quot;</span> +<br>                            <span class="hljs-string">&quot;       if (org.apache.commons.lang3.StringUtils.isEmpty(restr)) &#123;\n&quot;</span> +<br>                            <span class="hljs-string">&quot;         logger.info(\&quot;license解密公钥为空\&quot;);\n&quot;</span> +<br>                            <span class="hljs-string">&quot;         return \&quot;0\&quot;;\n&quot;</span> +<br>                            <span class="hljs-string">&quot;       &#125; \n&quot;</span> +<br>                            <span class="hljs-string">&quot;       String[] restrs = restr.split(\&quot;-\&quot;);\n&quot;</span> +<br>                            <span class="hljs-string">&quot;       String date = restrs[0];\n&quot;</span> +<br>                            <span class="hljs-string">&quot;       String num = restrs[1];\n&quot;</span> +<br>                            <span class="hljs-string">&quot;       String name = restrs[2];\n&quot;</span> +<br>                            <span class="hljs-string">&quot;       com.wgcloud.util.staticvar.StaticKeys.LICENSE_DATE = date;\n&quot;</span> +<br>                            <span class="hljs-string">&quot;       com.wgcloud.util.staticvar.StaticKeys.LICENSE_NUM = Integer.valueOf(num).intValue();\n&quot;</span> +<br>                            <span class="hljs-string">&quot;       com.wgcloud.util.staticvar.StaticKeys.LICENSE_NAME = name;\n&quot;</span> +<br>                            <span class="hljs-string">&quot;       logger.info(\&quot;license解析成功：到期时间\&quot; + (com.wgcloud.util.staticvar.StaticKeys.LICENSE_DATE.startsWith(\&quot;2099\&quot;) ? \&quot;永久授权\&quot; : com.wgcloud.util.staticvar.StaticKeys.LICENSE_DATE) + \&quot;，授权节点数量\&quot; + com.wgcloud.util.staticvar.StaticKeys.LICENSE_NUM + \&quot;，客户名称\&quot; + com.wgcloud.util.staticvar.StaticKeys.LICENSE_NAME);\n&quot;</span> +<br>                            <span class="hljs-string">&quot;       long LICENSE_DATE = Long.valueOf(date).longValue();\n&quot;</span> +<br>                            <span class="hljs-string">&quot;       if ($1 &gt; com.wgcloud.util.staticvar.StaticKeys.LICENSE_NUM || $3 &gt; com.wgcloud.util.staticvar.StaticKeys.LICENSE_NUM) &#123;\n&quot;</span> +<br>                            <span class="hljs-string">&quot;         logInfoService.save(\&quot;授权解析错误\&quot;, \&quot;监控节点超过授权节点数量：\&quot; + num + \&quot;，当前监控节点数量：\&quot; + $1, \&quot;2\&quot;);\n&quot;</span> +<br>                            <span class="hljs-string">&quot;         logger.info(\&quot;监控节点超过授权节点数量，当前监控节点数量\&quot; + $1 + \&quot;，数通PING数量\&quot; + $3);\n&quot;</span> +<br>                            <span class="hljs-string">&quot;         return \&quot;3\&quot;;\n&quot;</span> +<br>                            <span class="hljs-string">&quot;       &#125; \n&quot;</span> +<br>                            <span class="hljs-string">&quot;       Long nowDate = Long.valueOf(com.wgcloud.util.DateUtil.getCurrentDate().replace(\&quot;-\&quot;, \&quot;\&quot;));\n&quot;</span> +<br>                            <span class="hljs-string">&quot;       if (nowDate.longValue() &gt; LICENSE_DATE) &#123;\n&quot;</span> +<br>                            <span class="hljs-string">&quot;         logInfoService.save(\&quot;授权解析错误\&quot;, \&quot;授权已经到期：\&quot; + date, \&quot;2\&quot;);\n&quot;</span> +<br>                            <span class="hljs-string">&quot;         logger.info(\&quot;授权已经到期\&quot;);\n&quot;</span> +<br>                            <span class="hljs-string">&quot;         return \&quot;2\&quot;;\n&quot;</span> +<br>                            <span class="hljs-string">&quot;       &#125; \n&quot;</span> +<br>                            <span class="hljs-string">&quot;       com.wgcloud.util.staticvar.StaticKeys.LICENSE_PAGE = com.wgcloud.util.staticvar.StaticKeys.LICENSE_NUM / $2 + 1;\n&quot;</span> +<br>                            <span class="hljs-string">&quot;     &#125; catch (Exception e) &#123;\n&quot;</span> +<br>                            <span class="hljs-string">&quot;       logger.error(\&quot;解析授权文件错误：\&quot;, e);\n&quot;</span> +<br>                            <span class="hljs-string">&quot;       return \&quot;0\&quot;;\n&quot;</span> +<br>                            <span class="hljs-string">&quot;     &#125; \n&quot;</span> +<br>                            <span class="hljs-string">&quot;     return \&quot;1\&quot;;&#125;&quot;</span>;<br>                    convertToAbbr.setBody(methodBody);<br>                    <span class="hljs-comment">// 返回字节码，并且detachCtClass对象</span><br>                    <span class="hljs-type">byte</span>[] byteCode = clazz.toBytecode();<br>                    <span class="hljs-comment">//detach的意思是将内存中曾经被javassist加载过的对象移除，如果下次有需要在内存中找不到会重新走javassist加载</span><br>                    clazz.detach();<br>                    System.out.println(<span class="hljs-string">&quot;Patch successfully&quot;</span>);<br>                    <span class="hljs-keyword">return</span> byteCode;<br>                &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>                    e.printStackTrace();<br>                &#125;<br>            &#125;<br>            <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></td></tr></table></figure>
+
+<p>大致流程为,检测到加载<code>com.wgcloud.util.license.LicenseUtil</code>类时,直接修改<code>validateLicense</code>函数代码体中的解密公钥</p>
+<h4 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h4><p>按照验证流程生成license.txt文件放入根目录下</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/03/19/202303191828292.png" alt="image-20230319182847269" class="lazyload"></p>
+<p>将agent编译成jar后使用<code>-javaagent</code>参数启动<code>wgcloud-server</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre class="line-numbers language-hljs bash"><code class="language-hljs bash">java -javaagent:Wg-agent-1.0-SNAPSHOT-jar-with-dependencies.jar -jar wgcloud-server-release.jar<br><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></td></tr></table></figure>
+
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/03/19/202303191826532.png" alt="image-20230318155825914" class="lazyload"></p>
+<p>成功解析授权文件,登录系统查看</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/03/19/202303191829283.png" alt="image-20230318160022557" class="lazyload"></p>
+<p>Bingo</p>
+<h4 id="注"><a href="#注" class="headerlink" title="注"></a>注</h4><p><strong>本文仅作为技术分享交流,不提供任何成品文件及工具</strong></p>
+<p><strong>创业不易,有能力的请支持正版</strong></p>
+<p><a target="_blank" rel="noopener" href="https://www.wgstart.com/">购买Wgcloud</a></p>
+
+  </article>
+
+  
+      
+    <div class="nexmoe-post-copyright">
+        <strong>本文作者：</strong>S0cke3t<br>
+        <strong>本文链接：</strong><a href="https://www.saferoad.cc/Crack/Xcloud-license-analysis-crack.html" title="https:&#x2F;&#x2F;www.saferoad.cc&#x2F;Crack&#x2F;Xcloud-license-analysis-crack.html" target="_blank" rel="noopener">https:&#x2F;&#x2F;www.saferoad.cc&#x2F;Crack&#x2F;Xcloud-license-analysis-crack.html</a><br>
+        
+            <strong>版权声明：</strong>本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank">CC BY-NC-SA 3.0 CN</a> 协议进行许可
+        
+    </div>
+
+
+  
+  
+  <div class="nexmoe-post-meta nexmoe-rainbow">
+    
+        <a class="nexmoefont icon-appstore-fill -link" href="/categories/Crack/">Crack</a>
+    
+    
+        <a class="nexmoefont icon-tag-fill -none-link" href="/tags/Java/" rel="tag">Java</a>
+    
+</div>
+
+  
+      <div class="nexmoe-post-footer">
+          
+      </div>
+  
+</div>
+            <div class="nexmoe-post-right">
+              <div class="nexmoe-fixed">
+                  <div class="nexmoe-tool"> 
+                    
+                      
+                        
+                          
+                          
+                              <button class="mdui-fab catalog" style="overflow:unset;">
+                                  <i class="nexmoefont icon-i-catalog"></i>
+                                  <div class="nexmoe-toc">
+                                      <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8E%88%E6%9D%83%E5%88%86%E6%9E%90"><span class="toc-number">2.</span> <span class="toc-text">授权分析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0"><span class="toc-number">3.</span> <span class="toc-text">实现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%88%E6%9E%9C"><span class="toc-number">4.</span> <span class="toc-text">效果</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B3%A8"><span class="toc-number">5.</span> <span class="toc-text">注</span></a></li></ol>
+                                  </div>
+                              </button>
+                          
+                          
+                      
+                    
+                      <a href="#nexmoe-content" class="toc-link" aria-label="回到顶部" title="top"><button class="mdui-fab mdui-ripple"><i class="nexmoefont icon-caret-top"></i></button></a>
+                  </div>
+              </div>
+            </div>
+        </div>
+    </div>
+     
+    <div id="nexmoe-search-space">
+        <div class="search-container">
+            <div class="search-header">
+                <div class="search-input-container">
+                    <input class="search-input" type="text" placeholder="搜索" oninput="sinput();">
+                </div>
+                <a class="search-close" onclick="sclose();">×</a>
+            </div>
+            <div class="search-body"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/combine/npm/lazysizes@5.1.0/lazysizes.min.js,npm/mdui@0.4.3/dist/js/mdui.min.js?v=1"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+ 
+
+<script async src="/js/app.js?v=1681132088621"></script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js"></script>
+<script>
+	$(".justified-gallery").justifiedGallery({
+		rowHeight: 160,
+		margins: 10,
+	});
+</script>
+
+
+    
+
+
+
+
+
+</body>
+
+</html>

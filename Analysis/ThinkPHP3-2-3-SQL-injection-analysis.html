@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+
+<head>
+    
+    <title>ThinkPHP3.2.3 SQL injection analysis - S0cke3t&#39;s Blog</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta name="keywords" content="渗透测试,CISP-PTE,代码审计,破解,移动安全,安全工具,漏洞利用">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+    
+    
+
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <meta name="description" content="ThinkPHP3.2.3 where注入分析">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ThinkPHP3.2.3 SQL injection analysis">
+<meta property="og:url" content="https://www.saferoad.cc/Analysis/ThinkPHP3-2-3-SQL-injection-analysis.html">
+<meta property="og:site_name" content="S0cke3t&#39;s Blog">
+<meta property="og:description" content="ThinkPHP3.2.3 where注入分析">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281454509.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281455584.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281454805.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281456019.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281456259.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281454605.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281454087.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281454520.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281454499.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281454787.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281454759.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281456108.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281454879.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281454635.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281456474.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281454043.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281454039.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281454523.png">
+<meta property="article:published_time" content="2020-07-24T06:52:59.000Z">
+<meta property="article:modified_time" content="2022-03-28T11:34:47.761Z">
+<meta property="article:author" content="S0cke3t">
+<meta property="article:tag" content="ThinkPHP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281454509.png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/highlight.js@9.15.8/styles/atom-one-dark.css,npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css,gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css,npm/hexo-theme-nexmoe@latest/source/lib/mdui_043tiny/css/mdui.css,npm/hexo-theme-nexmoe@latest/source/lib/iconfont/iconfont.css?v=233" crossorigin>
+    <link rel="stylesheet" href="/css/style.css?v=1681132088698">
+     
+    
+    <link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1681132088698">
+    
+<meta name="generator" content="Hexo 6.1.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+<body class="mdui-drawer-body-left">
+    
+    <div id="nexmoe-background">
+        <div class="nexmoe-bg" style="background-image: url(https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/newbolg/202203272236776.jpg)"></div>
+        <div class="mdui-appbar mdui-shadow-0">
+            <div class="mdui-toolbar">
+                <a mdui-drawer="{target: '#drawer', swipe: true}" title="menu" class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon nexmoefont icon-menu"></i></a>
+                <div class="mdui-toolbar-spacer"></div>
+                <!--<a href="javascript:;" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">search</i></a>-->
+                <a href="/" title="S0cke3t" class="mdui-btn mdui-btn-icon"><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/202203272159225.jpg" alt="S0cke3t"></a>
+            </div>
+        </div>
+    </div>
+    <div id="nexmoe-header">
+        
+<meta name="keywords" content="渗透测试,CISP-PTE,代码审计,破解,移动安全,安全工具,漏洞利用">
+
+<div class="nexmoe-drawer mdui-drawer" id="drawer">
+    <div class="nexmoe-avatar mdui-ripple">
+        <a href="/" title="S0cke3t">
+            <img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/202203272159225.jpg" alt="S0cke3t" alt="S0cke3t">
+        </a>
+    </div>
+    <div class="nexmoe-count">
+        <div><span>文章</span>40</div>
+        <div><span>标签</span>28</div>
+        <div><span>分类</span>12</div>
+    </div>
+    <div class="nexmoe-list mdui-list" mdui-collapse="{accordion: true}">
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/" title="回到首页">
+            <i class="mdui-list-item-icon nexmoefont icon-home"></i>
+            <div class="mdui-list-item-content">
+                回到首页
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/archives.html" title="文章归档">
+            <i class="mdui-list-item-icon nexmoefont icon-container"></i>
+            <div class="mdui-list-item-content">
+                文章归档
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/aboutme.html" title="关于我">
+            <i class="mdui-list-item-icon nexmoefont icon-info-circle"></i>
+            <div class="mdui-list-item-content">
+                关于我
+            </div>
+        </a>
+        
+    </div>
+    <aside id="nexmoe-sidebar">
+    
+    <div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-search">
+         
+            <form id="search_form" action_e="https://cn.bing.com/search?q=site:saferoad.cc" onsubmit="return search();">
+                <label><input id="search_value" name="q" type="search" placeholder="搜索"></label>
+            </form>
+         
+    </div>
+</div>
+    
+    <div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-social">
+        <a class="mdui-ripple" href="https://github.com/DeEpinGh0st/" target="_blank" mdui-tooltip="{content: 'GitHub'}" style="color: rgb(25, 23, 23);background-color: rgba(25, 23, 23, .15);">
+            <i class="nexmoefont icon-github"></i>
+        </a>
+    </div>
+</div>
+    
+    
+  <div class="nexmoe-widget-wrap">
+    <h3 class="nexmoe-widget-title">文章分类</h3>
+    <div class="nexmoe-widget">
+
+      <ul class="category-list">
+
+        
+
+
+        
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Analysis/">Analysis</a>
+          <span class="category-list-count">11</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Android/">Android</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Audit/">Audit</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Bypass/">Bypass</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/CISP-PTE/">CISP-PTE</a>
+          <span class="category-list-count">2</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Case-share/">Case share</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Crack/">Crack</a>
+          <span class="category-list-count">3</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Deserialization/">Deserialization</a>
+          <span class="category-list-count">2</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Docker/">Docker</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Emergency/">Emergency</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Notes/">Notes</a>
+          <span class="category-list-count">6</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Sectool/">Sectool</a>
+          <span class="category-list-count">10</span>
+        </li>
+
+        
+      </ul>
+
+    </div>
+  </div>
+
+
+    
+    
+  <div class="nexmoe-widget-wrap">
+    <div id="randomtagcloud" class="nexmoe-widget tagcloud nexmoe-rainbow">
+      <a href="/tags/ASP-NET/" style="font-size: 12.5px;">ASP.NET</a> <a href="/tags/Bypass/" style="font-size: 15px;">Bypass</a> <a href="/tags/Csharp/" style="font-size: 17.5px;">Csharp</a> <a href="/tags/Django/" style="font-size: 10px;">Django</a> <a href="/tags/Domain-security/" style="font-size: 10px;">Domain security</a> <a href="/tags/Flink/" style="font-size: 10px;">Flink</a> <a href="/tags/Frida/" style="font-size: 10px;">Frida</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/Java/" style="font-size: 20px;">Java</a> <a href="/tags/KeyGen/" style="font-size: 10px;">KeyGen</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Nim/" style="font-size: 10px;">Nim</a> <a href="/tags/PHP/" style="font-size: 12.5px;">PHP</a> <a href="/tags/Pentest/" style="font-size: 10px;">Pentest</a> <a href="/tags/Portainer/" style="font-size: 10px;">Portainer</a> <a href="/tags/Python/" style="font-size: 15px;">Python</a> <a href="/tags/Reappearance/" style="font-size: 10px;">Reappearance</a> <a href="/tags/SecTool/" style="font-size: 10px;">SecTool</a> <a href="/tags/Seeyon/" style="font-size: 10px;">Seeyon</a> <a href="/tags/Spring/" style="font-size: 15px;">Spring</a> <a href="/tags/Sqlmap/" style="font-size: 10px;">Sqlmap</a> <a href="/tags/Struts2/" style="font-size: 10px;">Struts2</a> <a href="/tags/ThinkPHP/" style="font-size: 10px;">ThinkPHP</a> <a href="/tags/Windows/" style="font-size: 12.5px;">Windows</a> <a href="/tags/WordPress/" style="font-size: 10px;">WordPress</a> <a href="/tags/cuckoo/" style="font-size: 10px;">cuckoo</a> <a href="/tags/sandbox/" style="font-size: 10px;">sandbox</a> <a href="/tags/solution/" style="font-size: 10px;">solution</a>
+    </div>
+    
+  </div>
+
+    
+</aside>
+    <div class="nexmoe-copyright">
+        &copy; 2023 S0cke3t
+        Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+        & <a href="https://github.com/theme-nexmoe/hexo-theme-nexmoe" target="_blank">Nexmoe</a>
+        <br/>Too Young Too Sample
+    </div>
+</div><!-- .nexmoe-drawer -->
+    </div>
+    <div id="nexmoe-content">
+        <div class="nexmoe-primary">
+            <div class="nexmoe-post">
+
+  <article>
+      
+          <div class="nexmoe-post-cover" style="padding-bottom: 66.66666666666666%;"> 
+              <img data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/newbolg/202203272236776.jpg" data-sizes="auto" alt="ThinkPHP3.2.3 SQL injection analysis" class="lazyload">
+              <h1>ThinkPHP3.2.3 SQL injection analysis</h1>
+          </div>
+      
+      
+      <div class="nexmoe-post-meta nexmoe-rainbow" style="margin:10px 0!important;">
+    <a><i class="nexmoefont icon-calendar-fill"></i>2020年07月24日</a>
+    <a><i class="nexmoefont icon-areachart"></i>827 字</a>
+    <a><i class="nexmoefont icon-time-circle-fill"></i>大概 3 分钟</a>
+</div>
+
+      
+
+      <h4 id="漏洞成因"><a href="#漏洞成因" class="headerlink" title="漏洞成因"></a>漏洞成因</h4><p>该注入出现在后端对数组型参数处理不当，可绕过参数过滤设置。导致恶意sql语句执行</p>
+<h4 id="环境设置"><a href="#环境设置" class="headerlink" title="环境设置"></a>环境设置</h4><h5 id="数据库配置"><a href="#数据库配置" class="headerlink" title="数据库配置"></a><strong>数据库配置</strong></h5><p>在&#x2F;application&#x2F;home&#x2F;conf&#x2F;config.php中添加如下代码</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre class="line-numbers language-hljs php"> <span class="hljs-meta">&lt;?php</span>  <br><span class="hljs-keyword">return</span> <span class="hljs-keyword">array</span>(  <br>  <span class="hljs-comment">//&#x27;配置项&#x27;=&gt;&#x27;配置值&#x27;  </span><br>  <span class="hljs-string">&#x27;DB_TYPE&#x27;</span> =&gt; <span class="hljs-string">&#x27;mysql&#x27;</span>,  <br>  <span class="hljs-string">&#x27;DB_HOST&#x27;</span> =&gt; <span class="hljs-string">&#x27;localhost&#x27;</span>,  <br>  <span class="hljs-string">&#x27;DB_NAME&#x27;</span> =&gt; <span class="hljs-string">&#x27;tp&#x27;</span>,  <br>  <span class="hljs-string">&#x27;DB_USER&#x27;</span> =&gt; <span class="hljs-string">&#x27;root&#x27;</span>,  <br>  <span class="hljs-string">&#x27;DB_PWD&#x27;</span> =&gt; <span class="hljs-string">&#x27;root&#x27;</span>,  <br>  <span class="hljs-string">&#x27;DB_PORT&#x27;</span> =&gt; <span class="hljs-string">&#x27;3306&#x27;</span>,  <br>  <span class="hljs-string">&#x27;DB_FIELDS_CACHE&#x27;</span> =&gt; <span class="hljs-literal">true</span>,  <br>  <span class="hljs-string">&#x27;DB_CHARSET&#x27;</span> =&gt; <span class="hljs-string">&#x27;utf8&#x27;</span>,  <br>  <span class="hljs-string"><code class="language-hljs php"> <span class="hljs-meta">&lt;?php</span>  <br><span class="hljs-keyword">return</span> <span class="hljs-keyword">array</span>(  <br>  <span class="hljs-comment">//&#x27;配置项&#x27;=&gt;&#x27;配置值&#x27;  </span><br>  <span class="hljs-string">&#x27;DB_TYPE&#x27;</span> =&gt; <span class="hljs-string">&#x27;mysql&#x27;</span>,  <br>  <span class="hljs-string">&#x27;DB_HOST&#x27;</span> =&gt; <span class="hljs-string">&#x27;localhost&#x27;</span>,  <br>  <span class="hljs-string">&#x27;DB_NAME&#x27;</span> =&gt; <span class="hljs-string">&#x27;tp&#x27;</span>,  <br>  <span class="hljs-string">&#x27;DB_USER&#x27;</span> =&gt; <span class="hljs-string">&#x27;root&#x27;</span>,  <br>  <span class="hljs-string">&#x27;DB_PWD&#x27;</span> =&gt; <span class="hljs-string">&#x27;root&#x27;</span>,  <br>  <span class="hljs-string">&#x27;DB_PORT&#x27;</span> =&gt; <span class="hljs-string">&#x27;3306&#x27;</span>,  <br>  <span class="hljs-string">&#x27;DB_FIELDS_CACHE&#x27;</span> =&gt; <span class="hljs-literal">true</span>,  <br>  <span class="hljs-string">&#x27;DB_CHARSET&#x27;</span> =&gt; <span class="hljs-string">&#x27;utf8&#x27;</span>,  <br>  <span class="hljs-string">&#x27;&#x27;</span>  <br>);<br><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></td></tr></table></figure>
+<p>参数值根据具体情况进行填写<br>随后在mysql中新建与配置名称相同的数据库，并新建user表在其中添加三个字段id,username,password.并设置id为自增主键，最后在表中插入一条数据。</p>
+<h5 id="项目设置"><a href="#项目设置" class="headerlink" title="项目设置"></a><strong>项目设置</strong></h5><p>在&#x2F;Application&#x2F;Home&#x2F;Controller&#x2F;IndexController.class.php文件index()函数中添加如下代码</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre class="line-numbers language-hljs php"> <span class="hljs-variable">$id</span> = <span class="hljs-title function_ invoke__">I</span>(<span class="hljs-string">&#x27;id&#x27;</span>);  <br><span class="hljs-variable">$res</span> = <span class="hljs-title function_ invoke__">M</span>(<span class="hljs-string">&#x27;user&#x27;</span>)-&gt;<span class="hljs-title function_ invoke__">find</span>(<span class="hljs-variable">$id</span>);  <br><span class="hljs-title function_ invoke__">var_dump</span>(<span class="hljs-variable"><code class="language-hljs php"> <span class="hljs-variable">$id</span> = <span class="hljs-title function_ invoke__">I</span>(<span class="hljs-string">&#x27;id&#x27;</span>);  <br><span class="hljs-variable">$res</span> = <span class="hljs-title function_ invoke__">M</span>(<span class="hljs-string">&#x27;user&#x27;</span>)-&gt;<span class="hljs-title function_ invoke__">find</span>(<span class="hljs-variable">$id</span>);  <br><span class="hljs-title function_ invoke__">var_dump</span>(<span class="hljs-variable">$res</span>);<br><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></td></tr></table></figure>
+<p> 在浏览器中访问<code>http://localhost/index.php?m=Home&amp;c=Index&amp;a=index&amp;id=1</code>，如果出现<br><a target="_blank" rel="noopener" href="http://old.saferoad.cc/wp-content/uploads/2020/07/20200724091552.png"><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281454509.png"></a><br> 则证明设置正常</p>
+<h4 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h4><p>将网上公开的poc带入到url中，进行断点调试。poc如下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre class="line-numbers language-hljs plaintext"><code class="language-hljs plaintext">id[where]=1 and updatexml(1,concat(0x7e,user(),0x7e),1)%23<br><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></td></tr></table></figure>
+<p>先来看I函数,首先进行参数来源的判断，默认自动判断为param随后通过<code>$_SERVER[&#39;REQUEST_METHOD&#39;]</code>获取参数传递方式<br><a target="_blank" rel="noopener" href="http://old.saferoad.cc/wp-content/uploads/2020/07/20200723155926.png"><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281455584.png"></a><br>随后调用C函数获取配置文件的DEFAULT_FILTER加载默认filter，然后调用array_map_recursive进行参数过滤<br><a target="_blank" rel="noopener" href="http://old.saferoad.cc/wp-content/uploads/2020/07/20200723160232.png"><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281454805.png"></a><br>跟进array_map_recursive<br><a target="_blank" rel="noopener" href="http://old.saferoad.cc/wp-content/uploads/2020/07/20200723160512.png"><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281456019.png"></a><br>依次取出data值，使用call_user_func对data值进行过滤。最后调用thinkphp底层过滤函数think_filter</p>
+<p>跟进<br><a target="_blank" rel="noopener" href="http://old.saferoad.cc/wp-content/uploads/2020/07/20200723161403.png"><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281456259.png"></a><br>可以看到整个过程未对我们的poc产生影响，那么问题应该出现在后续的操作中。继续往下走进入到find函数中<br><a target="_blank" rel="noopener" href="http://old.saferoad.cc/wp-content/uploads/2020/07/20200723162613.png"><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281454605.png"></a><br>首先对$option也就是我们传入的参数值进行判断，如果为数字或者字符串则使用默认where条件，此处option为数组并不满足条件，继续往下走进行复合主键的查询，由于我们的user表中只有一个主键所以条件也不满足，随后进入到_parseOptions函数进行表达式解析，跟进<br><a target="_blank" rel="noopener" href="http://old.saferoad.cc/wp-content/uploads/2020/07/20200723163634.png"><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281454087.png"></a><br><a target="_blank" rel="noopener" href="http://old.saferoad.cc/wp-content/uploads/2020/07/20200723163724.png"><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281454520.png"></a><br>此处虽然使用了_parseType对参数进行类型强转，但是根据我们传入的参数列表<code>option[where]</code>并不满足字段类型检测条件，所以就成功的进行了绕过<br><a target="_blank" rel="noopener" href="http://old.saferoad.cc/wp-content/uploads/2020/07/20200723164344.png"><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281454499.png"></a><br>继续往下走，在分析完表达式后调用db-&gt;select()<br><a target="_blank" rel="noopener" href="http://old.saferoad.cc/wp-content/uploads/2020/07/20200723164444.png"><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281454787.png"></a><br>跟进<br><a target="_blank" rel="noopener" href="http://old.saferoad.cc/wp-content/uploads/2020/07/20200723164705.png"><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281454759.png"></a><br>继续调用buildselectsql进行sql语句的解析<br><a target="_blank" rel="noopener" href="http://old.saferoad.cc/wp-content/uploads/2020/07/20200723164826.png"><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281456108.png"></a><br>继续调用parseSql<br><a target="_blank" rel="noopener" href="http://old.saferoad.cc/wp-content/uploads/2020/07/20200723165213.png"><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281454879.png"></a><br>此函数负责将%xxxx%的表达式替换为sql语句，其中在进行表达式替换时直接使用的前端传入的option[‘where’],随后在parseWhere中也未进行合法性校验，直接使用了传入的字符串where条件<br><a target="_blank" rel="noopener" href="http://old.saferoad.cc/wp-content/uploads/2020/07/20200723170019.png"><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281454635.png"></a><br><a target="_blank" rel="noopener" href="http://old.saferoad.cc/wp-content/uploads/2020/07/20200723170206.png"><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281456474.png"></a><br>随后将sql语句带入到db-&gt;driver-&gt;query()中进行查询<br><a target="_blank" rel="noopener" href="http://old.saferoad.cc/wp-content/uploads/2020/07/20200723170411.png"><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281454043.png"></a><br><a target="_blank" rel="noopener" href="http://old.saferoad.cc/wp-content/uploads/2020/07/20200723170604.png"><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281454039.png"></a><br>调用堆栈如下<br><a target="_blank" rel="noopener" href="http://old.saferoad.cc/wp-content/uploads/2020/07/20200723171525.png"><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2020/10/10/202203281454523.png"></a></p>
+
+  </article>
+
+  
+      
+    <div class="nexmoe-post-copyright">
+        <strong>本文作者：</strong>S0cke3t<br>
+        <strong>本文链接：</strong><a href="https://www.saferoad.cc/Analysis/ThinkPHP3-2-3-SQL-injection-analysis.html" title="https:&#x2F;&#x2F;www.saferoad.cc&#x2F;Analysis&#x2F;ThinkPHP3-2-3-SQL-injection-analysis.html" target="_blank" rel="noopener">https:&#x2F;&#x2F;www.saferoad.cc&#x2F;Analysis&#x2F;ThinkPHP3-2-3-SQL-injection-analysis.html</a><br>
+        
+            <strong>版权声明：</strong>本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank">CC BY-NC-SA 3.0 CN</a> 协议进行许可
+        
+    </div>
+
+
+  
+  
+  <div class="nexmoe-post-meta nexmoe-rainbow">
+    
+        <a class="nexmoefont icon-appstore-fill -link" href="/categories/Analysis/">Analysis</a>
+    
+    
+        <a class="nexmoefont icon-tag-fill -none-link" href="/tags/ThinkPHP/" rel="tag">ThinkPHP</a>
+    
+</div>
+
+  
+      <div class="nexmoe-post-footer">
+          
+      </div>
+  
+</div>
+            <div class="nexmoe-post-right">
+              <div class="nexmoe-fixed">
+                  <div class="nexmoe-tool"> 
+                    
+                      
+                        
+                          
+                          
+                              <button class="mdui-fab catalog" style="overflow:unset;">
+                                  <i class="nexmoefont icon-i-catalog"></i>
+                                  <div class="nexmoe-toc">
+                                      <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E6%88%90%E5%9B%A0"><span class="toc-number">1.</span> <span class="toc-text">漏洞成因</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E8%AE%BE%E7%BD%AE"><span class="toc-number">2.</span> <span class="toc-text">环境设置</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E9%85%8D%E7%BD%AE"><span class="toc-number">2.1.</span> <span class="toc-text">数据库配置</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E9%A1%B9%E7%9B%AE%E8%AE%BE%E7%BD%AE"><span class="toc-number">2.2.</span> <span class="toc-text">项目设置</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90"><span class="toc-number">3.</span> <span class="toc-text">漏洞分析</span></a></li></ol>
+                                  </div>
+                              </button>
+                          
+                          
+                      
+                    
+                      <a href="#nexmoe-content" class="toc-link" aria-label="回到顶部" title="top"><button class="mdui-fab mdui-ripple"><i class="nexmoefont icon-caret-top"></i></button></a>
+                  </div>
+              </div>
+            </div>
+        </div>
+    </div>
+     
+    <div id="nexmoe-search-space">
+        <div class="search-container">
+            <div class="search-header">
+                <div class="search-input-container">
+                    <input class="search-input" type="text" placeholder="搜索" oninput="sinput();">
+                </div>
+                <a class="search-close" onclick="sclose();">×</a>
+            </div>
+            <div class="search-body"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/combine/npm/lazysizes@5.1.0/lazysizes.min.js,npm/mdui@0.4.3/dist/js/mdui.min.js?v=1"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+ 
+
+<script async src="/js/app.js?v=1681132088700"></script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js"></script>
+<script>
+	$(".justified-gallery").justifiedGallery({
+		rowHeight: 160,
+		margins: 10,
+	});
+</script>
+
+
+    
+
+
+
+
+
+</body>
+
+</html>

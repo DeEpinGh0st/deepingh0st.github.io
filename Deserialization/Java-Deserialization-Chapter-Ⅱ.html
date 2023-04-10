@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+
+<head>
+    
+    <title>Java Deserialization - Chapter Ⅱ - S0cke3t&#39;s Blog</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta name="keywords" content="渗透测试,CISP-PTE,代码审计,破解,移动安全,安全工具,漏洞利用">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+    
+    
+
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <meta name="description" content="Java反序列化 - 章节Ⅱ URLDNS&amp;HashMap">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java Deserialization - Chapter Ⅱ">
+<meta property="og:url" content="https://www.saferoad.cc/Deserialization/Java-Deserialization-Chapter-%E2%85%A1.html">
+<meta property="og:site_name" content="S0cke3t&#39;s Blog">
+<meta property="og:description" content="Java反序列化 - 章节Ⅱ URLDNS&amp;HashMap">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/04/10/202304101527176.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/04/10/202304101533191.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/04/10/202304101535233.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/04/10/202304101538906.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/04/10/202304101539393.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/04/10/202304101544970.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/04/10/202304101548083.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/04/10/202304101558096.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/04/10/202304101601035.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/04/10/202304101634033.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/04/10/202304101641969.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/04/10/202304101649661.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/04/10/202304102021455.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/04/10/202304102024332.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/04/10/202304102032481.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/04/10/202304102048161.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/04/10/202304102102189.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/04/10/202304102055359.png">
+<meta property="article:published_time" content="2023-04-10T06:48:17.000Z">
+<meta property="article:modified_time" content="2023-04-10T13:05:44.935Z">
+<meta property="article:author" content="S0cke3t">
+<meta property="article:tag" content="Java">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/04/10/202304101527176.png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/highlight.js@9.15.8/styles/atom-one-dark.css,npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css,gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css,npm/hexo-theme-nexmoe@latest/source/lib/mdui_043tiny/css/mdui.css,npm/hexo-theme-nexmoe@latest/source/lib/iconfont/iconfont.css?v=233" crossorigin>
+    <link rel="stylesheet" href="/css/style.css?v=1681132088582">
+     
+    
+    <link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1681132088582">
+    
+<meta name="generator" content="Hexo 6.1.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+<body class="mdui-drawer-body-left">
+    
+    <div id="nexmoe-background">
+        <div class="nexmoe-bg" style="background-image: url(https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/newbolg/202203272236776.jpg)"></div>
+        <div class="mdui-appbar mdui-shadow-0">
+            <div class="mdui-toolbar">
+                <a mdui-drawer="{target: '#drawer', swipe: true}" title="menu" class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon nexmoefont icon-menu"></i></a>
+                <div class="mdui-toolbar-spacer"></div>
+                <!--<a href="javascript:;" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">search</i></a>-->
+                <a href="/" title="S0cke3t" class="mdui-btn mdui-btn-icon"><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/202203272159225.jpg" alt="S0cke3t"></a>
+            </div>
+        </div>
+    </div>
+    <div id="nexmoe-header">
+        
+<meta name="keywords" content="渗透测试,CISP-PTE,代码审计,破解,移动安全,安全工具,漏洞利用">
+
+<div class="nexmoe-drawer mdui-drawer" id="drawer">
+    <div class="nexmoe-avatar mdui-ripple">
+        <a href="/" title="S0cke3t">
+            <img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/202203272159225.jpg" alt="S0cke3t" alt="S0cke3t">
+        </a>
+    </div>
+    <div class="nexmoe-count">
+        <div><span>文章</span>40</div>
+        <div><span>标签</span>28</div>
+        <div><span>分类</span>12</div>
+    </div>
+    <div class="nexmoe-list mdui-list" mdui-collapse="{accordion: true}">
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/" title="回到首页">
+            <i class="mdui-list-item-icon nexmoefont icon-home"></i>
+            <div class="mdui-list-item-content">
+                回到首页
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/archives.html" title="文章归档">
+            <i class="mdui-list-item-icon nexmoefont icon-container"></i>
+            <div class="mdui-list-item-content">
+                文章归档
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/aboutme.html" title="关于我">
+            <i class="mdui-list-item-icon nexmoefont icon-info-circle"></i>
+            <div class="mdui-list-item-content">
+                关于我
+            </div>
+        </a>
+        
+    </div>
+    <aside id="nexmoe-sidebar">
+    
+    <div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-search">
+         
+            <form id="search_form" action_e="https://cn.bing.com/search?q=site:saferoad.cc" onsubmit="return search();">
+                <label><input id="search_value" name="q" type="search" placeholder="搜索"></label>
+            </form>
+         
+    </div>
+</div>
+    
+    <div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-social">
+        <a class="mdui-ripple" href="https://github.com/DeEpinGh0st/" target="_blank" mdui-tooltip="{content: 'GitHub'}" style="color: rgb(25, 23, 23);background-color: rgba(25, 23, 23, .15);">
+            <i class="nexmoefont icon-github"></i>
+        </a>
+    </div>
+</div>
+    
+    
+  <div class="nexmoe-widget-wrap">
+    <h3 class="nexmoe-widget-title">文章分类</h3>
+    <div class="nexmoe-widget">
+
+      <ul class="category-list">
+
+        
+
+
+        
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Analysis/">Analysis</a>
+          <span class="category-list-count">11</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Android/">Android</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Audit/">Audit</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Bypass/">Bypass</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/CISP-PTE/">CISP-PTE</a>
+          <span class="category-list-count">2</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Case-share/">Case share</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Crack/">Crack</a>
+          <span class="category-list-count">3</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Deserialization/">Deserialization</a>
+          <span class="category-list-count">2</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Docker/">Docker</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Emergency/">Emergency</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Notes/">Notes</a>
+          <span class="category-list-count">6</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Sectool/">Sectool</a>
+          <span class="category-list-count">10</span>
+        </li>
+
+        
+      </ul>
+
+    </div>
+  </div>
+
+
+    
+    
+  <div class="nexmoe-widget-wrap">
+    <div id="randomtagcloud" class="nexmoe-widget tagcloud nexmoe-rainbow">
+      <a href="/tags/ASP-NET/" style="font-size: 12.5px;">ASP.NET</a> <a href="/tags/Bypass/" style="font-size: 15px;">Bypass</a> <a href="/tags/Csharp/" style="font-size: 17.5px;">Csharp</a> <a href="/tags/Django/" style="font-size: 10px;">Django</a> <a href="/tags/Domain-security/" style="font-size: 10px;">Domain security</a> <a href="/tags/Flink/" style="font-size: 10px;">Flink</a> <a href="/tags/Frida/" style="font-size: 10px;">Frida</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/Java/" style="font-size: 20px;">Java</a> <a href="/tags/KeyGen/" style="font-size: 10px;">KeyGen</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Nim/" style="font-size: 10px;">Nim</a> <a href="/tags/PHP/" style="font-size: 12.5px;">PHP</a> <a href="/tags/Pentest/" style="font-size: 10px;">Pentest</a> <a href="/tags/Portainer/" style="font-size: 10px;">Portainer</a> <a href="/tags/Python/" style="font-size: 15px;">Python</a> <a href="/tags/Reappearance/" style="font-size: 10px;">Reappearance</a> <a href="/tags/SecTool/" style="font-size: 10px;">SecTool</a> <a href="/tags/Seeyon/" style="font-size: 10px;">Seeyon</a> <a href="/tags/Spring/" style="font-size: 15px;">Spring</a> <a href="/tags/Sqlmap/" style="font-size: 10px;">Sqlmap</a> <a href="/tags/Struts2/" style="font-size: 10px;">Struts2</a> <a href="/tags/ThinkPHP/" style="font-size: 10px;">ThinkPHP</a> <a href="/tags/Windows/" style="font-size: 12.5px;">Windows</a> <a href="/tags/WordPress/" style="font-size: 10px;">WordPress</a> <a href="/tags/cuckoo/" style="font-size: 10px;">cuckoo</a> <a href="/tags/sandbox/" style="font-size: 10px;">sandbox</a> <a href="/tags/solution/" style="font-size: 10px;">solution</a>
+    </div>
+    
+  </div>
+
+    
+</aside>
+    <div class="nexmoe-copyright">
+        &copy; 2023 S0cke3t
+        Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+        & <a href="https://github.com/theme-nexmoe/hexo-theme-nexmoe" target="_blank">Nexmoe</a>
+        <br/>Too Young Too Sample
+    </div>
+</div><!-- .nexmoe-drawer -->
+    </div>
+    <div id="nexmoe-content">
+        <div class="nexmoe-primary">
+            <div class="nexmoe-post">
+
+  <article>
+      
+          <div class="nexmoe-post-cover" style="padding-bottom: NaN%;"> 
+              <img data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/04/10/202304101451001.jpeg" data-sizes="auto" alt="Java Deserialization - Chapter Ⅱ" class="lazyload">
+              <h1>Java Deserialization - Chapter Ⅱ</h1>
+          </div>
+      
+      
+      <div class="nexmoe-post-meta nexmoe-rainbow" style="margin:10px 0!important;">
+    <a><i class="nexmoefont icon-calendar-fill"></i>2023年04月10日</a>
+    <a><i class="nexmoefont icon-areachart"></i>1.2k 字</a>
+    <a><i class="nexmoefont icon-time-circle-fill"></i>大概 5 分钟</a>
+</div>
+
+      
+
+      <h4 id="序"><a href="#序" class="headerlink" title="序"></a>序</h4><p>在上一节中我们大致讲解了Java中反序列化的基础知识以及造成漏洞的原因,这一节中我们主要来看一下<code>URLDNS</code>和<code>HashMap</code>在反序列化中的利用</p>
+<h4 id="URLDNS"><a href="#URLDNS" class="headerlink" title="URLDNS"></a>URLDNS</h4><p>首先在java内置库中并没有叫做<code>URLDNS</code>的类,这个叫法主要来源于一个java反序列化利用工具<code>ysoserial</code>中的一个利用链的名称,其主要指的是java内置库中<code>java.net.url</code>类</p>
+<p>根据官方文档介绍<code>java.net.url</code>类主要是用来访问URL网络资源，获取<code>ur</code>l对象等相关的信息</p>
+<p>此类实现了<code>Serializable</code>接口</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/04/10/202304101527176.png" alt="Clip_20230410_152606" class="lazyload"></p>
+<p>其中我们需要关注的只有两个方法,那就是<code>equals</code>和<code>hashcode</code></p>
+<h5 id="equals"><a href="#equals" class="headerlink" title="equals"></a>equals</h5><p><code>equals</code>方法用于比较两个<code>URL</code>对象是否相等,比较依据为URL对象具有相同的协议，是否是相同的端口,以及是否具有相同的文件和片段</p>
+<p>除此之外如果两个主机名都可以解析成相同的IP地址，则两台主机被认为是等效的，在这一过程中<code>equals</code>会对传入的<code>url</code>进行<code>DNS</code>解析</p>
+<p>下面来看一下<code>equals</code>的比较流程</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/04/10/202304101533191.png" alt="Clip_20230410_153307" class="lazyload"></p>
+<p>首先在<code>equals</code>中判断了传入对象是否是<code>URL</code>的子类，如果符合条件则调用<code>this.handler.equals</code></p>
+<p>其中<code>this.handler</code>是一个<code>URLStreamHandler</code></p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/04/10/202304101535233.png" alt="Clip_20230410_153541" class="lazyload"></p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/04/10/202304101538906.png" alt="Clip_20230410_153648" class="lazyload"></p>
+<p>在<code>URLStreamHandler:equals</code>中简单判断字符串是否相同后调用<code>sameFile</code></p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/04/10/202304101539393.png" alt="Clip_20230410_153942" class="lazyload"></p>
+<p><code>sameFile</code>中对两个URL对象的文件,端口和协议进行比较,如相同则调用<code>hostsEqual</code></p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/04/10/202304101544970.png" alt="Clip_20230410_154437" class="lazyload"></p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/04/10/202304101548083.png" alt="Clip_20230410_154857" class="lazyload"></p>
+<p>在<code>hostsEqual</code>中调用<code>getHostAddress</code>完成对主机名的解析</p>
+<h5 id="hashcode"><a href="#hashcode" class="headerlink" title="hashcode"></a>hashcode</h5><p><code>hashcode</code>顾名思义就是计算<code>hash</code>表的索引值</p>
+<p>相比于<code>equals</code>，<code>hashcode</code>的流程要简单的多</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/04/10/202304101558096.png" alt="Clip_20230410_155800" class="lazyload"></p>
+<p>同样也是调用<code>URLStreamHandler</code>中的方法</p>
+<p>但这里需要注意的是<code>hashcode</code>会先判断当前<code>hashcode</code>的值,如果不是<code>-1</code>,会立即返回当前缓存的哈希值</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/04/10/202304101601035.png" alt="Clip_20230410_160124" class="lazyload"></p>
+<p>在<code>URLStreamHandler</code>的<code>hashcode</code>方法中同样也是调用<code>getHostAddress</code>解析主机名</p>
+<h4 id="HashMap"><a href="#HashMap" class="headerlink" title="HashMap"></a>HashMap</h4><p>ok,上面我们了解<code>url</code>中<code>equals</code>和<code>hashcode</code>两个方法的一个特性,无论是使用<code>equals</code>还是<code>hashcode</code>都会触发<code>DNS</code>的解析</p>
+<p>我们可以称它为一个<code>sink</code>,但是<code>sink</code>还是不够的,我们还需要找到一个可以触发<code>sink</code>的路径，这也就是我们常说的<code>gadget</code>也就是利用链</p>
+<p>通过上一节的基础知道我们知道,要想实现反序列化就需要实现<code>Serializable</code>或者<code>Externalizable</code>并重写<code>readObject</code>方法</p>
+<p>而在<code>URLDNS</code>最常用的一个<code>gadget</code>就是<code>java.util.HashMap</code>，做过java开发的应该对该类非常熟悉了</p>
+<p>下面来看一下<code>HashMap</code>的具体实现</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/04/10/202304101634033.png" alt="Clip_20230410_163417" class="lazyload"></p>
+<p>首先<code>HashMap</code>实现了<code>Serializable</code>接口并重写了<code>readObject</code>方法</p>
+<h5 id="readObject"><a href="#readObject" class="headerlink" title="readObject"></a>readObject</h5><p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/04/10/202304101641969.png" alt="Clip_20230410_164106" class="lazyload"></p>
+<p>除去前面一些初始化的代码，主要来看框内的,利用<code>for</code>循环遍历序列化对象的<code>key</code>和<code>value</code>值并调用<code>putVal</code>装填到<code>map</code>中</p>
+<p><code>putVal</code>需要五个参数分别是经过<code>hash</code>方法计算的<code>hashcode，key,value</code>以及两个布尔型的参数</p>
+<p>主要来看一下<code>hash</code>方法</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/04/10/202304101649661.png" alt="Clip_20230410_164955" class="lazyload"></p>
+<p>在<code>hash</code>中首先调用传入对象的<code>hashCode</code>方法将返回值和返回值移位16的值做异或操作，将最后的值作为哈希值</p>
+<p>到这里我们就可以和前面的<code>URL:hashcode</code>衔接起来了</p>
+<p>如果我们在序列化<code>HashMap</code>时将<code>key</code>设置为一个<code>URL</code>对象,那么在使用<code>HashMap</code>进行反序列化时就会调用<code>URL</code>对象的<code>hashCode</code>方法触发DNS解析</p>
+<h5 id="构造"><a href="#构造" class="headerlink" title="构造"></a>构造</h5><p>在构造之前我们需要解决两个问题，看下图</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/04/10/202304102021455.png" alt="image-20230410202149426" class="lazyload"></p>
+<p>我们在向<code>hashmap</code>里<code>put</code>时必定要会触发一次<code>DNS</code>解析,这显然不是我们希望发生的</p>
+<p>第二就是<code>hashcode</code>问题</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/04/10/202304102024332.png" alt="image-20230410202443306" class="lazyload"></p>
+<p>当我们在序列化如果按照正常<code>put</code>数据当到达<code>URL</code>对象<code>hashcode</code>由于会触发<code>DNS</code>解析,会缓存<code>hashcode</code></p>
+<p>当我们再次反序列化时<code>hashcode</code>不为<code>-1</code>也就无法触发<code>DNS</code>解析</p>
+<p>为解决以上问题,我们可以使用反射方式向<code>hashmap</code>中填充数据，并将<code>hashcode</code>初始化为<code>-1</code></p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/04/10/202304102032481.png" alt="image-20230410203200447" class="lazyload"></p>
+<p>首先声明一个<code>HashMap</code>类型为<code>URL</code>对象和一个整型</p>
+<p>随后声明一个<code>URL</code>对象并将我们的<code>payload</code>作为构造参数,接着通过<code>Class.forName</code>拿到我们的<code>HashMap</code>类对象并获取所有方法名</p>
+<p>当方法名为<code>putVal</code>时向通过<code>invoke</code>反射调用<code>putVal</code>向<code>hashmap</code>里填充构造的数据，指定<code>hashcode</code>为<code>-1</code>,<code>url</code>对象,键值。剩余两个参数可以从<code>put</code>方法照抄过来</p>
+<p>当然除上述方法，你还可尝试使用其他的方法</p>
+<p>最后我们通过<code>readObject</code>看一下调用过程</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/04/10/202304102048161.png" alt="image-20230410204811069" class="lazyload"></p>
+<p>首先<code>ObjectInputStream</code>通过正常反射调用到了<code>HashMap</code>的<code>readObject</code>(具体流程见上一章内容)</p>
+<p>随后进入到<code>hash</code>方法中,<code>hash</code>方法则会继续调用<code>URL</code>对象的<code>hashcode</code></p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/04/10/202304102102189.png" alt="image-20230410210209131" class="lazyload"></p>
+<p>这样就接上了我们最开始<code>URL</code>的<code>hashcode</code>流程，触发<code>DNS</code>解析</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/04/10/202304102055359.png" alt="image-20230410205557322" class="lazyload"></p>
+<p>由于此链并不能达到执行命令的效果，仅仅可以触发<code>DNS</code>解析，所有此链也常作为检测是否存在反序列化漏洞的测试<code>gadget</code></p>
+<p>That’s All</p>
+
+  </article>
+
+  
+      
+    <div class="nexmoe-post-copyright">
+        <strong>本文作者：</strong>S0cke3t<br>
+        <strong>本文链接：</strong><a href="https://www.saferoad.cc/Deserialization/Java-Deserialization-Chapter-%E2%85%A1.html" title="https:&#x2F;&#x2F;www.saferoad.cc&#x2F;Deserialization&#x2F;Java-Deserialization-Chapter-%E2%85%A1.html" target="_blank" rel="noopener">https:&#x2F;&#x2F;www.saferoad.cc&#x2F;Deserialization&#x2F;Java-Deserialization-Chapter-%E2%85%A1.html</a><br>
+        
+            <strong>版权声明：</strong>本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank">CC BY-NC-SA 3.0 CN</a> 协议进行许可
+        
+    </div>
+
+
+  
+  
+  <div class="nexmoe-post-meta nexmoe-rainbow">
+    
+        <a class="nexmoefont icon-appstore-fill -link" href="/categories/Deserialization/">Deserialization</a>
+    
+    
+        <a class="nexmoefont icon-tag-fill -none-link" href="/tags/Java/" rel="tag">Java</a>
+    
+</div>
+
+  
+      <div class="nexmoe-post-footer">
+          
+      </div>
+  
+</div>
+            <div class="nexmoe-post-right">
+              <div class="nexmoe-fixed">
+                  <div class="nexmoe-tool"> 
+                    
+                      
+                        
+                          
+                          
+                              <button class="mdui-fab catalog" style="overflow:unset;">
+                                  <i class="nexmoefont icon-i-catalog"></i>
+                                  <div class="nexmoe-toc">
+                                      <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BA%8F"><span class="toc-number">1.</span> <span class="toc-text">序</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#URLDNS"><span class="toc-number">2.</span> <span class="toc-text">URLDNS</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#equals"><span class="toc-number">2.1.</span> <span class="toc-text">equals</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#hashcode"><span class="toc-number">2.2.</span> <span class="toc-text">hashcode</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#HashMap"><span class="toc-number">3.</span> <span class="toc-text">HashMap</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#readObject"><span class="toc-number">3.1.</span> <span class="toc-text">readObject</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%9E%84%E9%80%A0"><span class="toc-number">3.2.</span> <span class="toc-text">构造</span></a></li></ol></li></ol>
+                                  </div>
+                              </button>
+                          
+                          
+                      
+                    
+                      <a href="#nexmoe-content" class="toc-link" aria-label="回到顶部" title="top"><button class="mdui-fab mdui-ripple"><i class="nexmoefont icon-caret-top"></i></button></a>
+                  </div>
+              </div>
+            </div>
+        </div>
+    </div>
+     
+    <div id="nexmoe-search-space">
+        <div class="search-container">
+            <div class="search-header">
+                <div class="search-input-container">
+                    <input class="search-input" type="text" placeholder="搜索" oninput="sinput();">
+                </div>
+                <a class="search-close" onclick="sclose();">×</a>
+            </div>
+            <div class="search-body"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/combine/npm/lazysizes@5.1.0/lazysizes.min.js,npm/mdui@0.4.3/dist/js/mdui.min.js?v=1"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+ 
+
+<script async src="/js/app.js?v=1681132088586"></script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js"></script>
+<script>
+	$(".justified-gallery").justifiedGallery({
+		rowHeight: 160,
+		margins: 10,
+	});
+</script>
+
+
+    
+
+
+
+
+
+</body>
+
+</html>

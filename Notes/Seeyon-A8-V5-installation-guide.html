@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+
+<head>
+    
+    <title>Seeyon A8 V5 installation guide - S0cke3t&#39;s Blog</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta name="keywords" content="渗透测试,CISP-PTE,代码审计,破解,移动安全,安全工具,漏洞利用">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+    
+    
+
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <meta name="description" content="致远OA A8 V5 Sp1安装部署过程记录">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Seeyon A8 V5 installation guide">
+<meta property="og:url" content="https://www.saferoad.cc/Notes/Seeyon-A8-V5-installation-guide.html">
+<meta property="og:site_name" content="S0cke3t&#39;s Blog">
+<meta property="og:description" content="致远OA A8 V5 Sp1安装部署过程记录">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2019/07/16/202203282026910.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2019/07/16/202203282024398.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2019/07/16/202203282024703.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2019/07/16/202203282027450.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2019/07/16/202203282027485.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2019/07/16/202203282024089.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2019/07/16/202203282024268.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2019/07/16/202203282024935.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2019/07/16/202203282028682.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2019/07/16/202203282024834.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2019/07/16/202203282028116.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2019/07/16/202203282028855.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2019/07/16/202203282024323.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2019/07/16/202203282024189.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2019/07/16/202203282024740.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2019/07/16/202203282024098.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2019/07/16/202203282029545.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2019/07/16/202203282024642.png">
+<meta property="article:published_time" content="2019-07-16T12:23:44.000Z">
+<meta property="article:modified_time" content="2022-03-28T12:30:50.837Z">
+<meta property="article:author" content="S0cke3t">
+<meta property="article:tag" content="Seeyon">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2019/07/16/202203282026910.png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/highlight.js@9.15.8/styles/atom-one-dark.css,npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css,gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css,npm/hexo-theme-nexmoe@latest/source/lib/mdui_043tiny/css/mdui.css,npm/hexo-theme-nexmoe@latest/source/lib/iconfont/iconfont.css?v=233" crossorigin>
+    <link rel="stylesheet" href="/css/style.css?v=1681132088732">
+     
+    
+    <link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1681132088732">
+    
+<meta name="generator" content="Hexo 6.1.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+<body class="mdui-drawer-body-left">
+    
+    <div id="nexmoe-background">
+        <div class="nexmoe-bg" style="background-image: url(https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/newbolg/202203272236776.jpg)"></div>
+        <div class="mdui-appbar mdui-shadow-0">
+            <div class="mdui-toolbar">
+                <a mdui-drawer="{target: '#drawer', swipe: true}" title="menu" class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon nexmoefont icon-menu"></i></a>
+                <div class="mdui-toolbar-spacer"></div>
+                <!--<a href="javascript:;" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">search</i></a>-->
+                <a href="/" title="S0cke3t" class="mdui-btn mdui-btn-icon"><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/202203272159225.jpg" alt="S0cke3t"></a>
+            </div>
+        </div>
+    </div>
+    <div id="nexmoe-header">
+        
+<meta name="keywords" content="渗透测试,CISP-PTE,代码审计,破解,移动安全,安全工具,漏洞利用">
+
+<div class="nexmoe-drawer mdui-drawer" id="drawer">
+    <div class="nexmoe-avatar mdui-ripple">
+        <a href="/" title="S0cke3t">
+            <img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/202203272159225.jpg" alt="S0cke3t" alt="S0cke3t">
+        </a>
+    </div>
+    <div class="nexmoe-count">
+        <div><span>文章</span>40</div>
+        <div><span>标签</span>28</div>
+        <div><span>分类</span>12</div>
+    </div>
+    <div class="nexmoe-list mdui-list" mdui-collapse="{accordion: true}">
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/" title="回到首页">
+            <i class="mdui-list-item-icon nexmoefont icon-home"></i>
+            <div class="mdui-list-item-content">
+                回到首页
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/archives.html" title="文章归档">
+            <i class="mdui-list-item-icon nexmoefont icon-container"></i>
+            <div class="mdui-list-item-content">
+                文章归档
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/aboutme.html" title="关于我">
+            <i class="mdui-list-item-icon nexmoefont icon-info-circle"></i>
+            <div class="mdui-list-item-content">
+                关于我
+            </div>
+        </a>
+        
+    </div>
+    <aside id="nexmoe-sidebar">
+    
+    <div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-search">
+         
+            <form id="search_form" action_e="https://cn.bing.com/search?q=site:saferoad.cc" onsubmit="return search();">
+                <label><input id="search_value" name="q" type="search" placeholder="搜索"></label>
+            </form>
+         
+    </div>
+</div>
+    
+    <div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-social">
+        <a class="mdui-ripple" href="https://github.com/DeEpinGh0st/" target="_blank" mdui-tooltip="{content: 'GitHub'}" style="color: rgb(25, 23, 23);background-color: rgba(25, 23, 23, .15);">
+            <i class="nexmoefont icon-github"></i>
+        </a>
+    </div>
+</div>
+    
+    
+  <div class="nexmoe-widget-wrap">
+    <h3 class="nexmoe-widget-title">文章分类</h3>
+    <div class="nexmoe-widget">
+
+      <ul class="category-list">
+
+        
+
+
+        
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Analysis/">Analysis</a>
+          <span class="category-list-count">11</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Android/">Android</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Audit/">Audit</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Bypass/">Bypass</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/CISP-PTE/">CISP-PTE</a>
+          <span class="category-list-count">2</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Case-share/">Case share</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Crack/">Crack</a>
+          <span class="category-list-count">3</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Deserialization/">Deserialization</a>
+          <span class="category-list-count">2</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Docker/">Docker</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Emergency/">Emergency</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Notes/">Notes</a>
+          <span class="category-list-count">6</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Sectool/">Sectool</a>
+          <span class="category-list-count">10</span>
+        </li>
+
+        
+      </ul>
+
+    </div>
+  </div>
+
+
+    
+    
+  <div class="nexmoe-widget-wrap">
+    <div id="randomtagcloud" class="nexmoe-widget tagcloud nexmoe-rainbow">
+      <a href="/tags/ASP-NET/" style="font-size: 12.5px;">ASP.NET</a> <a href="/tags/Bypass/" style="font-size: 15px;">Bypass</a> <a href="/tags/Csharp/" style="font-size: 17.5px;">Csharp</a> <a href="/tags/Django/" style="font-size: 10px;">Django</a> <a href="/tags/Domain-security/" style="font-size: 10px;">Domain security</a> <a href="/tags/Flink/" style="font-size: 10px;">Flink</a> <a href="/tags/Frida/" style="font-size: 10px;">Frida</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/Java/" style="font-size: 20px;">Java</a> <a href="/tags/KeyGen/" style="font-size: 10px;">KeyGen</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Nim/" style="font-size: 10px;">Nim</a> <a href="/tags/PHP/" style="font-size: 12.5px;">PHP</a> <a href="/tags/Pentest/" style="font-size: 10px;">Pentest</a> <a href="/tags/Portainer/" style="font-size: 10px;">Portainer</a> <a href="/tags/Python/" style="font-size: 15px;">Python</a> <a href="/tags/Reappearance/" style="font-size: 10px;">Reappearance</a> <a href="/tags/SecTool/" style="font-size: 10px;">SecTool</a> <a href="/tags/Seeyon/" style="font-size: 10px;">Seeyon</a> <a href="/tags/Spring/" style="font-size: 15px;">Spring</a> <a href="/tags/Sqlmap/" style="font-size: 10px;">Sqlmap</a> <a href="/tags/Struts2/" style="font-size: 10px;">Struts2</a> <a href="/tags/ThinkPHP/" style="font-size: 10px;">ThinkPHP</a> <a href="/tags/Windows/" style="font-size: 12.5px;">Windows</a> <a href="/tags/WordPress/" style="font-size: 10px;">WordPress</a> <a href="/tags/cuckoo/" style="font-size: 10px;">cuckoo</a> <a href="/tags/sandbox/" style="font-size: 10px;">sandbox</a> <a href="/tags/solution/" style="font-size: 10px;">solution</a>
+    </div>
+    
+  </div>
+
+    
+</aside>
+    <div class="nexmoe-copyright">
+        &copy; 2023 S0cke3t
+        Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+        & <a href="https://github.com/theme-nexmoe/hexo-theme-nexmoe" target="_blank">Nexmoe</a>
+        <br/>Too Young Too Sample
+    </div>
+</div><!-- .nexmoe-drawer -->
+    </div>
+    <div id="nexmoe-content">
+        <div class="nexmoe-primary">
+            <div class="nexmoe-post">
+
+  <article>
+      
+          <div class="nexmoe-post-cover" style="padding-bottom: 66.66666666666666%;"> 
+              <img data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/newbolg/202203272236776.jpg" data-sizes="auto" alt="Seeyon A8 V5 installation guide" class="lazyload">
+              <h1>Seeyon A8 V5 installation guide</h1>
+          </div>
+      
+      
+      <div class="nexmoe-post-meta nexmoe-rainbow" style="margin:10px 0!important;">
+    <a><i class="nexmoefont icon-calendar-fill"></i>2019年07月16日</a>
+    <a><i class="nexmoefont icon-areachart"></i>837 字</a>
+    <a><i class="nexmoefont icon-time-circle-fill"></i>大概 3 分钟</a>
+</div>
+
+      
+
+      <h4 id="部署环境"><a href="#部署环境" class="headerlink" title="部署环境"></a>部署环境</h4><p>虚拟化:Vritual Box</p>
+<p>系统:Windows Server 2012 R2 Datacenter</p>
+<p>数据库:Oracle 12c R1</p>
+<h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><p>在安装之前请自行安装好Mysql,Sqlserver或Oracle数据库，具体安装过程请自行百度，google。此处不再赘述</p>
+<p>解压SeeyonInstall.zip,解压后会有各个版本的linux,windows安装脚本，可根据自己的需求选择。这里我安装集团版（注意:不同版本安装后要想正常使用必须有对应的授权文件）</p>
+<p><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2019/07/16/202203282026910.png"></p>
+<p>运行SeeyonA8-V5集团版Install.bat</p>
+<p>选择安装目录（记住这个目录，后面会用到）</p>
+<p><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2019/07/16/202203282024398.png"></p>
+<p>数据库设置，Seeyon支持 Mysql,Sqlserver,Oracle。可按自己喜好选择，我这里选择Oracle</p>
+<p>(注意:数据库密码必须为数字字母组合，否则会提示你更改密码)</p>
+<p><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2019/07/16/202203282024703.png"></p>
+<p>oracle更改密码请参考:<code>https://blog.csdn.net/qq_36743482/article/details/78340817</code></p>
+<p><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2019/07/16/202203282027450.png"></p>
+<p>填写好相关数据库信息，点击测试连接。如果测试ok进行下一步，如果连接失败请自行排查原因</p>
+<p>后面一路下一步直到安装！（此过程可能需要四五分钟，具体视电脑性能而定）</p>
+<p><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2019/07/16/202203282027485.png"></p>
+<p>安装完成后设置各角色管理员密码</p>
+<p><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2019/07/16/202203282024089.png"></p>
+<p>出现上述界面表示安装成功</p>
+<h4 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h4><p>前期系统安装已完成，我们需要配置一下才能使用</p>
+<p>运行安装目录下<code>/ApacheJetspeed/conf/SeeyonConfig.cmd</code></p>
+<p><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2019/07/16/202203282024268.png"></p>
+<p>配置监听端口，可根据自己喜好</p>
+<p>切换到数据库连接选项卡，如果默认配置连接会提示你缺少jdbc驱动</p>
+<p><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2019/07/16/202203282024935.png"></p>
+<p><strong>解决方法</strong></p>
+<p>把下载包内的0jdbc5,6,7.jar。拷贝到安装目录<code>/ApacheJetspeed/lib</code>目录下</p>
+<p>(其实只要对应版本的就行，但是他这个jdk版本咱也不知道，咱也不敢问。所以就都拷过去吧)</p>
+<p><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2019/07/16/202203282028682.png"></p>
+<p>重启配置界面再次测试连接，你会发现会出现一个新错误</p>
+<p><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2019/07/16/202203282024834.png"></p>
+<p>这是因为系统默认使用的是oci连接模式，而我们没有相关库文件</p>
+<p><strong>解决方法</strong></p>
+<p>1.下载对应版本ocijdbc驱动拷贝到安装目录&#x2F;ApacheJetspeed&#x2F;lib</p>
+<p>2.使用thin连接模式</p>
+<p>关于oci和thin两种连接模式的区别请参考:<code>https://blog.csdn.net/kevin_pso/article/details/54949476</code></p>
+<p>这里我将oci更改为thin</p>
+<p><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2019/07/16/202203282028116.png"></p>
+<p>再次尝试连接</p>
+<p><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2019/07/16/202203282028855.png"></p>
+<p>如果依然连接失败，请自行排查原因</p>
+<p>其他参数保持默认，保存退出</p>
+<h4 id="导入授权文件"><a href="#导入授权文件" class="headerlink" title="导入授权文件"></a>导入授权文件</h4><p>把下载包内的a8v5.seeyonkey文件拷贝到安装目录&#x2F;base&#x2F;license目录下</p>
+<p><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2019/07/16/202203282024323.png"></p>
+<p>完成后关闭虚拟机，将虚拟机MAC地址更改为下载包内MAC.txt内的地址</p>
+<p><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2019/07/16/202203282024189.png"></p>
+<p>(注意:如果你使用的为Vmware请将虚拟机网络连接模式调整为非桥接模式(NAT,仅主机都可以)，否则会提示你MAC地址格式不正确)</p>
+<p>更改完成后启动虚拟机</p>
+<p>启动后会弹出seeyon控制面板，点击“服务启停”</p>
+<p><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2019/07/16/202203282024740.png"></p>
+<p>启动A8-V5集团版</p>
+<p><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2019/07/16/202203282024098.png"></p>
+<p>此过程需要等待一段时间，等待所有插件模块加载完成后，出现如下界面说明启动成功</p>
+<p><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2019/07/16/202203282029545.png"></p>
+<p>访问<code>http://[ip]:[port]/</code></p>
+<p><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2019/07/16/202203282024642.png"></p>
+<p>至此部署完成！</p>
+<h4 id="Q-amp-A"><a href="#Q-amp-A" class="headerlink" title="Q&amp;A"></a>Q&amp;A</h4><p>下载包中打包了一些安装维护过程中常见的问题及解决方法，有需要可自行查阅<br>(<strong>根据相关法律规定，不再提供下载</strong>)</p>
+
+  </article>
+
+  
+      
+    <div class="nexmoe-post-copyright">
+        <strong>本文作者：</strong>S0cke3t<br>
+        <strong>本文链接：</strong><a href="https://www.saferoad.cc/Notes/Seeyon-A8-V5-installation-guide.html" title="https:&#x2F;&#x2F;www.saferoad.cc&#x2F;Notes&#x2F;Seeyon-A8-V5-installation-guide.html" target="_blank" rel="noopener">https:&#x2F;&#x2F;www.saferoad.cc&#x2F;Notes&#x2F;Seeyon-A8-V5-installation-guide.html</a><br>
+        
+            <strong>版权声明：</strong>本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank">CC BY-NC-SA 3.0 CN</a> 协议进行许可
+        
+    </div>
+
+
+  
+  
+  <div class="nexmoe-post-meta nexmoe-rainbow">
+    
+        <a class="nexmoefont icon-appstore-fill -link" href="/categories/Notes/">Notes</a>
+    
+    
+        <a class="nexmoefont icon-tag-fill -none-link" href="/tags/Seeyon/" rel="tag">Seeyon</a>
+    
+</div>
+
+  
+      <div class="nexmoe-post-footer">
+          
+      </div>
+  
+</div>
+            <div class="nexmoe-post-right">
+              <div class="nexmoe-fixed">
+                  <div class="nexmoe-tool"> 
+                    
+                      
+                        
+                          
+                          
+                              <button class="mdui-fab catalog" style="overflow:unset;">
+                                  <i class="nexmoefont icon-i-catalog"></i>
+                                  <div class="nexmoe-toc">
+                                      <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%83%A8%E7%BD%B2%E7%8E%AF%E5%A2%83"><span class="toc-number">1.</span> <span class="toc-text">部署环境</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85"><span class="toc-number">2.</span> <span class="toc-text">安装</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE"><span class="toc-number">3.</span> <span class="toc-text">配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AF%BC%E5%85%A5%E6%8E%88%E6%9D%83%E6%96%87%E4%BB%B6"><span class="toc-number">4.</span> <span class="toc-text">导入授权文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Q-amp-A"><span class="toc-number">5.</span> <span class="toc-text">Q&amp;A</span></a></li></ol>
+                                  </div>
+                              </button>
+                          
+                          
+                      
+                    
+                      <a href="#nexmoe-content" class="toc-link" aria-label="回到顶部" title="top"><button class="mdui-fab mdui-ripple"><i class="nexmoefont icon-caret-top"></i></button></a>
+                  </div>
+              </div>
+            </div>
+        </div>
+    </div>
+     
+    <div id="nexmoe-search-space">
+        <div class="search-container">
+            <div class="search-header">
+                <div class="search-input-container">
+                    <input class="search-input" type="text" placeholder="搜索" oninput="sinput();">
+                </div>
+                <a class="search-close" onclick="sclose();">×</a>
+            </div>
+            <div class="search-body"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/combine/npm/lazysizes@5.1.0/lazysizes.min.js,npm/mdui@0.4.3/dist/js/mdui.min.js?v=1"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+ 
+
+<script async src="/js/app.js?v=1681132088734"></script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js"></script>
+<script>
+	$(".justified-gallery").justifiedGallery({
+		rowHeight: 160,
+		margins: 10,
+	});
+</script>
+
+
+    
+
+
+
+
+
+</body>
+
+</html>
