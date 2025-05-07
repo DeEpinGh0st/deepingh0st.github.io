@@ -1,0 +1,425 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><title>Bypass distribution platform from conception to implementation | S0cke3t Blog</title><meta name="keywords" content="Bypass"><meta name="author" content="S0cke3t"><meta name="copyright" content="S0cke3t"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#f7f9fe"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-touch-fullscreen" content="yes"><meta name="apple-mobile-web-app-title" content="Bypass distribution platform from conception to implementation"><meta name="application-name" content="Bypass distribution platform from conception to implementation"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="#f7f9fe"><meta property="og:type" content="article"><meta property="og:title" content="Bypass distribution platform from conception to implementation"><meta property="og:url" content="https://www.saferoad.cc/Sectool/Bypass-distribution-platform-from-conception-to-implementation.html"><meta property="og:site_name" content="S0cke3t Blog"><meta property="og:description" content="Start of all大约在19年末到21年初的时候, 在参加的诸多红蓝对抗和渗透测试中.渐渐发现每当遇到目标机器存在反病毒软件时. 都需要对投放的载荷进行免杀处理, 而在我尝试了市面上开源或者未开源的等一系列免杀工具后我发现, 虽然有些工具的免杀效果确实不错.但大部分在使用时都需要手动替换载荷或"><meta property="og:locale" content="zh-CN"><meta property="og:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/12/07/202212061645172.jpg"><meta property="article:author" content="S0cke3t"><meta property="article:tag" content="渗透测试,CISP-PTE,代码审计,破解,移动安全,安全工具,漏洞利用"><meta name="twitter:card" content="summary"><meta name="twitter:image" content="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/12/07/202212061645172.jpg"><meta name="description" content="Start of all大约在19年末到21年初的时候, 在参加的诸多红蓝对抗和渗透测试中.渐渐发现每当遇到目标机器存在反病毒软件时. 都需要对投放的载荷进行免杀处理, 而在我尝试了市面上开源或者未开源的等一系列免杀工具后我发现, 虽然有些工具的免杀效果确实不错.但大部分在使用时都需要手动替换载荷或"><link rel="shortcut icon" href="/favicon.ico"><link rel="canonical" href="https://www.saferoad.cc/Sectool/Bypass-distribution-platform-from-conception-to-implementation.html"><link rel="preconnect" href="//cdn.cbd.int"/><meta name="google-site-verification" content="xxx"/><meta name="baidu-site-verification" content="code-xxx"/><meta name="msvalidate.01" content="xxx"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.cbd.int/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.cbd.int/@fancyapps/ui@5.0.28/dist/fancybox/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  linkPageTop: undefined,
+  peoplecanvas: {"enable":true,"img":"https://upload-bbs.miyoushe.com/upload/2024/07/27/125766904/ee23df8517f3c3e3efc4145658269c06_236200206013649395..png"},
+  postHeadAiDescription: undefined,
+  diytitle: {"enable":true,"leaveTitle":"w(ﾟДﾟ)w 不要走！再看看嘛！","backTitle":"♪(^∇^*)欢迎肥来！"},
+  LA51: undefined,
+  greetingBox: undefined,
+  twikooEnvId: '',
+  commentBarrageConfig:undefined,
+  music_page_default: "nav_music",
+  root: '/',
+  preloader: {"source":3},
+  friends_vue_info: undefined,
+  navMusic: false,
+  mainTone: undefined,
+  authorStatus: {"skills":["🤖️ 数码科技爱好者","🔍 分享与热心帮助","🏠 智能家居小能手","🔨 设计开发一条龙","🤝 专修交互与设计","🏃 脚踏实地行动派","🧱 团队小组发动机","💢 壮汉人狠话不多"]},
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简","rightMenuMsgToTraditionalChinese":"转为繁体","rightMenuMsgToSimplifiedChinese":"转为简体"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":330},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    simplehomepage: true,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"copy":true,"copyrightEbable":false,"limitCount":50,"languages":{"author":"作者: S0cke3t","link":"链接: ","source":"来源: S0cke3t Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。","copySuccess":"复制成功，复制和转载请标注本文地址"}},
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#425AEF","bgDark":"#1f1f1f","position":"top-center"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.cbd.int/flickr-justified-gallery@2.1.2/dist/fjGallery.min.js',
+      css: 'https://cdn.cbd.int/flickr-justified-gallery@2.1.2/dist/fjGallery.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false,
+  shortcutKey: undefined,
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  configTitle: 'S0cke3t Blog',
+  title: 'Bypass distribution platform from conception to implementation',
+  postAI: '',
+  pageFillDescription: 'Start of all, 昨天, SSharp, Nsharp, Prometheus, 今天, 分发器生成, 分发器管理, 程序集, 分发器模板, 转发器管理, 转发器模板, 用户管理, 明天大约在年末到年初的时候在参加的诸多红蓝对抗和渗透测试中渐渐发现每当遇到目标机器存在反病毒软件时都需要对投放的载荷进行免杀处理而在我尝试了市面上开源或者未开源的等一系列免杀工具后我发现虽然有些工具的免杀效果确实不错但大部分在使用时都需要手动替换载荷或者指定相应的参数在红蓝对抗这种跟时间赛跑的情况下这种方式就显得有点疲软了结合上述需求我渐渐萌生了一个想法能不能开发一个简单且易用的免杀及分发的平台基于此平台用户在使用时不再需要记住各种参数和手动替换载荷等繁琐的步骤用户只需要做的就是在网页上简单的点点按钮就可以生成一个符合要求的载荷剩下的至于怎么生成这个载荷都交给系统去处理生成载荷后用户只需要下载这个载荷去目标上执行就可以了基于此方式将大大减少在载荷处理上的时间本文主要跟大家分享一下开发此项目的昨天今天和明天目的更多的在于提供一些方式方法或着说一些思路可能并不会讲太多关于技术细节的东西引用某著名小品的中一句话让我们回顾一下过去评说一下现在展望一下未来昨天由于平台最初使用的作为加载器故起名为简称为并使用反射注入的方式执行在使用一段时间后渐渐发现一个严重问题由于编译生成的载荷需要依赖而在一些实际环境中并没有安装相应的组件导致生成的载荷无法运行在发现此问题后基于的这种方式也就被弃用了在发现兼容性问题后我便开始寻找另外一种语言作为加载器使用当我在上浏览相关加载器项目时无意间发现了一个使用冷门且小众的语言开发的安全项目此项目使用一种较为冷门的语言作为主要的开发语言随后便去了解了一下这门语言是一种静态类型命令式编程语言支持过程式函数式面向对象和泛型编程风格支持跨平台使用编写的的程序可以很轻松的转换成等语言格式语法风格上与几乎一致在编译体积和执行速度上可以媲美原生程序在了解后第一感觉作为加载器来说还是不错的唯一的缺点就是第三方库较少有些特定需求的功能都需要自己去实现在简单学习后我用重构了一遍加载器并更换了的加载方式此方式一直沿用到了今年在经过今年大大小小的多人运动实战后效果上表现还算不错但之后又暴露出了一个问题由于生成的载荷直接与平台进行通讯进行下发配置和模块这就导致了一旦投递的载荷多了或者被捕获了流量那么平台地址在威胁情报平台上会被标记影响载荷和平台之间通讯在意识到这个问题后随即想着怎样去处理这个问题在斟酌了几个方案后我决定采用云函数技术来解决这个问题通过使用各云厂商提供的在每次生成载荷时发布一个与载荷对应的云函数服务让云函数作为载荷和平台之间中转的一个桥梁将真实平台隐藏到后面当一个载荷不再使用或者失效时将对应云函数删除即可做到随用随取用完即毁之后此项目也更名为今天经过前几次的技术更新目前该平台主要的功能也趋于完善下面简单介绍一下目前该平台实现功能目前平台主要有以下个模块模块名称功能分发器模块用于生成管理现有的载荷信息资源模块用于添加管理载荷程序集和配置分发器模板转发器模块用于生成管理云函数转发器和配置转发器模板用户模块用于添加管理用户分发器生成该模块主要用于生成具有免杀特性的载荷文件此过程需要用户输入加密请求标识等指示参数或设置其他一些附加选项分发器管理此页面主要展示一个分发器的主要参数或查看回连信息程序集此功能主要由于指示生成的载荷文件属性信息分发器模板此功能主要用于配置分发器模板参数及代码转发器管理此功能主要用于生成和展示一个转发器相关的主要参数转发器模板此功能主要用于配置转发器模板参数及代码用户管理此模块主要用于管理平台相关用户的状态权限等信息明天尽管的功能已趋于完善应对大多数已足够但并没有达到后续主要的更新也会着重此方面近期的更新计划跨平台载荷支持这将得益于的跨平台优势更多的加载方式支持脚本文件及命令的支持更好的和使用体验以及更好的隐蔽性由于某些功能的原因目前仍正处于内部测试阶段如果你想体验并愿意帮助改进请联系我们',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-05-07 09:44:53',
+  postMainColor: '',
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#18171d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#f7f9fe')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+          const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+          const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+          const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+          if (t === undefined) {
+            if (isLightMode) activateLightMode()
+            else if (isDarkMode) activateDarkMode()
+            else if (isNotSpecified || hasNoSupport) {
+              const now = new Date()
+              const hour = now.getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addListener(e => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.1.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head><body data-type="anzhiyu"><div id="web_bg"></div><div id="an_music_bg"></div><div id="loading-box" onclick="document.getElementById(&quot;loading-box&quot;).classList.add(&quot;loaded&quot;)"><div class="loading-bg"><img class="loading-img nolazyload" alt="加载头像" src="https://npm.elemecdn.com/anzhiyu-blog-static@1.0.4/img/avatar.jpg"/><div class="loading-image-dot"></div></div></div><script>const preloader = {
+  endLoading: () => {
+    document.getElementById('loading-box').classList.add("loaded");
+  },
+  initLoading: () => {
+    document.getElementById('loading-box').classList.remove("loaded")
+  }
+}
+window.addEventListener('load',()=> { preloader.endLoading() })
+setTimeout(function(){preloader.endLoading();},10000)
+
+if (true) {
+  document.addEventListener('pjax:send', () => { preloader.initLoading() })
+  document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+}</script><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.1.10/progress_bar/progress_bar.css"/><script async="async" src="https://cdn.cbd.int/pace-js@1.2.4/pace.min.js" data-pace-options="{ &quot;restartOnRequestAfter&quot;:false,&quot;eventLag&quot;:false}"></script><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><div id="nav-group"><span id="blog_name"><div class="back-home-button"><i class="anzhiyufont anzhiyu-icon-grip-vertical"></i><div class="back-menu-list-groups"><div class="back-menu-list-group"><div class="back-menu-list-title">网页</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://saferoad.cc" title="博客"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/favicon.ico" alt="博客"/><span class="back-menu-item-text">博客</span></a></div></div><div class="back-menu-list-group"><div class="back-menu-list-title">项目</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://github.com/DeEpinGh0st" title="Github"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://github.githubassets.com/favicons/favicon.svg" alt="Github"/><span class="back-menu-item-text">Github</span></a></div></div></div></div><a id="site-name" href="/" accesskey="h"><div class="title">S0cke3t Blog</div><i class="anzhiyufont anzhiyu-icon-house-chimney"></i></a></span><div class="mask-name-container"><div id="name-container"><a id="page-name" href="javascript:anzhiyu.scrollToDest(0, 500)">PAGE_NAME</a></div></div><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><i class="anzhiyufont anzhiyu-icon-box-archive faa-tada" style="font-size: 0.9em;"></i><span> 归档</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span> 关于本人</span></a></li><li><a class="site-page child faa-parent animated-hover" href="javascript:toRandomPost()"><i class="anzhiyufont anzhiyu-icon-shoe-prints1 faa-tada" style="font-size: 0.9em;"></i><span> 随便逛逛</span></a></li></ul></div></div></div><div id="nav-right"><div class="nav-button" id="randomPost_button"><a class="site-page" onclick="toRandomPost()" title="随机前往一个文章" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-dice"></i></a></div><input id="center-console" type="checkbox"/><label class="widget" for="center-console" title="中控台" onclick="anzhiyu.switchConsole();"><i class="left"></i><i class="widget center"></i><i class="widget right"></i></label><div id="console"><div class="console-card-group-reward"><ul class="reward-all console-card"><li class="reward-item"><a href="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-weichat.png" target="_blank"><img class="post-qr-code-img" alt="微信" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-weichat.png"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-alipay.png" target="_blank"><img class="post-qr-code-img" alt="支付宝" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-alipay.png"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div><div class="console-card-group"><div class="console-card-group-left"><div class="console-card" id="card-newest-comments"><div class="card-content"><div class="author-content-item-tips">互动</div><span class="author-content-item-title"> 最新评论</span></div><div class="aside-list"><span>正在加载中...</span></div></div></div><div class="console-card-group-right"><div class="console-card tags"><div class="card-content"><div class="author-content-item-tips">兴趣点</div><span class="author-content-item-title">寻找你感兴趣的领域</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/ASP-NET/" style="font-size: 1.05rem;">ASP.NET<sup>2</sup></a><a href="/tags/Bypass/" style="font-size: 1.05rem;">Bypass<sup>4</sup></a><a href="/tags/Csharp/" style="font-size: 1.05rem;">Csharp<sup>4</sup></a><a href="/tags/Django/" style="font-size: 1.05rem;">Django<sup>1</sup></a><a href="/tags/Domain-security/" style="font-size: 1.05rem;">Domain security<sup>1</sup></a><a href="/tags/Flink/" style="font-size: 1.05rem;">Flink<sup>1</sup></a><a href="/tags/Frida/" style="font-size: 1.05rem;">Frida<sup>1</sup></a><a href="/tags/Hook/" style="font-size: 1.05rem;">Hook<sup>1</sup></a><a href="/tags/Java/" style="font-size: 1.05rem;">Java<sup>10</sup></a><a href="/tags/KeyGen/" style="font-size: 1.05rem;">KeyGen<sup>1</sup></a><a href="/tags/Linux/" style="font-size: 1.05rem;">Linux<sup>1</sup></a><a href="/tags/Nim/" style="font-size: 1.05rem;">Nim<sup>3</sup></a><a href="/tags/PHP/" style="font-size: 1.05rem;">PHP<sup>3</sup></a><a href="/tags/Pentest/" style="font-size: 1.05rem;">Pentest<sup>1</sup></a><a href="/tags/Portainer/" style="font-size: 1.05rem;">Portainer<sup>1</sup></a><a href="/tags/Python/" style="font-size: 1.05rem;">Python<sup>3</sup></a><a href="/tags/Realor/" style="font-size: 1.05rem;">Realor<sup>1</sup></a><a href="/tags/Reappearance/" style="font-size: 1.05rem;">Reappearance<sup>1</sup></a><a href="/tags/SecTool/" style="font-size: 1.05rem;">SecTool<sup>5</sup></a><a href="/tags/Seeyon/" style="font-size: 1.05rem;">Seeyon<sup>1</sup></a><a href="/tags/Spring/" style="font-size: 1.05rem;">Spring<sup>3</sup></a><a href="/tags/Sqlmap/" style="font-size: 1.05rem;">Sqlmap<sup>1</sup></a><a href="/tags/Struts2/" style="font-size: 1.05rem;">Struts2<sup>1</sup></a><a href="/tags/ThinkPHP/" style="font-size: 1.05rem;">ThinkPHP<sup>1</sup></a><a href="/tags/Windows/" style="font-size: 1.05rem;">Windows<sup>2</sup></a><a href="/tags/WordPress/" style="font-size: 1.05rem;">WordPress<sup>1</sup></a><a href="/tags/cuckoo/" style="font-size: 1.05rem;">cuckoo<sup>1</sup></a><a href="/tags/sandbox/" style="font-size: 1.05rem;">sandbox<sup>1</sup></a><a href="/tags/solution/" style="font-size: 1.05rem;">solution<sup>1</sup></a></div></div><hr/></div></div><div class="console-card history"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-box-archiv"></i><span>文章</span></div><div class="card-archives"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-archive"></i><span>归档</span><a class="card-more-btn" href="/archives/" title="查看更多">
+    <i class="anzhiyufont anzhiyu-icon-angle-right"></i></a></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2025/05/"><span class="card-archive-list-date">五月 2025</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">1</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2024/12/"><span class="card-archive-list-date">十二月 2024</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">1</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2024/08/"><span class="card-archive-list-date">八月 2024</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">2</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2024/03/"><span class="card-archive-list-date">三月 2024</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">1</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2023/10/"><span class="card-archive-list-date">十月 2023</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">1</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2023/08/"><span class="card-archive-list-date">八月 2023</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">1</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2023/05/"><span class="card-archive-list-date">五月 2023</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">1</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2023/04/"><span class="card-archive-list-date">四月 2023</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">2</span><span>篇</span></div></a></li></ul></div><hr/></div></div></div><div class="button-group"><div class="console-btn-item"><a class="darkmode_switchbutton" title="显示模式切换" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-moon"></i></a></div><div class="console-btn-item" id="consoleHideAside" onclick="anzhiyu.hideAsideBtn()" title="边栏显示控制"><a class="asideSwitch"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></a></div></div><div class="console-mask" onclick="anzhiyu.hideConsole()" href="javascript:void(0);"></div></div><div class="nav-button" id="nav-totop"><a class="totopbtn" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i><span id="percent" onclick="anzhiyu.scrollToDest(0,500)">0</span></a></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);" title="切换"><i class="anzhiyufont anzhiyu-icon-bars"></i></a></div></div></div></nav><div id="post-info"><div id="post-firstinfo"><div class="meta-firstline"><a class="post-meta-original">原创</a><span class="post-meta-categories"><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-inbox post-meta-icon"></i><a class="post-meta-categories" href="/categories/Sectool/" itemprop="url">Sectool</a></span><span class="article-meta tags"><a class="article-meta__tags" href="/tags/Bypass/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>Bypass</span></a></span></div></div><h1 class="post-title" itemprop="name headline">Bypass distribution platform from conception to implementation</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="anzhiyufont anzhiyu-icon-calendar-days post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" itemprop="dateCreated datePublished" datetime="2022-12-06T08:30:25.000Z" title="发表于 2022-12-06 16:30:25">2022-12-06</time><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-history post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" itemprop="dateCreated datePublished" datetime="2025-05-07T01:44:53.854Z" title="更新于 2025-05-07 09:44:53">2025-05-07</time></span></div><div class="meta-secondline"><span class="post-meta-separator"></span><span class="post-meta-wordcount"><i class="anzhiyufont anzhiyu-icon-file-word post-meta-icon" title="文章字数"></i><span class="post-meta-label" title="文章字数">字数总计:</span><span class="word-count" title="文章字数">1.6k</span><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-clock post-meta-icon" title="阅读时长"></i><span class="post-meta-label" title="阅读时长">阅读时长:</span><span>4分钟</span></span><span class="post-meta-separator">       </span><span class="post-meta-position" title="作者IP属地为山东"><i class="anzhiyufont anzhiyu-icon-location-dot"></i>山东</span></div></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section><div id="post-top-cover"><img class="nolazyload" id="post-top-bg" src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/12/07/202212061645172.jpg"></div></header><main id="blog-container"><div class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container" itemscope itemtype="https://www.saferoad.cc/Sectool/Bypass-distribution-platform-from-conception-to-implementation.html"><header><a class="post-meta-categories" href="/categories/Sectool/" itemprop="url">Sectool</a><a href="/tags/Bypass/" tabindex="-1" itemprop="url">Bypass</a><h1 id="CrawlerTitle" itemprop="name headline">Bypass distribution platform from conception to implementation</h1><span itemprop="author" itemscope itemtype="http://schema.org/Person">S0cke3t</span><time itemprop="dateCreated datePublished" datetime="2022-12-06T08:30:25.000Z" title="发表于 2022-12-06 16:30:25">2022-12-06</time><time itemprop="dateCreated datePublished" datetime="2025-05-07T01:44:53.854Z" title="更新于 2025-05-07 09:44:53">2025-05-07</time></header><h2 id="Start-of-all"><a href="#Start-of-all" class="headerlink" title="Start of all"></a>Start of all</h2><p>大约在19年末到21年初的时候, 在参加的诸多红蓝对抗和渗透测试中.渐渐发现每当遇到目标机器存在反病毒软件时. 都需要对投放的载荷进行免杀处理, 而在我尝试了市面上开源或者未开源的等一系列免杀工具后我发现, 虽然有些工具的免杀效果确实不错.但大部分在使用时都需要手动替换载荷或者指定相应的参数, 在红蓝对抗这种跟时间赛跑的情况下, 这种方式就显得有点疲软了. </p>
+<p>结合上述需求, 我渐渐萌生了一个想法.能不能开发一个简单且易用的免杀及分发的平台, 基于此平台用户在使用时不再需要记住各种参数和手动替换载荷等繁琐的步骤, 用户只需要做的就是在网页上简单的点点按钮就可以生成一个符合要求的载荷,  剩下的至于怎么生成这个载荷都交给系统去处理. 生成载荷后用户只需要下载这个载荷去目标上执行就可以了, 基于此方式将大大减少在载荷处理上的时间.</p>
+<p>本文主要跟大家分享一下开发此项目的<code>昨天,今天和明天</code>, 目的更多的在于提供一些方式方法或着说一些思路, 可能并不会讲太多关于技术细节的东西</p>
+<p>引用某著名小品的中一句话</p>
+<blockquote>
+<p>让我们回顾一下过去, 评说一下现在, 展望一下未来</p>
+</blockquote>
+<h2 id="昨天"><a href="#昨天" class="headerlink" title="昨天"></a>昨天</h2><h3 id="SSharp"><a href="#SSharp" class="headerlink" title="SSharp"></a>SSharp</h3><p>由于平台最初使用的Csharp作为加载器,故起名为<code>Super Sharp</code>简称为<code>SSharp</code>, 并使用反射注入的方式执行shellcode.</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/12/07/202212071420933.png" alt="image-20221207142011666"></p>
+<p>在使用一段时间后, 渐渐发现一个严重问题. 由于编译生成的载荷需要依赖<code>.net framework</code>, 而在一些实际环境中并没有安装相应的组件, 导致生成的载荷无法运行.在发现此问题后, 基于<code>Csharp</code>的这种方式也就被弃用了.</p>
+<h3 id="Nsharp"><a href="#Nsharp" class="headerlink" title="Nsharp"></a>Nsharp</h3><p>在发现<code>.net</code>兼容性问题后, 我便开始寻找另外一种语言作为加载器使用. 当我在<code>github</code>上浏览相关加载器项目时, 无意间发现了一个使用冷门且小众的语言开发的安全项目-<a target="_blank" rel="noopener" href="https://github.com/byt3bl33d3r/OffensiveNim">OffensiveNim</a>, 此项目使用一种较为冷门的语言<code>Nim</code>作为主要的开发语言. 随后便去了解了一下这门语言</p>
+<p><code>Nim</code>是一种静态类型、命令式编程语言，支持过程式、 函数 式、面向对象和泛型编程风格. 支持跨平台, 使用<code>nim</code>编写的的程序可以很轻松的转换成<code>C, C++,  Javascript</code>等语言格式, 语法风格上与<code>Python</code>几乎一致, 在编译体积和执行速度上可以媲美原生C程序.</p>
+<p>在了解后第一感觉作为加载器来说还是不错的,唯一的缺点就是第三方库较少. 有些特定需求的功能都需要自己去实现</p>
+<p>在简单学习后, 我用<code>Nim</code>重构了一遍加载器,并更换了shellcode的加载方式</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/12/07/202212071501457.png" alt="image-20221207150105352"></p>
+<p>此方式一直沿用到了今年, 在经过今年大大小小的多人运动实战后. 效果上表现还算不错, 但之后又暴露出了一个问题, 由于生成的载荷直接与平台进行通讯进行下发配置和模块, 这就导致了一旦投递的载荷多了或者被捕获了流量那么平台地址在威胁情报平台上会被标记,影响载荷和平台之间通讯.</p>
+<h3 id="Prometheus"><a href="#Prometheus" class="headerlink" title="Prometheus"></a>Prometheus</h3><p>在意识到这个问题后, 随即想着怎样去处理这个问题. 在斟酌了几个方案后. 我决定采用云函数技术来解决这个问题, 通过使用各云厂商提供的<code>sdk</code>, 在每次生成载荷时发布一个与载荷对应的云函数服务, 让云函数作为载荷和平台之间中转的一个桥梁, 将真实平台隐藏到后面. 当一个载荷不再使用或者失效时, 将对应云函数删除即可, 做到随用随取, 用完即毁.</p>
+<p>之后此项目也更名为<code>Prometheus</code></p>
+<h2 id="今天"><a href="#今天" class="headerlink" title="今天"></a>今天</h2><p>经过前几次的技术更新, 目前该平台主要的功能也趋于完善. 下面简单介绍一下目前该平台实现功能</p>
+<p>目前平台主要有以下4个模块</p>
+<table>
+<thead>
+<tr>
+<th>模块名称</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>分发器模块</td>
+<td>用于生成, 管理现有的载荷信息</td>
+</tr>
+<tr>
+<td>资源模块</td>
+<td>用于添加, 管理载荷程序集和配置分发器模板</td>
+</tr>
+<tr>
+<td>转发器模块</td>
+<td>用于生成, 管理云函数转发器和配置转发器模板</td>
+</tr>
+<tr>
+<td>用户模块</td>
+<td>用于添加, 管理用户</td>
+</tr>
+</tbody></table>
+<h4 id="分发器生成"><a href="#分发器生成" class="headerlink" title="分发器生成"></a>分发器生成</h4><p>该模块主要用于生成具有免杀特性的载荷文件, 此过程需要用户输入shellcode, 加密, 请求标识等指示参数</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/12/07/202212071606728.png" alt="image-20221207160634599"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/12/07/202212071607367.png" alt="image-20221207160707687"></p>
+<p>或设置其他一些附加选项</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/12/07/202212071607894.png" alt="image-20221207160747818"></p>
+<h4 id="分发器管理"><a href="#分发器管理" class="headerlink" title="分发器管理"></a>分发器管理</h4><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/12/07/202212071617846.png" alt="image-20221207161747791"></p>
+<p>此页面主要展示一个分发器的主要参数或查看回连信息</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/12/07/202212071622230.png" alt="image-20221207162257019"></p>
+<h4 id="程序集"><a href="#程序集" class="headerlink" title="程序集"></a>程序集</h4><p>此功能主要由于指示生成的载荷文件属性信息</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/12/07/202212071625660.png" alt="image-20221207162520564"></p>
+<h4 id="分发器模板"><a href="#分发器模板" class="headerlink" title="分发器模板"></a>分发器模板</h4><p>此功能主要用于配置分发器模板参数及代码</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/12/07/202212071627558.png" alt="image-20221207162727456"></p>
+<h4 id="转发器管理"><a href="#转发器管理" class="headerlink" title="转发器管理"></a>转发器管理</h4><p>此功能主要用于生成和展示一个转发器相关的主要参数</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/12/07/202212071629249.png" alt="image-20221207162918199"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/12/07/202212071630517.png" alt="image-20221207163020396"></p>
+<h4 id="转发器模板"><a href="#转发器模板" class="headerlink" title="转发器模板"></a>转发器模板</h4><p>此功能主要用于配置转发器模板参数及代码</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/12/07/202212071631476.png" alt="image-20221207163118376"></p>
+<h4 id="用户管理"><a href="#用户管理" class="headerlink" title="用户管理"></a>用户管理</h4><p>此模块主要用于管理平台相关用户的状态, 权限等信息</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/12/07/202212071632043.png" alt="image-20221207163247952"></p>
+<h2 id="明天"><a href="#明天" class="headerlink" title="明天"></a>明天</h2><p>尽管<code>Prometheus</code>的功能已趋于完善, 应对大多数AV已足够, 但并没有达到FUD</p>
+<p>后续主要的更新也会着重此方面</p>
+<p><strong>近期的更新计划</strong></p>
+<ul>
+<li>跨平台载荷支持(这将得益于<code>nim</code>的跨平台优势)</li>
+<li>更多的加载方式支持</li>
+<li>脚本文件及命令的支持</li>
+<li>更好的UI和使用体验</li>
+<li>以及更好的隐蔽性</li>
+</ul>
+<p>由于某些功能的原因, 目前<code>Prometheus</code>仍正处于内部测试阶段, 如果你想体验并愿意帮助改进. 请联系我们</p>
+</article><div class="post-copyright"><div class="copyright-cc-box"><i class="anzhiyufont anzhiyu-icon-copyright"></i></div><div class="post-copyright__author_box"><a class="post-copyright__author_img" href="/" title="头像"><img class="post-copyright__author_img_back" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://avatars.githubusercontent.com/u/34375573?v=4" title="头像" alt="头像"><img class="post-copyright__author_img_front" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://avatars.githubusercontent.com/u/34375573?v=4" title="头像" alt="头像"></a><div class="post-copyright__author_name">S0cke3t</div><div class="post-copyright__author_desc">Love Without Limits</div></div><div class="post-copyright__post__info"><a class="post-copyright__original" title="该文章为原创文章，注意版权协议" href="https://www.saferoad.cc/Sectool/Bypass-distribution-platform-from-conception-to-implementation.html">原创</a><a class="post-copyright-title"><span onclick="rm.copyPageUrl('https://www.saferoad.cc/Sectool/Bypass-distribution-platform-from-conception-to-implementation.html')">Bypass distribution platform from conception to implementation</span></a></div><div class="post-tools" id="post-tools"><div class="post-tools-left"><div class="rewardLeftButton"></div><div class="shareRight"><div class="share-link mobile"><div class="share-qrcode"><div class="share-button" title="使用手机访问这篇文章"><i class="anzhiyufont anzhiyu-icon-qrcode"></i></div><div class="share-main"><div class="share-main-all"><div id="qrcode" title="https://www.saferoad.cc/Sectool/Bypass-distribution-platform-from-conception-to-implementation.html"></div><div class="reward-dec">使用手机访问这篇文章</div></div></div></div></div><div class="share-link weibo"><a class="share-button" target="_blank" href="https://service.weibo.com/share/share.php?title=Bypass distribution platform from conception to implementation&amp;url=https://www.saferoad.cc/Sectool/Bypass-distribution-platform-from-conception-to-implementation.html&amp;pic=https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/12/07/202212061645172.jpg" rel="external nofollow noreferrer noopener"><i class="anzhiyufont anzhiyu-icon-weibo"></i></a></div><script>function copyCurrentPageUrl() {
+  var currentPageUrl = window.location.href;
+  var input = document.createElement("input");
+  input.setAttribute("value", currentPageUrl);
+  document.body.appendChild(input);
+  input.select();
+  input.setSelectionRange(0, 99999);
+  document.execCommand("copy");
+  document.body.removeChild(input);
+}</script><div class="share-link copyurl"><div class="share-button" id="post-share-url" title="复制链接" onclick="copyCurrentPageUrl()"><i class="anzhiyufont anzhiyu-icon-link"></i></div></div></div></div></div><div class="post-copyright__notice"><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://www.saferoad.cc" target="_blank">S0cke3t Blog</a>！</span></div></div><div class="post-tools-right"><div class="tag_share"><div class="post-meta__box"><div class="post-meta__box__tag-list"><a class="post-meta__box__tags" href="/tags/Bypass/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>Bypass<span class="tagsPageCount">4</span></a></div></div></div><div class="post_share"><div class="social-share" data-image="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2025/05/07th" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.cbd.int/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"/><script src="https://cdn.cbd.int/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer="defer"></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/Notes/Cuckoo-sandbox-deploy-tutorial.html"><img class="prev-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2022/10/29/BingWallpaper.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Cuckoo sandbox deploy tutorial</div></div></a></div><div class="next-post pull-right"><a href="/Crack/Xcloud-license-analysis-crack.html"><img class="next-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/03/19/202303191343676.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Xcloud license analysis &amp; crack</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="anzhiyufont anzhiyu-icon-thumbs-up fa-fw" style="font-size: 1.5rem; margin-right: 4px"></i><span>喜欢这篇文章的人也看了</span></div><div class="relatedPosts-list"><div><a href="/Sectool/Bypass-AV-Platform-Nsharp.html" title="Bypass AV Platform - Nsharp"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/newbolg/202203272236776.jpg?_r_=7ed13e95-5b3e-8c3e-2293-7686fb248a2d" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2022-04-10</div><div class="title">Bypass AV Platform - Nsharp</div></div></a></div><div><a href="/Bypass/Nim-implementation-of-sRDI.html" title="Nim implementation of sRDI"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/10/19/202310191013230.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2023-10-19</div><div class="title">Nim implementation of sRDI</div></div></a></div><div><a href="/Sectool/Prometheus-v9-0-release.html" title="Prometheus v9.0 release"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2023/04/05/202304051429675.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2023-04-05</div><div class="title">Prometheus v9.0 release</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-content"><div class="author-info__sayhi" id="author-info__sayhi" onclick="anzhiyu.changeSayHelloText()"></div><div class="author-info-avatar"><img class="avatar-img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://avatars.githubusercontent.com/u/34375573?v=4" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-status"><img class="g-status" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://twikoo-magic.oss-cn-hangzhou.aliyuncs.com/QQ/ku.gif" alt="status"/></div></div><div class="author-info__description"><div style="line-height:1.38;margin:0.6rem 0;text-align:justify;color:rgba(255, 255, 255, 0.8);">这有关于<b style="color:#fff">web安全、web逆向、安全工具设计、开发</b>相关的问题和看法，还有<b style="color:#fff">文章翻译</b>和<b style="color:#fff">分享</b>。</div><div style="line-height:1.38;margin:0.6rem 0;text-align:justify;color:rgba(255, 255, 255, 0.8);">相信你可以在这里找到对你有用的<b style="color:#fff">知识</b>和<b style="color:#fff">教程</b>。</div></div><div class="author-info__bottom-group"><a class="author-info__bottom-group-left" href="/"><h1 class="author-info__name">S0cke3t</h1><div class="author-info__desc">Love Without Limits</div></a><div class="card-info-social-icons is-center"><a class="social-icon faa-parent animated-hover" href="https://github.com/DeEpinGh0st" target="_blank" title="Github"><i class="anzhiyufont anzhiyu-icon-github"></i></a></div></div></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-bullhorn anzhiyu-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来看我的博客鸭~</div></div><div class="card-widget anzhiyu-right-widget" id="card-wechat" onclick="null"><div id="flip-wrapper"><div id="flip-content"><div class="face" style="background: url(https://bu.dusays.com/2023/01/13/63c02edf44033.png) center center / 100% no-repeat"></div><div class="back face" style="background: url(https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/wechat.png) center center / 100% no-repeat"></div></div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-bars"></i><span>文章目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Start-of-all"><span class="toc-number">1.</span> <span class="toc-text">Start of all</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%98%A8%E5%A4%A9"><span class="toc-number">2.</span> <span class="toc-text">昨天</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#SSharp"><span class="toc-number">2.1.</span> <span class="toc-text">SSharp</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Nsharp"><span class="toc-number">2.2.</span> <span class="toc-text">Nsharp</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Prometheus"><span class="toc-number">2.3.</span> <span class="toc-text">Prometheus</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%8A%E5%A4%A9"><span class="toc-number">3.</span> <span class="toc-text">今天</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%86%E5%8F%91%E5%99%A8%E7%94%9F%E6%88%90"><span class="toc-number">3.0.1.</span> <span class="toc-text">分发器生成</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%86%E5%8F%91%E5%99%A8%E7%AE%A1%E7%90%86"><span class="toc-number">3.0.2.</span> <span class="toc-text">分发器管理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%A8%8B%E5%BA%8F%E9%9B%86"><span class="toc-number">3.0.3.</span> <span class="toc-text">程序集</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%86%E5%8F%91%E5%99%A8%E6%A8%A1%E6%9D%BF"><span class="toc-number">3.0.4.</span> <span class="toc-text">分发器模板</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BD%AC%E5%8F%91%E5%99%A8%E7%AE%A1%E7%90%86"><span class="toc-number">3.0.5.</span> <span class="toc-text">转发器管理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BD%AC%E5%8F%91%E5%99%A8%E6%A8%A1%E6%9D%BF"><span class="toc-number">3.0.6.</span> <span class="toc-text">转发器模板</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86"><span class="toc-number">3.0.7.</span> <span class="toc-text">用户管理</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%98%8E%E5%A4%A9"><span class="toc-number">4.</span> <span class="toc-text">明天</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-history"></i><span>最近发布</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/Sectool/JDumpSpiderGUI.html" title="JDumpSpiderGUI - Java heap分析工具"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2025/05/07th" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="JDumpSpiderGUI - Java heap分析工具"/></a><div class="content"><a class="title" href="/Sectool/JDumpSpiderGUI.html" title="JDumpSpiderGUI - Java heap分析工具">JDumpSpiderGUI - Java heap分析工具</a><time datetime="2025-05-07T09:05:42.000Z" title="发表于 2025-05-07 17:05:42">2025-05-07</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/Sectool/MDUT-Extend-MDUT-%E5%A2%9E%E5%BC%BA%E7%89%88-V1-2-0.html" title="MDUT-Extend(MDUT-增强版) V1.2.0"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2024/12/19/202412191714506.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MDUT-Extend(MDUT-增强版) V1.2.0"/></a><div class="content"><a class="title" href="/Sectool/MDUT-Extend-MDUT-%E5%A2%9E%E5%BC%BA%E7%89%88-V1-2-0.html" title="MDUT-Extend(MDUT-增强版) V1.2.0">MDUT-Extend(MDUT-增强版) V1.2.0</a><time datetime="2024-12-19T07:16:51.000Z" title="发表于 2024-12-19 15:16:51">2024-12-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/Sectool/MDUT-Extend-MDUT-%E5%A2%9E%E5%BC%BA%E7%89%88-V1-1-0.html" title="MDUT-Extend(MDUT-增强版) V1.1.0"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2024/08/20/202408201524451.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MDUT-Extend(MDUT-增强版) V1.1.0"/></a><div class="content"><a class="title" href="/Sectool/MDUT-Extend-MDUT-%E5%A2%9E%E5%BC%BA%E7%89%88-V1-1-0.html" title="MDUT-Extend(MDUT-增强版) V1.1.0">MDUT-Extend(MDUT-增强版) V1.1.0</a><time datetime="2024-08-20T05:57:11.000Z" title="发表于 2024-08-20 13:57:11">2024-08-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/Sectool/MDUT-Extend-MDUT-%E5%A2%9E%E5%BC%BA%E7%89%88.html" title="MDUT-Extend(MDUT-增强版)"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2024/08/14/202408140949529.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MDUT-Extend(MDUT-增强版)"/></a><div class="content"><a class="title" href="/Sectool/MDUT-Extend-MDUT-%E5%A2%9E%E5%BC%BA%E7%89%88.html" title="MDUT-Extend(MDUT-增强版)">MDUT-Extend(MDUT-增强版)</a><time datetime="2024-08-14T01:45:05.000Z" title="发表于 2024-08-14 09:45:05">2024-08-14</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/Sectool/HideNimMain-Hide-NimMain-in-DLL.html" title="HideNimMain-Hide NimMain in DLL"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/DeEpinGh0st/BlogOSS/main/aticles/2024/03/09/202403091250437.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HideNimMain-Hide NimMain in DLL"/></a><div class="content"><a class="title" href="/Sectool/HideNimMain-Hide-NimMain-in-DLL.html" title="HideNimMain-Hide NimMain in DLL">HideNimMain-Hide NimMain in DLL</a><time datetime="2024-03-09T04:41:23.000Z" title="发表于 2024-03-09 12:41:23">2024-03-09</time></div></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"></div><div id="footer-bar"><div class="footer-bar-links"><div class="footer-bar-left"><div id="footer-bar-tips"><div class="copyright">&copy;2020 - 2025 By <a class="footer-bar-link" href="/" title="S0cke3t" target="_blank">S0cke3t</a></div></div><div id="footer-type-tips"></div></div><div class="footer-bar-right"><a class="footer-bar-link" target="_blank" rel="noopener" href="https://github.com/anzhiyu-c/hexo-theme-anzhiyu" title="主题">主题</a></div></div></div></footer></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="sidebar-site-data site-data is-center"><a href="/archives/" title="archive"><div class="headline">文章</div><div class="length-num">48</div></a><a href="/tags/" title="tag"><div class="headline">标签</div><div class="length-num">29</div></a><a href="/categories/" title="category"><div class="headline">分类</div><div class="length-num">12</div></a></div><span class="sidebar-menu-item-title">功能</span><div class="sidebar-menu-item"><a class="darkmode_switchbutton menu-child" href="javascript:void(0);" title="显示模式"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span>显示模式</span></a></div><div class="back-menu-list-groups"><div class="back-menu-list-group"><div class="back-menu-list-title">网页</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://saferoad.cc" title="博客"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/favicon.ico" alt="博客"/><span class="back-menu-item-text">博客</span></a></div></div><div class="back-menu-list-group"><div class="back-menu-list-title">项目</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://github.com/DeEpinGh0st" title="Github"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://github.githubassets.com/favicons/favicon.svg" alt="Github"/><span class="back-menu-item-text">Github</span></a></div></div></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><i class="anzhiyufont anzhiyu-icon-box-archive faa-tada" style="font-size: 0.9em;"></i><span> 归档</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span> 关于本人</span></a></li><li><a class="site-page child faa-parent animated-hover" href="javascript:toRandomPost()"><i class="anzhiyufont anzhiyu-icon-shoe-prints1 faa-tada" style="font-size: 0.9em;"></i><span> 随便逛逛</span></a></li></ul></div></div><span class="sidebar-menu-item-title">标签</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/ASP-NET/" style="font-size: 0.88rem;">ASP.NET<sup>2</sup></a><a href="/tags/Bypass/" style="font-size: 0.88rem;">Bypass<sup>4</sup></a><a href="/tags/Csharp/" style="font-size: 0.88rem;">Csharp<sup>4</sup></a><a href="/tags/Django/" style="font-size: 0.88rem;">Django<sup>1</sup></a><a href="/tags/Domain-security/" style="font-size: 0.88rem;">Domain security<sup>1</sup></a><a href="/tags/Flink/" style="font-size: 0.88rem;">Flink<sup>1</sup></a><a href="/tags/Frida/" style="font-size: 0.88rem;">Frida<sup>1</sup></a><a href="/tags/Hook/" style="font-size: 0.88rem;">Hook<sup>1</sup></a><a href="/tags/Java/" style="font-size: 0.88rem;">Java<sup>10</sup></a><a href="/tags/KeyGen/" style="font-size: 0.88rem;">KeyGen<sup>1</sup></a><a href="/tags/Linux/" style="font-size: 0.88rem;">Linux<sup>1</sup></a><a href="/tags/Nim/" style="font-size: 0.88rem;">Nim<sup>3</sup></a><a href="/tags/PHP/" style="font-size: 0.88rem;">PHP<sup>3</sup></a><a href="/tags/Pentest/" style="font-size: 0.88rem;">Pentest<sup>1</sup></a><a href="/tags/Portainer/" style="font-size: 0.88rem;">Portainer<sup>1</sup></a><a href="/tags/Python/" style="font-size: 0.88rem;">Python<sup>3</sup></a><a href="/tags/Realor/" style="font-size: 0.88rem;">Realor<sup>1</sup></a><a href="/tags/Reappearance/" style="font-size: 0.88rem;">Reappearance<sup>1</sup></a><a href="/tags/SecTool/" style="font-size: 0.88rem;">SecTool<sup>5</sup></a><a href="/tags/Seeyon/" style="font-size: 0.88rem;">Seeyon<sup>1</sup></a><a href="/tags/Spring/" style="font-size: 0.88rem;">Spring<sup>3</sup></a><a href="/tags/Sqlmap/" style="font-size: 0.88rem;">Sqlmap<sup>1</sup></a><a href="/tags/Struts2/" style="font-size: 0.88rem;">Struts2<sup>1</sup></a><a href="/tags/ThinkPHP/" style="font-size: 0.88rem;">ThinkPHP<sup>1</sup></a><a href="/tags/Windows/" style="font-size: 0.88rem;">Windows<sup>2</sup></a><a href="/tags/WordPress/" style="font-size: 0.88rem;">WordPress<sup>1</sup></a><a href="/tags/cuckoo/" style="font-size: 0.88rem;">cuckoo<sup>1</sup></a><a href="/tags/sandbox/" style="font-size: 0.88rem;">sandbox<sup>1</sup></a><a href="/tags/solution/" style="font-size: 0.88rem;">solution<sup>1</sup></a></div></div><hr/></div></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="anzhiyufont anzhiyu-icon-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="anzhiyufont anzhiyu-icon-gear"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="anzhiyufont anzhiyu-icon-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></button></div></div><div id="rightMenu"><div class="rightMenu-group rightMenu-small"><div class="rightMenu-item" id="menu-backward"><i class="anzhiyufont anzhiyu-icon-arrow-left"></i></div><div class="rightMenu-item" id="menu-forward"><i class="anzhiyufont anzhiyu-icon-arrow-right"></i></div><div class="rightMenu-item" id="menu-refresh"><i class="anzhiyufont anzhiyu-icon-arrow-rotate-right" style="font-size: 1rem;"></i></div><div class="rightMenu-item" id="menu-top"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></div></div><div class="rightMenu-group rightMenu-line rightMenuPlugin"><div class="rightMenu-item" id="menu-copytext"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制选中文本</span></div><div class="rightMenu-item" id="menu-pastetext"><i class="anzhiyufont anzhiyu-icon-paste"></i><span>粘贴文本</span></div><a class="rightMenu-item" id="menu-commenttext"><i class="anzhiyufont anzhiyu-icon-comment-medical"></i><span>引用到评论</span></a><div class="rightMenu-item" id="menu-newwindow"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开</span></div><div class="rightMenu-item" id="menu-copylink"><i class="anzhiyufont anzhiyu-icon-link"></i><span>复制链接地址</span></div><div class="rightMenu-item" id="menu-copyimg"><i class="anzhiyufont anzhiyu-icon-images"></i><span>复制此图片</span></div><div class="rightMenu-item" id="menu-downloadimg"><i class="anzhiyufont anzhiyu-icon-download"></i><span>下载此图片</span></div><div class="rightMenu-item" id="menu-newwindowimg"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开图片</span></div><div class="rightMenu-item" id="menu-search"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>站内搜索</span></div><div class="rightMenu-item" id="menu-searchBaidu"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>百度搜索</span></div><div class="rightMenu-item" id="menu-music-toggle"><i class="anzhiyufont anzhiyu-icon-play"></i><span>播放音乐</span></div><div class="rightMenu-item" id="menu-music-back"><i class="anzhiyufont anzhiyu-icon-backward"></i><span>切换到上一首</span></div><div class="rightMenu-item" id="menu-music-forward"><i class="anzhiyufont anzhiyu-icon-forward"></i><span>切换到下一首</span></div><div class="rightMenu-item" id="menu-music-playlist" onclick="window.open(&quot;https://y.qq.com/n/ryqq/playlist/8802438608&quot;, &quot;_blank&quot;);" style="display: none;"><i class="anzhiyufont anzhiyu-icon-radio"></i><span>查看所有歌曲</span></div><div class="rightMenu-item" id="menu-music-copyMusicName"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制歌名</span></div></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item menu-link" id="menu-randomPost"><i class="anzhiyufont anzhiyu-icon-shuffle"></i><span>随便逛逛</span></a><a class="rightMenu-item menu-link" href="/categories/"><i class="anzhiyufont anzhiyu-icon-cube"></i><span>博客分类</span></a><a class="rightMenu-item menu-link" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags"></i><span>文章标签</span></a></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item" id="menu-copy" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制地址</span></a><a class="rightMenu-item" id="menu-commentBarrage" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-message"></i><span class="menu-commentBarrage-text">关闭热评</span></a><a class="rightMenu-item" id="menu-darkmode" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span class="menu-darkmode-text">深色模式</span></a><a class="rightMenu-item" id="menu-translate" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-language"></i><span>轉為繁體</span></a></div></div><div id="rightmenu-mask"></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.cbd.int/@fancyapps/ui@5.0.28/dist/fancybox/fancybox.umd.js"></script><script src="https://cdn.cbd.int/instant.page@5.2.0/instantpage.js" type="module"></script><script src="https://cdn.cbd.int/vanilla-lazyload@17.8.5/dist/lazyload.iife.min.js"></script><script src="https://cdn.cbd.int/node-snackbar@0.1.16/dist/snackbar.min.js"></script><canvas id="universe"></canvas><script async src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/dark/dark.js"></script><script>// 消除控制台打印
+var HoldLog = console.log;
+console.log = function () {};
+let now1 = new Date();
+queueMicrotask(() => {
+  const Log = function () {
+    HoldLog.apply(console, arguments);
+  }; //在恢复前输出日志
+  const grt = new Date("04/01/2021 00:00:00"); //此处修改你的建站时间或者网站上线时间
+  now1.setTime(now1.getTime() + 250);
+  const days = (now1 - grt) / 1000 / 60 / 60 / 24;
+  const dnum = Math.floor(days);
+  const ascll = [
+    `欢迎使用安知鱼!`,
+    `生活明朗, 万物可爱`,
+    `
+        
+       █████╗ ███╗   ██╗███████╗██╗  ██╗██╗██╗   ██╗██╗   ██╗
+      ██╔══██╗████╗  ██║╚══███╔╝██║  ██║██║╚██╗ ██╔╝██║   ██║
+      ███████║██╔██╗ ██║  ███╔╝ ███████║██║ ╚████╔╝ ██║   ██║
+      ██╔══██║██║╚██╗██║ ███╔╝  ██╔══██║██║  ╚██╔╝  ██║   ██║
+      ██║  ██║██║ ╚████║███████╗██║  ██║██║   ██║   ╚██████╔╝
+      ╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝╚═╝   ╚═╝    ╚═════╝
+        
+        `,
+    "已上线",
+    dnum,
+    "天",
+    "©2020 By 安知鱼 V1.6.14",
+  ];
+  const ascll2 = [`NCC2-036`, `调用前置摄像头拍照成功，识别为【小笨蛋】.`, `Photo captured: `, `🤪`];
+
+  setTimeout(
+    Log.bind(
+      console,
+      `\n%c${ascll[0]} %c ${ascll[1]} %c ${ascll[2]} %c${ascll[3]}%c ${ascll[4]}%c ${ascll[5]}\n\n%c ${ascll[6]}\n`,
+      "color:#425AEF",
+      "",
+      "color:#425AEF",
+      "color:#425AEF",
+      "",
+      "color:#425AEF",
+      ""
+    )
+  );
+  setTimeout(
+    Log.bind(
+      console,
+      `%c ${ascll2[0]} %c ${ascll2[1]} %c \n${ascll2[2]} %c\n${ascll2[3]}\n`,
+      "color:white; background-color:#4fd953",
+      "",
+      "",
+      'background:url("https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/tinggge.gif") no-repeat;font-size:450%'
+    )
+  );
+
+  setTimeout(Log.bind(console, "%c WELCOME %c 你好，小笨蛋.", "color:white; background-color:#4f90d9", ""));
+
+  setTimeout(
+    console.warn.bind(
+      console,
+      "%c ⚡ Powered by 安知鱼 %c 你正在访问 S0cke3t 的博客.",
+      "color:white; background-color:#f0ad4e",
+      ""
+    )
+  );
+
+  setTimeout(Log.bind(console, "%c W23-12 %c 你已打开控制台.", "color:white; background-color:#4f90d9", ""));
+
+  setTimeout(
+    console.warn.bind(console, "%c S013-782 %c 你现在正处于监控中.", "color:white; background-color:#d9534f", "")
+  );
+});</script><script async src="/anzhiyu/random.js"></script><div class="js-pjax"><input type="hidden" name="page-type" id="page-type" value="post"></div><script>var visitorMail = "";
+</script><script async data-pjax src="https://cdn.cbd.int/anzhiyu-theme-static@1.0.0/waterfall/waterfall.js"></script><script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/qrcodejs/1.0.0/qrcode.min.js"></script><script src="/js/anzhiyu/right_click_menu.js"></script><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.1.9/icon/ali_iconfont_css.css"><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.0.0/aplayer/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.cbd.int/anzhiyu-blog-static@1.0.1/js/APlayer.min.js"></script><script src="https://cdn.cbd.int/hexo-anzhiyu-music@1.0.1/assets/js/Meting2.min.js"></script><script src="https://cdn.cbd.int/pjax@0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+  // removeEventListener scroll 
+  anzhiyu.removeGlobalFnEvent('pjax')
+  anzhiyu.removeGlobalFnEvent('themeChange')
+
+  document.getElementById('rightside').classList.remove('rightside-show')
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', e => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script charset="UTF-8" src="https://cdn.cbd.int/anzhiyu-theme-static@1.1.5/accesskey/accesskey.js"></script></div><div id="popup-window"><div class="popup-window-title">通知</div><div class="popup-window-divider"></div><div class="popup-window-content"><div class="popup-tip">你好呀</div><div class="popup-link"><i class="anzhiyufont anzhiyu-icon-arrow-circle-right"></i></div></div></div></body></html>
